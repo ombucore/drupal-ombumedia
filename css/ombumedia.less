@@ -1,0 +1,83 @@
+@color-blue: #428bca;
+
+.ombumedia-page {
+  .ombumedia-media-library {
+    position: relative;
+
+    .ombumedia-upload-drag {
+      position: absolute;
+      top: -1em;
+      left: -1em;
+      right: -1em;
+      bottom: -1em;
+      background: fade(#fff, 90%);
+      border: 0.5em dashed #333;
+      display: none;
+
+      span {
+        font-size: 3em;
+        text-align: center;
+        position: fixed;
+        width: 100%;
+        top: 45%;
+      }
+    }
+    &.drag-over {
+      .ombumedia-upload-drag {
+        display: block;
+        > * {
+          pointer-events: none;
+        }
+      }
+    }
+
+    .ombumedia-upload-progress {
+      position: absolute;
+      top: -1em;
+      left: -1em;
+      right: -1em;
+      bottom: -1em;
+      background: fade(#fff, 90%);
+      border: 0.5em dashed #333;
+      display: none;
+
+      .progress-bar {
+        font-size: 2em;
+        text-align: left;
+        position: fixed;
+        width: 50%;
+        min-width: 400px;
+        top: 45%;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        border: 2px solid @color-blue;
+        border-radius: 15px;
+        background: lighten(@color-blue, 25%);
+        padding: 0.5em;
+        overflow: hidden;
+
+        .bar {
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          width: 25%;
+          background: lighten(@color-blue, 15%);
+          z-index: 1;
+        }
+        .progress-text {
+          position: relative;
+          z-index: 2;
+        }
+      }
+    }
+    &.uploading {
+      .ombumedia-upload-progress {
+        display: block;
+      }
+    }
+
+  }
+
+}
