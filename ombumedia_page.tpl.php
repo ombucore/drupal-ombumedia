@@ -1,7 +1,7 @@
 <?php
 
 ?>
-<div class="ombumedia-page">
+<div class="ombumedia-page" data-mode="<?php print $mode; ?>">
 
   <div class="ombumedia-media-library">
     <?php print $media_library; ?>

@@ -35,6 +35,7 @@ function ombumedia_theme($existing, $type, $theme, $path) {
     'ombumedia_page' => array(
       'variables' => array(
         'media_library' => '',
+        'mode' => 'manage',
       ),
       'template' => 'ombumedia_page',
     ),
@@ -112,15 +113,21 @@ function ombumedia_page_magage_media_ajax_upload() {
  */
 function ombumedia_preprocess_ombumedia_page(&$variables) {
   $path = drupal_get_path('module', 'ombumedia');
-  drupal_add_js($path . '/js/upload.js');
+  drupal_add_js($path . '/js/ombumedia-util.js');
+  drupal_add_js($path . '/js/ombumedia-library.js');
   drupal_add_css($path . '/css/ombumedia.css');
 
-  $ombumedia_upload_settings = array(
+  $ombumedia_settings = array(
     'ombumedia' => array(
       'upload' => array(
         'url' => url('admin/dashboard/manage-media/ajax-upload'),
       ),
     ),
   );
-  drupal_add_js($ombumedia_upload_settings, 'setting');
+
+  if ($variables['mode'] === 'manage') {
+    drupal_add_js($path . '/js/init-manage.js');
+  }
+
+  drupal_add_js($ombumedia_settings, 'setting');
 }
