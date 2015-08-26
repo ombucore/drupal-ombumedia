@@ -11,7 +11,6 @@
             mode: 'manage'
           };
           var library = new Drupal.ombumedia.LibraryStatic(options);
-          $(el).data('ombumedia-library', library);
         });
     }
   };

@@ -31,6 +31,8 @@ Library.prototype.initialize = function(options) {
   this.$library.on('dragover', preventDefault(stopPropagation(this.dragOver.bind(this))));
   $uploadDragZone.on('dragleave', preventDefault(stopPropagation(this.dragLeave.bind(this))));
   $uploadDragZone.on('drop', preventDefault(stopPropagation(this.uploadDroppedFile.bind(this))));
+
+  this.$root.data('ombumedia-library', this);
 };
 
 Library.prototype.dragOver = function(e) {
@@ -128,6 +130,23 @@ LibraryStatic.prototype.fileDelete = function(fid) {
   window.location = '/file/' + fid + '/delete?destination=' + dest;
 };
 
+
+/**
+ * Events for files in the grid.
+ */
+Drupal.behaviors.ombumediaGridFiles = {
+  attach: function(context, settings) {
+    $('.ombumedia-library-file', context)
+      .once('ombumedia-library-file-processed')
+      .on('click', preventDefault(Drupal.behaviors.ombumediaGridFiles.onClick));
+  },
+  onClick: function(e) {
+    var $fileEl = $(e.currentTarget);
+    var fid = $fileEl.attr('data-fid');
+    var library = $fileEl.parents('.ombumedia-page').data('ombumedia-library');
+    library.filePreview(fid);
+  }
+};
 
 
 /**

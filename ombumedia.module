@@ -128,3 +128,15 @@ function ombumedia_preprocess_ombumedia_page(&$variables) {
 
   drupal_add_js($ombumedia_settings, 'setting');
 }
+
+/**
+ * Implements hook_preprocess_views_view_unformatted().
+ */
+function ombumedia_preprocess_views_view_unformatted(&$variables) {
+  if ($variables['view']->name === 'ombumedia') {
+    $results = $variables['view']->result;
+    foreach ($variables['rows'] as $i => $row) {
+      $variables['rows'][$i] = '<a href="#" class="ombumedia-library-file" data-fid="' . $results[$i]->fid . '">' . $row . '</a>';
+    }
+  }
+}
