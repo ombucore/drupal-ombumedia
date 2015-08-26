@@ -15,7 +15,6 @@ var stopPropagation = Drupal.ombumedia.util.stopPropagationWrapper;
  * @param {object} options - Configuration for this library.
  *   el: {DOMElement} - The root DOM element of the library with class '.ombumedia-page'.
  *   mode: {string} 'select', 'manage' - The mode to launch the library in.
- *   ajax: {boolean} - Run with AJAX or full page loads.
  *   filters: {object} - An object of filters to pre-filter by. Most commonly
  *                       like `{type: 'document'}`.
  */
@@ -57,34 +56,68 @@ Library.prototype.uploadDroppedFile = function(e) {
   this.$library.find('.progress-text-filename').text(file.name);
 
   $.ajax({
-      url: Drupal.settings.ombumedia.upload.url,
-      type: 'POST',
-      xhr: function() {
-          var myXhr = $.ajaxSettings.xhr();
-          if (myXhr.upload) {
-              myXhr.upload.addEventListener('progress', function(e) {
-                  if (e.lengthComputable) {
-                      var loaded = e.loaded;
-                      var total = e.total;
-                      var width = ((loaded / total) * 100) + '%';
-                      this.$library.find('.progress-bar .bar').css('width', width);
-                  }
-              }.bind(this), false);
+    url: Drupal.settings.ombumedia.upload.url,
+    type: 'POST',
+    xhr: function() {
+      var myXhr = $.ajaxSettings.xhr();
+      if (myXhr.upload) {
+        myXhr.upload.addEventListener('progress', function(e) {
+          if (e.lengthComputable) {
+            var loaded = e.loaded;
+            var total = e.total;
+            var width = ((loaded / total) * 100) + '%';
+            this.$library.find('.progress-bar .bar').css('width', width);
           }
-          return myXhr;
-      }.bind(this),
-      data: formData,
-      cache: false,
-      contentType: false,
-      processData: false
-  })
-  .done(function(data, textStatus, jQueryXHR) {
-      if (data.actions && data.actions.edit) {
-          var dest = window.location.pathname.slice(1); // Remove preceding slash '/'.
-          window.location = data.actions.edit + '?destination=' + dest;
+        }.bind(this), false);
       }
-  });
+      return myXhr;
+    }.bind(this),
+    data: formData,
+    cache: false,
+    contentType: false,
+    processData: false
+  })
+  .done(this.uploadComplete.bind(this));
 };
+
+/**
+ * Subclass Interface.
+ */
+Library.prototype.uploadComplete = function(data, textStatus, jQueryXHR) {};
+
+
+
+
+/**
+ * Ajax Library.
+ */
+function LibraryAjax(options) {
+  this.initialize(options);
+};
+
+LibraryAjax.prototype = Object.create(Library.prototype);
+
+LibraryAjax.uploadComplete = function(data, textStatus, jQueryXHR) {
+  console.log('Not Implemented');
+};
+
+
+/**
+ * Static Library.
+ */
+function LibraryStatic(options) {
+  this.initialize(options);
+}
+
+LibraryStatic.prototype = Object.create(Library.prototype);
+
+LibraryStatic.prototype.uploadComplete = function(data, textStatus, jQueryXHR) {
+  if (data.actions && data.actions.edit) {
+    var dest = window.location.pathname.slice(1); // Remove preceding slash '/'.
+    window.location = data.actions.edit + '?destination=' + dest;
+  }
+};
+
 
 
 /**
@@ -92,6 +125,7 @@ Library.prototype.uploadDroppedFile = function(e) {
  */
 
 Drupal.ombumedia = Drupal.ombumedia || {};
-Drupal.ombumedia.Library = Library;
+Drupal.ombumedia.LibraryStatic = LibraryStatic;
+Drupal.ombumedia.LibraryAjax = LibraryAjax;
 
 })(jQuery);
