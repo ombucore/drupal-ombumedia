@@ -77,14 +77,21 @@ Library.prototype.uploadDroppedFile = function(e) {
     contentType: false,
     processData: false
   })
-  .done(this.uploadComplete.bind(this));
+  .done(function(data, textStatus, jQueryXHR) {
+    if (data.file && data.file.fid) {
+      this.fileEdit(data.file.fid);
+    }
+  }.bind(this));
 };
 
 /**
  * Subclass Interface.
  */
 Library.prototype.uploadComplete = function(data, textStatus, jQueryXHR) {};
-
+Library.prototype.filePreview = function(fid) {};
+Library.prototype.fileEdit = function(fid) {};
+Library.prototype.fileDelete = function(fid) {};
+Library.prototype.fileSelect = function(fid) {};
 
 
 
@@ -97,7 +104,7 @@ function LibraryAjax(options) {
 
 LibraryAjax.prototype = Object.create(Library.prototype);
 
-LibraryAjax.uploadComplete = function(data, textStatus, jQueryXHR) {
+LibraryAjax.fileEdit  = function(fid) {
   console.log('Not Implemented');
 };
 
@@ -111,11 +118,14 @@ function LibraryStatic(options) {
 
 LibraryStatic.prototype = Object.create(Library.prototype);
 
-LibraryStatic.prototype.uploadComplete = function(data, textStatus, jQueryXHR) {
-  if (data.actions && data.actions.edit) {
-    var dest = window.location.pathname.slice(1); // Remove preceding slash '/'.
-    window.location = data.actions.edit + '?destination=' + dest;
-  }
+LibraryStatic.prototype.fileEdit = function(fid) {
+  var dest = window.location.pathname.slice(1); // Remove preceding slash '/'.
+  window.location = '/file/' + fid + '/edit?destination=' + dest;
+};
+
+LibraryStatic.prototype.fileDelete = function(fid) {
+  var dest = window.location.pathname.slice(1); // Remove preceding slash '/'.
+  window.location = '/file/' + fid + '/delete?destination=' + dest;
 };
 
 

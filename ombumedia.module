@@ -96,9 +96,6 @@ function ombumedia_page_magage_media_ajax_upload() {
     $file = file_load($file->fid);
     drupal_json_output(array(
       'file' => (array) $file,
-      'actions' => array(
-        'edit' => url('file/' . $file->fid . '/edit'),
-      ),
     ));
 
   }
