@@ -90,10 +90,18 @@ Library.prototype.uploadDroppedFile = function(e) {
  * Subclass Interface.
  */
 Library.prototype.uploadComplete = function(data, textStatus, jQueryXHR) {};
-Library.prototype.filePreview = function(fid) {};
-Library.prototype.fileEdit = function(fid) {};
-Library.prototype.fileDelete = function(fid) {};
-Library.prototype.fileSelect = function(fid) {};
+Library.prototype.filePreview = function(fid) {
+  console.log('filePreview not implemented');
+};
+Library.prototype.fileEdit = function(fid) {
+  console.log('fileEdit not implemented');
+};
+Library.prototype.fileDelete = function(fid) {
+  console.log('fileDelete not implemented');
+};
+Library.prototype.fileSelect = function(fid) {
+  console.log('fileSelect not implemented');
+};
 
 
 
@@ -137,14 +145,17 @@ LibraryStatic.prototype.fileDelete = function(fid) {
 Drupal.behaviors.ombumediaGridFiles = {
   attach: function(context, settings) {
     $('.ombumedia-library-file', context)
-      .once('ombumedia-library-file-processed')
-      .on('click', preventDefault(Drupal.behaviors.ombumediaGridFiles.onClick));
+      .once('ombumedia-library-file')
+      .find('a')
+      .on('click', preventDefault(Drupal.behaviors.ombumediaGridFiles.actionClick));
   },
-  onClick: function(e) {
-    var $fileEl = $(e.currentTarget);
-    var fid = $fileEl.attr('data-fid');
-    var library = $fileEl.parents('.ombumedia-page').data('ombumedia-library');
-    library.filePreview(fid);
+  actionClick: function(e) {
+    var $actionLink = $(e.currentTarget);
+    var library = $actionLink.parents('.ombumedia-page').data('ombumedia-library');
+    var fid = $actionLink.attr('data-fid');
+    var action = $actionLink.attr('href').slice(1);
+    var libraryMethod = 'file' + action.slice(0, 1).toUpperCase() + action.slice(1);
+    library[libraryMethod](fid);
   }
 };
 

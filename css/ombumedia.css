@@ -66,3 +66,6 @@
 .ombumedia-page .ombumedia-media-library.uploading .ombumedia-upload-progress {
   display: block;
 }
+[data-mode="manage"] .ombumedia-library-file a[href="#select"] {
+  display: none;
+}

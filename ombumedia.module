@@ -136,7 +136,17 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
   if ($variables['view']->name === 'ombumedia') {
     $results = $variables['view']->result;
     foreach ($variables['rows'] as $i => $row) {
-      $variables['rows'][$i] = '<a href="#" class="ombumedia-library-file" data-fid="' . $results[$i]->fid . '">' . $row . '</a>';
+      $data_fid = 'data-fid="' . $results[$i]->fid . '"';
+      $row = '<a href="#preview" ' . $data_fid . '>' . $row . '</a>';
+      $row .= implode(' ', array(
+        '<span class="actions">',
+        '<a href="#select" ' . $data_fid . '>Select</a>',
+        '<a href="#edit" ' . $data_fid . '>Edit</a>',
+        '<a href="#delete" ' . $data_fid . '>Delete</a>',
+        '</span>',
+      ));
+      $variables['rows'][$i] = $row;
+      $variables['classes_array'][$i] .= ' ombumedia-library-file';
     }
   }
 }
