@@ -8,6 +8,10 @@ include_once 'ombumedia.features.inc';
 
 
 /**
+ * Hooks.
+ */
+
+/**
  * Implements hook_menu().
  */
 function ombumedia_menu() {
@@ -16,12 +20,22 @@ function ombumedia_menu() {
     'type' => MENU_CALLBACK,
     'page callback' => 'ombumedia_page_magage_media',
     'access arguments' => array('administer files'),
+    'file' => 'ombumedia.pages.inc',
   );
 
   $items['admin/dashboard/manage-media/ajax-upload'] = array(
     'type' => MENU_CALLBACK,
     'page callback' => 'ombumedia_page_magage_media_ajax_upload',
     'access arguments' => array('administer files'),
+    'file' => 'ombumedia.pages.inc',
+  );
+
+  $items['file/%file/preview'] = array(
+    'page callback' => 'ombumedia_page_file_preview',
+    'page arguments' => array(1),
+    'access callback' => 'file_entity_access',
+    'access arguments' => array('view', 1),
+    'file' => 'ombumedia.pages.inc',
   );
 
   return $items;
@@ -39,71 +53,19 @@ function ombumedia_theme($existing, $type, $theme, $path) {
       ),
       'template' => 'ombumedia_page',
     ),
+    'ombumedia_file_preview' => array(
+      'variables' => array(
+        'file' => NULL,
+      ),
+      'template' => 'ombumedia_file_preview',
+    ),
   );
 }
 
-/**
- * Page callback for Manage Media page.
- */
-function ombumedia_page_magage_media() {
-  $view = views_get_view('ombumedia');
-  $view->set_display('manage_media');
-  $view->pre_execute();
-  $view->execute();
-  $view_rendered = $view->preview();
-
-
-  return theme('ombumedia_page', array(
-    'media_library' => $view_rendered,
-  ));
-}
 
 /**
- * Page callback for Manage Media Ajax Upload page.
+ * Preprocess.
  */
-function ombumedia_page_magage_media_ajax_upload() {
-  module_load_include('inc', 'file_entity', 'file_entity.pages');
-  $errors = array();
-  if ($file = file_save_upload(0)) {
-
-    $type_candidates = file_entity_get_filetype_candidates($file);
-
-    if (count($type_candidates) >= 1) {
-
-        if ($moved_file = file_move($file, 'public://' . file_uri_target($file->uri), FILE_EXISTS_RENAME)) {
-          $type_candidates_keys = array_keys($type_candidates);
-          $file = $moved_file;
-          $file->type = reset($type_candidates_keys);;
-        }
-        else {
-          $errors[] = 'Error saving file.';
-        }
-
-    }
-    else {
-      $errors[] = 'Unrecognized file type.';
-    }
-
-  }
-  else {
-    $errors[] = 'Invalid request';
-  }
-
-  if (empty($errors)) {
-    $file->display = TRUE;
-    $file->status = FILE_STATUS_PERMANENT;
-    file_save($file);
-    $file = file_load($file->fid);
-    drupal_json_output(array(
-      'file' => (array) $file,
-    ));
-
-  }
-  else {
-    drupal_json_output(array('errors' => $errors));
-  }
-  drupal_exit();
-}
 
 /**
  * Implements hook_preprocess_ombumedia_page().
@@ -127,6 +89,17 @@ function ombumedia_preprocess_ombumedia_page(&$variables) {
   }
 
   drupal_add_js($ombumedia_settings, 'setting');
+}
+
+/**
+ * Implements hook_preprocess_ombumedia_file_preview().
+ */
+function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
+  module_load_include('inc', 'file_entity', 'file_entity.pages');
+  $file = $variables['file'];
+  $variables['title'] = !empty($file->title) ? $file->title : $file->filename;
+  $variables['preview'] = file_view_file($file, 'preview');
+  $variables['usage'] = file_entity_usage_page($file);
 }
 
 /**

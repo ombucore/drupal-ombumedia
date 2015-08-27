@@ -99,6 +99,22 @@ if (typeof Object.create != 'function') {
   }
 
   /**
+   * Returns the path to use in a Drupal-style `?destination=` url.
+   */
+  function destPath() {
+    // Remove preceding slash '/'.
+    return window.location.pathname.slice(1);
+  }
+
+  /**
+   * Creates a file URL for the given file ID and action.
+   */
+  function fileUrl(fid, action) {
+    return '/file/' + fid + '/' + action + '?destination=' + destPath();
+  }
+
+
+  /**
    * Exports.
    */
   Drupal.ombumedia = Drupal.ombumedia || {};
@@ -106,7 +122,9 @@ if (typeof Object.create != 'function') {
     supportsDragDrop: supportsDragDrop,
     supportsAjaxUpload: supportsAjaxUpload,
     preventDefaultWrapper: preventDefaultWrapper,
-    stopPropagationWrapper: stopPropagationWrapper
+    stopPropagationWrapper: stopPropagationWrapper,
+    destPath: destPath,
+    fileUrl: fileUrl
   };
 
 })();

@@ -7,6 +7,8 @@
  */
 var preventDefault = Drupal.ombumedia.util.preventDefaultWrapper;
 var stopPropagation = Drupal.ombumedia.util.stopPropagationWrapper;
+var destPath = Drupal.ombumedia.util.destPath;
+var fileUrl = Drupal.ombumedia.util.fileUrl;
 
 
 /**
@@ -128,14 +130,16 @@ function LibraryStatic(options) {
 
 LibraryStatic.prototype = Object.create(Library.prototype);
 
+LibraryStatic.prototype.filePreview = function(fid) {
+  window.location = fileUrl(fid, 'preview');
+};
+
 LibraryStatic.prototype.fileEdit = function(fid) {
-  var dest = window.location.pathname.slice(1); // Remove preceding slash '/'.
-  window.location = '/file/' + fid + '/edit?destination=' + dest;
+  window.location = fileUrl(fid, 'edit');
 };
 
 LibraryStatic.prototype.fileDelete = function(fid) {
-  var dest = window.location.pathname.slice(1); // Remove preceding slash '/'.
-  window.location = '/file/' + fid + '/delete?destination=' + dest;
+  window.location = fileUrl(fid, 'delete');
 };
 
 
