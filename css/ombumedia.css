@@ -66,6 +66,57 @@
 .ombumedia-page .ombumedia-media-library.uploading .ombumedia-upload-progress {
   display: block;
 }
-[data-mode="manage"] .ombumedia-library-file a[href="#select"] {
+.view-display-id-manage_media .ombumedia-library-file a[href="#select"] {
   display: none;
+}
+.ombumedia-tabset {
+  padding: 0;
+  border: 0;
+  background: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.ombumedia-tabset .top {
+  overflow: hidden;
+  position: relative;
+  background-color: #e0e0d8;
+  padding: 15px 15px 0 15px;
+}
+.ombumedia-tabset .ui-tabs-nav {
+  padding: 0;
+  border: 0;
+}
+.ombumedia-tabset .ui-tabs-nav li a {
+  font-weight: normal;
+  display: block;
+  float: left;
+  padding: 0 1em;
+  line-height: 2.5em;
+  background-color: #a6a7a2;
+  color: #000;
+  border: 0;
+  border-radius: 8px 8px 0 0;
+}
+.ombumedia-tabset .ui-tabs-nav li a:focus {
+  outline: 0;
+}
+.ombumedia-tabset .ui-tabs-nav li.ui-state-active a,
+.ombumedia-tabset .ui-tabs-nav li.ui-state-hover a {
+  background-color: #FFFFFF;
+}
+.ombumedia-tabset .ui-tabs-panel {
+  border: 0;
+  padding: 15px;
+  position: absolute;
+  top: 55px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: scroll;
+}
+.ui-dialog .ombumedia-modal-frame {
+  padding: 0;
 }

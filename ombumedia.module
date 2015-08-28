@@ -23,6 +23,22 @@ function ombumedia_menu() {
     'file' => 'ombumedia.pages.inc',
   );
 
+  $items['admin/dashboard/select-media'] = array(
+    'title' => 'Manage Media',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'ombumedia_page_select_media',
+    'access arguments' => array('administer files'),
+    'file' => 'ombumedia.pages.inc',
+  );
+
+  $items['admin/dashboard/ombumedia-test'] = array(
+    'title' => 'Test media selection',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'ombumedia_page_test',
+    'access arguments' => array('administer files'),
+    'file' => 'ombumedia.pages.inc',
+  );
+
   $items['admin/dashboard/manage-media/ajax-upload'] = array(
     'type' => MENU_CALLBACK,
     'page callback' => 'ombumedia_page_magage_media_ajax_upload',
@@ -38,7 +54,26 @@ function ombumedia_menu() {
     'file' => 'ombumedia.pages.inc',
   );
 
+  $items['file/%file/select'] = array(
+    'page callback' => 'ombumedia_page_file_select',
+    'page arguments' => array(1),
+    'access callback' => 'file_entity_access',
+    'access arguments' => array('view', 1),
+    'file' => 'ombumedia.pages.inc',
+  );
+
   return $items;
+}
+
+/**
+ * Implements hook_admin_paths().
+ */
+function ombumedia_admin_paths() {
+  $paths = array(
+    'file/*/preview' => TRUE,
+    'file/*/select' => TRUE,
+  );
+  return $paths;
 }
 
 /**
@@ -46,12 +81,20 @@ function ombumedia_menu() {
  */
 function ombumedia_theme($existing, $type, $theme, $path) {
   return array(
-    'ombumedia_page' => array(
+    'ombumedia_library' => array(
       'variables' => array(
         'media_library' => '',
         'mode' => 'manage',
       ),
-      'template' => 'ombumedia_page',
+      'template' => 'ombumedia_library',
+    ),
+    'ombumedia_select' => array(
+      'variables' => array(
+        'library' => FALSE,
+        'upload' => FALSE,
+        'web' => FALSE,
+      ),
+      'template' => 'ombumedia_select',
     ),
     'ombumedia_file_preview' => array(
       'variables' => array(
@@ -62,6 +105,28 @@ function ombumedia_theme($existing, $type, $theme, $path) {
   );
 }
 
+/**
+ * Implements hook_page_alter().
+ *
+ * This is used to use our alternate template when ?render=media-popup is passed
+ * in the URL.
+ */
+function ombumedia_page_alter(&$page) {
+  if (isset($_GET['render']) && $_GET['render'] == 'ombumedia-popup') {
+    $page['#theme'] = 'ombumedia_dialog_page';
+
+    // Disable administration modules from adding output to the popup.
+    // @see http://drupal.org/node/914786
+    module_invoke_all('suppress', TRUE);
+
+    foreach (element_children($page) as $key) {
+      if ($key != 'content') {
+        unset($page[$key]);
+      }
+    }
+  }
+}
+
 
 /**
  * Preprocess.
@@ -70,7 +135,7 @@ function ombumedia_theme($existing, $type, $theme, $path) {
 /**
  * Implements hook_preprocess_ombumedia_page().
  */
-function ombumedia_preprocess_ombumedia_page(&$variables) {
+function ombumedia_preprocess_ombumedia_library(&$variables) {
   $path = drupal_get_path('module', 'ombumedia');
   drupal_add_js($path . '/js/ombumedia-util.js');
   drupal_add_js($path . '/js/ombumedia-library.js');
@@ -84,9 +149,9 @@ function ombumedia_preprocess_ombumedia_page(&$variables) {
     ),
   );
 
-  if ($variables['mode'] === 'manage') {
-    drupal_add_js($path . '/js/init-manage.js');
-  }
+  //if ($variables['mode'] === 'manage') {
+    //drupal_add_js($path . '/js/init-manage.js');
+  //}
 
   drupal_add_js($ombumedia_settings, 'setting');
 }
@@ -100,6 +165,12 @@ function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
   $variables['title'] = !empty($file->title) ? $file->title : $file->filename;
   $variables['preview'] = file_view_file($file, 'preview');
   $variables['usage'] = file_entity_usage_page($file);
+  if (isset($_GET['destination'])) {
+    $url_parts = drupal_parse_url(urldecode($_GET['destination']));
+    $variables['back_link'] = l('Back', $url_parts['path'], array(
+      'query' => $url_parts['query'],
+    ));
+  }
 }
 
 /**
@@ -107,19 +178,22 @@ function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
  */
 function ombumedia_preprocess_views_view_unformatted(&$variables) {
   if ($variables['view']->name === 'ombumedia') {
-    $results = $variables['view']->result;
-    foreach ($variables['rows'] as $i => $row) {
-      $data_fid = 'data-fid="' . $results[$i]->fid . '"';
-      $row = '<a href="#preview" ' . $data_fid . '>' . $row . '</a>';
-      $row .= implode(' ', array(
-        '<span class="actions">',
-        '<a href="#select" ' . $data_fid . '>Select</a>',
-        '<a href="#edit" ' . $data_fid . '>Edit</a>',
-        '<a href="#delete" ' . $data_fid . '>Delete</a>',
-        '</span>',
-      ));
-      $variables['rows'][$i] = $row;
-      $variables['classes_array'][$i] .= ' ombumedia-library-file';
+    if ($variables['view']->current_display === 'select_media') {
+      $results = $variables['view']->result;
+      foreach ($variables['rows'] as $i => $row) {
+        $fid = $results[$i]->fid;
+        $data_fid = 'data-fid="' . $fid . '"';
+        $query = drupal_get_query_parameters() + drupal_get_destination();
+        $preview_url = url('file/' . $fid . '/preview', array('query' => $query));
+        $row = '<a href="' . $preview_url . '" ' . $data_fid . '>' . $row . '</a>';
+        $row .= implode(' ', array(
+          '<span class="actions">',
+            l('Select', 'file/' . $fid . '/select', array('query' => $query)),
+          '</span>',
+        ));
+        $variables['rows'][$i] = $row;
+        $variables['classes_array'][$i] .= ' ombumedia-library-file';
+      }
     }
   }
 }

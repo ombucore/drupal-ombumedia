@@ -11,8 +11,38 @@ function ombumedia_page_magage_media() {
   $view_rendered = $view->preview();
 
 
-  return theme('ombumedia_page', array(
+  return theme('ombumedia_library', array(
     'media_library' => $view_rendered,
+  ));
+}
+
+/**
+ * Page callback for Select Media page.
+ */
+function ombumedia_page_select_media() {
+  $view = views_get_view('ombumedia');
+  $view->set_display('select_media');
+  $view->pre_execute();
+  $view->execute();
+
+  $library = theme('ombumedia_library', array(
+    'media_library' => $view->preview(),
+    'mode' => 'select',
+  ));
+
+  $upload = drupal_render(drupal_get_form('file_entity_add_upload'));
+
+  $web = "WEB";
+
+  drupal_add_library('system', 'ui.tabs');
+  $path = drupal_get_path('module', 'ombumedia');
+  drupal_add_js($path . '/js/ombumedia-popup.js');
+  drupal_add_css($path . '/css/ombumedia.css');
+
+  return theme('ombumedia_select', array(
+    'library' => $library,
+    'upload' => $upload,
+    'web' => $web,
   ));
 }
 
@@ -74,4 +104,42 @@ function ombumedia_page_file_preview($file) {
   return theme('ombumedia_file_preview', array(
     'file' => $file,
   ));
+}
+
+/**
+ * Page callback to configure the selected file.
+ */
+function ombumedia_page_file_select($file) {
+  if (!user_access('administer files') && (file_uri_scheme($file->uri) === 'private')) {
+    return MENU_ACCESS_DENIED;
+  }
+
+  $path = drupal_get_path('module', 'ombumedia');
+  drupal_add_js($path . '/js/ombumedia.js');
+
+  $link = '<a href="#" class="select-link" data-fid="' . $file->fid . '">Use file: ' . $file->filename . '</a>';
+  return $link;
+}
+
+/**
+ * Page callback to test popping up a media modal.
+ */
+function ombumedia_page_test() {
+  $path = drupal_get_path('module', 'ombumedia');
+  drupal_add_library('system', 'ui.dialog');
+  drupal_add_js($path . '/js/ombumedia.js');
+  drupal_add_js($path . '/js/ombumedia-util.js');
+  drupal_add_js($path . '/js/ombumedia-library.js');
+  drupal_add_js($path . '/js/ombumedia-test.js');
+  drupal_add_css($path . '/css/ombumedia.css');
+
+  return <<<HEREDOC
+<a href="#" class="select-media">Select Media</a>
+<dl>
+  <dt>FID</dt>
+  <dd class="fid"></dd>
+  <dt>View Mode</dt>
+  <dd class="view-mode"></dd>
+</dl>
+HEREDOC;
 }
