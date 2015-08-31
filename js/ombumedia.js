@@ -12,13 +12,6 @@ Drupal.ombumedia = Drupal.ombumedia || {};
  *                        strings
  */
 Drupal.ombumedia.selectMedia = function(options) {
-  //var deferred = $.Deferred();
-
-  //deferred.resolve({
-    //fid: '13',
-    //viewMode: 'foobar'
-  //});
-
   return Drupal.ombumedia.launchPopup(options);
 };
 
@@ -27,16 +20,21 @@ Drupal.ombumedia.selectMedia = function(options) {
  * preview/edit form.
  */
 Drupal.ombumedia.editMedia = function(fid, options) {
-
+  options.fid = fid;
+  return Drupal.ombumedia.launchPopup(options);
 };
 
+/**
+ * Opens the OMBU Media pop-up for selecting or editing a media file.
+ */
 Drupal.ombumedia.launchPopup = function(options) {
   options = options || {};
   var deferred = $.Deferred();
   var query = {
     render: 'ombumedia-popup'
   };
-  var src, path;
+  var src, path, $iframe;
+
   if (options.types) {
     query.types = options.types;
   }
@@ -52,11 +50,12 @@ Drupal.ombumedia.launchPopup = function(options) {
 
   src = path + '?' + $.param(query);
 
-  var $iframe = $('<iframe class="ombumedia-modal-frame"/>')
+  $iframe = $('<iframe class="ombumedia-modal-frame"/>')
                   .attr('src', src)
                   .attr('width', options.width);
 
   $iframe.on('load', function() {
+    // Inject a callback function that can be called from the iframe js.
     $iframe[0].contentWindow.ombumediaSelectCallback = function(fid, viewMode) {
       deferred.resolve({fid: fid, viewMode: viewMode});
       $iframe.dialog('close');
@@ -86,6 +85,7 @@ Drupal.ombumedia.launchPopup = function(options) {
     right: '3em',
     bottom: '3em',
     left: '3em',
+    padding: '0',
     width: 'auto',
     height: 'auto'
   });
@@ -101,19 +101,6 @@ Drupal.ombumedia.launchPopup = function(options) {
   return deferred.promise();
 };
 
-Drupal.behaviors.ombumediaSelectConfigure = {
-  attach: function(context) {
-    $('.select-link[data-fid]', context)
-      .once('select-link-fid')
-      .on('click', function(e) {
-        e.preventDefault();
-        var $link = $(this);
-        var fid = $link.attr('data-fid');
-        if (ombumediaSelectCallback) {
-          ombumediaSelectCallback(fid, 'full');
-        }
-      });
-  }
-};
+
 
 })(jQuery);

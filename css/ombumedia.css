@@ -1,40 +1,37 @@
-.ombumedia-page .ombumedia-media-library {
-  position: relative;
-}
-.ombumedia-page .ombumedia-media-library .ombumedia-upload-drag {
+.ombumedia-upload-drag {
   position: absolute;
-  top: -1em;
-  left: -1em;
-  right: -1em;
-  bottom: -1em;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(255, 255, 255, 0.9);
   border: 0.5em dashed #333;
   display: none;
 }
-.ombumedia-page .ombumedia-media-library .ombumedia-upload-drag span {
+.ombumedia-upload-drag span {
   font-size: 3em;
   text-align: center;
   position: fixed;
   width: 100%;
   top: 45%;
 }
-.ombumedia-page .ombumedia-media-library.drag-over .ombumedia-upload-drag {
+.drag-over .ombumedia-upload-drag {
   display: block;
 }
-.ombumedia-page .ombumedia-media-library.drag-over .ombumedia-upload-drag > * {
+.drag-over .ombumedia-upload-drag > * {
   pointer-events: none;
 }
-.ombumedia-page .ombumedia-media-library .ombumedia-upload-progress {
+.ombumedia-upload-progress {
   position: absolute;
-  top: -1em;
-  left: -1em;
-  right: -1em;
-  bottom: -1em;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(255, 255, 255, 0.9);
   border: 0.5em dashed #333;
   display: none;
 }
-.ombumedia-page .ombumedia-media-library .ombumedia-upload-progress .progress-bar {
+.ombumedia-upload-progress .progress-bar {
   font-size: 2em;
   text-align: left;
   position: fixed;
@@ -50,7 +47,7 @@
   padding: 0.5em;
   overflow: hidden;
 }
-.ombumedia-page .ombumedia-media-library .ombumedia-upload-progress .progress-bar .bar {
+.ombumedia-upload-progress .progress-bar .bar {
   position: absolute;
   top: 0;
   left: 0;
@@ -59,11 +56,11 @@
   background: #7eb0db;
   z-index: 1;
 }
-.ombumedia-page .ombumedia-media-library .ombumedia-upload-progress .progress-bar .progress-text {
+.ombumedia-upload-progress .progress-bar .progress-text {
   position: relative;
   z-index: 2;
 }
-.ombumedia-page .ombumedia-media-library.uploading .ombumedia-upload-progress {
+.uploading .ombumedia-upload-progress {
   display: block;
 }
 .view-display-id-manage_media .ombumedia-library-file a[href="#select"] {

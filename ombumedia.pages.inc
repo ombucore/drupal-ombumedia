@@ -10,10 +10,9 @@ function ombumedia_page_magage_media() {
   $view->execute();
   $view_rendered = $view->preview();
 
+  drupal_add_library('ombumedia', 'ombumedia');
 
-  return theme('ombumedia_library', array(
-    'media_library' => $view_rendered,
-  ));
+  return $view_rendered;
 }
 
 /**
@@ -25,19 +24,13 @@ function ombumedia_page_select_media() {
   $view->pre_execute();
   $view->execute();
 
-  $library = theme('ombumedia_library', array(
-    'media_library' => $view->preview(),
-    'mode' => 'select',
-  ));
+  $library = $view->preview();
 
   $upload = drupal_render(drupal_get_form('file_entity_add_upload'));
 
   $web = "WEB";
 
-  drupal_add_library('system', 'ui.tabs');
-  $path = drupal_get_path('module', 'ombumedia');
-  drupal_add_js($path . '/js/ombumedia-popup.js');
-  drupal_add_css($path . '/css/ombumedia.css');
+  drupal_add_library('ombumedia', 'ombumedia');
 
   return theme('ombumedia_select', array(
     'library' => $library,
@@ -101,6 +94,8 @@ function ombumedia_page_file_preview($file) {
     return MENU_ACCESS_DENIED;
   }
 
+  drupal_add_library('ombumedia', 'ombumedia');
+
   return theme('ombumedia_file_preview', array(
     'file' => $file,
   ));
@@ -114,8 +109,7 @@ function ombumedia_page_file_select($file) {
     return MENU_ACCESS_DENIED;
   }
 
-  $path = drupal_get_path('module', 'ombumedia');
-  drupal_add_js($path . '/js/ombumedia.js');
+  drupal_add_library('ombumedia', 'ombumedia');
 
   $link = '<a href="#" class="select-link" data-fid="' . $file->fid . '">Use file: ' . $file->filename . '</a>';
   return $link;
@@ -126,12 +120,8 @@ function ombumedia_page_file_select($file) {
  */
 function ombumedia_page_test() {
   $path = drupal_get_path('module', 'ombumedia');
-  drupal_add_library('system', 'ui.dialog');
-  drupal_add_js($path . '/js/ombumedia.js');
-  drupal_add_js($path . '/js/ombumedia-util.js');
-  drupal_add_js($path . '/js/ombumedia-library.js');
+  drupal_add_library('ombumedia', 'ombumedia');
   drupal_add_js($path . '/js/ombumedia-test.js');
-  drupal_add_css($path . '/css/ombumedia.css');
 
   return <<<HEREDOC
 <a href="#" class="select-media">Select Media</a>
