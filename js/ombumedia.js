@@ -54,14 +54,12 @@ Drupal.ombumedia.launchPopup = function(options) {
                   .attr('src', src)
                   .attr('width', options.width);
 
-  //$iframe.on('load', function() {
-    //// Inject a callback function that can be called from the iframe js.
-    //$iframe[0].contentWindow.ombumediaSelectCallback = function(fid, viewMode) {
-      //deferred.resolve({fid: fid, viewMode: viewMode});
-      //$iframe.dialog('close');
-      //$iframe.dialog('destroy');
-    //};
-  //});
+  $iframe.on('load', function() {
+    // Inject a callback function that can be called from the iframe js.
+    $iframe[0].contentWindow.ombumediaSelectCallback = function(fid, viewMode) {
+      deferred.resolve({fid: fid, viewMode: viewMode});
+    };
+  });
 
   var dialogOptions = {
     modal: true,
@@ -102,10 +100,12 @@ Drupal.ombumedia.launchPopup = function(options) {
 };
 
 /**
- * Internal callback for media selection.
+ * Close the open dialog.
  */
-Drupal.ombumedia._selectMediaCallback = function(fid, viewMode) {
-  console.log('selectMediaCallback', fid, viewMode);
+Drupal.ombumedia.closeDialog = function() {
+  $('iframe.ombumedia-modal-frame')
+      .dialog('close')
+      .dialog('destroy');
 };
 
 

@@ -116,6 +116,15 @@ Drupal.behaviors.ombumediaFileEntityConfigure = {
     if (!$form.length) {
       return;
     }
+
+    // Grab values we need from the form on submit.
+    $form.on('submit', function(e) {
+      var fid = $form.find('input[name="fid"]').val();
+      try {
+        ombumediaSelectCallback(fid, 'foobar');
+      }
+      catch (error) {}
+    });
   }
 };
 

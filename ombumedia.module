@@ -318,8 +318,7 @@ function ombumedia_file_entity_configure_submit($form, &$form_state) {
   print <<<JS
 <script type="text/javascript">
   try {
-    window.parent.console.log($fid);
-    window.parent.Drupal.ombumedia._selectMediaCallback($fid, 'foobar');
+    window.parent.Drupal.ombumedia.closeDialog();
   }
   catch (e) {}
 </script>
