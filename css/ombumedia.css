@@ -139,3 +139,9 @@
 .page-file-preview .ombumedia-popup {
   padding: 15px;
 }
+.page-file-preview .file-preview {
+  margin-bottom: 1em;
+}
+.page-file-preview .ombumedia-file-preview-form input.form-submit {
+  margin-top: 1em;
+}

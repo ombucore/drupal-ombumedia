@@ -3,9 +3,10 @@
 ?>
 <div class="ombumedia-file-preview">
   <h1><?php print $title; ?></h1>
-  <?php print render($preview); ?>
+  <div class="file-preview">
+    <?php print render($preview); ?>
+  </div>
   <hr>
   <?php print render($form); ?>
-  <hr>
   <?php print render($usage); ?>
 </div>

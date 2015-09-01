@@ -172,10 +172,33 @@ function ombumedia_page_alter(&$page) {
 function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
   module_load_include('inc', 'file_entity', 'file_entity.pages');
   $file = $variables['file'];
+
   $variables['title'] = !empty($file->title) ? $file->title : $file->filename;
-  $variables['preview'] = file_view_file($file, 'preview');
-  $variables['usage'] = file_entity_usage_page($file);
+
+  if ($file->type == 'document') {
+    $preview = file_view_file($file, 'preview');
+    $preview['#prefix'] = '<div>';
+    $preview['#suffix'] = '</div>';
+    $variables['preview'] = array(
+      'preview' => $preview,
+      'full' => file_view_file($file, 'full'),
+    );
+  }
+  else {
+    $variables['preview'] = file_view_file($file, 'full');
+  }
+
   $variables['form'] = drupal_get_form('ombumedia_file_preview_form', $file);
+
+  $variables['usage'] = array(
+    '#theme' => 'fieldset',
+    '#title' => t('Usage'),
+    '#attributes' => array(
+      'class' => array('collapsible', 'collapsed'),
+    ),
+    '#children' => render(file_entity_usage_page($file)),
+  );
+  drupal_add_library('system', 'drupal.collapse');
 }
 
 /**
