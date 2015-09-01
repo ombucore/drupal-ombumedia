@@ -107,6 +107,28 @@ Drupal.behaviors.ombumediaDragUpload = {
 
 
 /**
+ * Code to run on the preview step before a media file is selected.
+ */
+Drupal.behaviors.ombumediaFilePreview = {
+  attach: function(context) {
+    var $preview = $('.ombumedia-file-preview').once('ombumedia-file-preview');
+
+    if (!$preview.length) {
+      return;
+    }
+
+    var $form = $preview.find('form.ombumedia-file-preview-form');
+
+    $form.find('input[type="submit"][value="Back"]').on('click', preventDefault(function(e) {
+      window.history.back();
+    }));
+
+  }
+};
+
+
+
+/**
  * Code to run on the configure form before a media file is selected.
  */
 Drupal.behaviors.ombumediaFileEntityConfigure = {
@@ -116,6 +138,10 @@ Drupal.behaviors.ombumediaFileEntityConfigure = {
     if (!$form.length) {
       return;
     }
+
+    $form.find('input[type="submit"][value="Back"]').on('click', preventDefault(function(e) {
+      window.history.back();
+    }));
 
     // Grab values we need from the form on submit.
     $form.on('submit', function(e) {
@@ -127,6 +153,7 @@ Drupal.behaviors.ombumediaFileEntityConfigure = {
     });
   }
 };
+
 
 
 })(jQuery);

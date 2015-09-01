@@ -135,6 +135,7 @@
 .ombumedia-ui-dialog .ombumedia-modal-frame {
   padding: 0;
 }
-.page-file-configure .ombumedia-popup {
+.page-file-configure .ombumedia-popup,
+.page-file-preview .ombumedia-popup {
   padding: 15px;
 }

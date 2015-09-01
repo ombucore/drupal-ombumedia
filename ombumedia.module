@@ -175,12 +175,7 @@ function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
   $variables['title'] = !empty($file->title) ? $file->title : $file->filename;
   $variables['preview'] = file_view_file($file, 'preview');
   $variables['usage'] = file_entity_usage_page($file);
-  if (isset($_GET['destination'])) {
-    $url_parts = drupal_parse_url(urldecode($_GET['destination']));
-    $variables['back_link'] = l('Back', $url_parts['path'], array(
-      'query' => $url_parts['query'],
-    ));
-  }
+  $variables['form'] = drupal_get_form('ombumedia_file_preview_form', $file);
 }
 
 /**
@@ -293,10 +288,17 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
 
   unset($form['file']['redirect']);
 
-  $form['submit'] = array(
-    '#value' => 'Continue',
-    '#type' => 'submit',
+  $form['actions'] = array(
+    '#type' => 'actions',
     '#weight' => 30,
+    'back' => array(
+      '#value' => 'Back',
+      '#type' => 'submit',
+    ),
+    'continue' => array(
+      '#value' => 'Continue',
+      '#type' => 'submit',
+    ),
   );
 
   return $form;
@@ -324,4 +326,30 @@ function ombumedia_file_entity_configure_submit($form, &$form_state) {
 </script>
 JS;
   drupal_exit();
+}
+
+/**
+ * Form for actions on the file preview step.
+ */
+function ombumedia_file_preview_form($form, &$form_state, $file) {
+  $form['#method'] = 'GET';
+  $form['#action'] = url('file/' . $file->fid . '/configure', array('query' => drupal_get_query_parameters()));
+
+  $form['#attributes'] = array(
+    'class' => array('ombumedia-file-preview-form'),
+  );
+
+  $form['actions'] = array(
+    '#type' => 'action',
+    'back' => array(
+      '#value' => 'Back',
+      '#type' => 'submit',
+    ),
+    'continue' => array(
+      '#value' => 'Select',
+      '#type' => 'submit',
+    ),
+  );
+
+  return $form;
 }
