@@ -7,6 +7,6 @@
     <?php print render($preview); ?>
   </div>
   <hr>
-  <?php print render($form); ?>
+  <?php print render($actions); ?>
   <?php print render($usage); ?>
 </div>

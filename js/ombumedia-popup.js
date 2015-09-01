@@ -117,10 +117,12 @@ Drupal.behaviors.ombumediaFilePreview = {
       return;
     }
 
-    var $form = $preview.find('form.ombumedia-file-preview-form');
-
-    $form.find('input[type="submit"][value="Back"]').on('click', preventDefault(function(e) {
+    $preview.find('input[type="submit"][value="Back"]').on('click', preventDefault(function(e) {
       window.history.back();
+    }));
+
+    $preview.find('input[type="submit"][value="Select"]').on('click', preventDefault(function(e) {
+      window.location = $(this).attr('data-href');
     }));
 
   }
