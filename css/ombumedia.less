@@ -148,7 +148,23 @@
 
 }
 
-.ui-dialog {
+.ombumedia-ui-dialog {
+  .ui-dialog-titlebar {
+    background: transparent;
+    position: relative;
+    z-index: 1010;
+    float: right;
+
+    .ui-dialog-title { display: none; }
+    .ui-dialog-titlebar-close {
+      border: 1px solid #e0e0d8;
+      right: 5px;
+      top: 5px;
+      margin: 0;
+
+      .ui-button-text { display: none; }
+    }
+  }
   .ombumedia-modal-frame {
     padding: 0;
   }

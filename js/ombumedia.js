@@ -68,15 +68,22 @@ Drupal.ombumedia.launchPopup = function(options) {
     zIndex: 10000,
     position: { my: "top center", at: "top center" },
     overlay: { backgroundColor: "#000000", opacity: 0.4 },
-    close: function(e, ui) { $(e.target).remove(); },
+    close: function(e, ui) {
+      $(e.target).remove();
+      var deferredState = deferred.state();
+      if (deferredState != 'resolved') {
+        deferred.reject();
+      }
+    },
     title: "Select Media"
   };
+
 
   $iframe.dialog(dialogOptions);
 
   var $uiDialog = $iframe.parents('.ui-dialog:eq(0)');
 
-  $uiDialog.find('.ui-dialog-titlebar').remove();
+  $uiDialog.addClass('ombumedia-ui-dialog');
 
   $uiDialog.css({
     top: '3em',

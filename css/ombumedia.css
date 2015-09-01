@@ -114,7 +114,25 @@
   bottom: 0;
   overflow: scroll;
 }
-.ui-dialog .ombumedia-modal-frame {
+.ombumedia-ui-dialog .ui-dialog-titlebar {
+  background: transparent;
+  position: relative;
+  z-index: 1010;
+  float: right;
+}
+.ombumedia-ui-dialog .ui-dialog-titlebar .ui-dialog-title {
+  display: none;
+}
+.ombumedia-ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close {
+  border: 1px solid #e0e0d8;
+  right: 5px;
+  top: 5px;
+  margin: 0;
+}
+.ombumedia-ui-dialog .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-button-text {
+  display: none;
+}
+.ombumedia-ui-dialog .ombumedia-modal-frame {
   padding: 0;
 }
 .page-file-configure .ombumedia-popup {
