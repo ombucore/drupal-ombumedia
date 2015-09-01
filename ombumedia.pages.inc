@@ -26,7 +26,7 @@ function ombumedia_page_select_media() {
 
   $library = $view->preview();
 
-  $upload = drupal_render(drupal_get_form('file_entity_add_upload'));
+  $upload = drupal_render(drupal_get_form('ombumedia_file_entity_add'));
 
   $web = "WEB";
 
@@ -104,15 +104,16 @@ function ombumedia_page_file_preview($file) {
 /**
  * Page callback to configure the selected file.
  */
-function ombumedia_page_file_select($file) {
+function ombumedia_page_file_configure($file) {
   if (!user_access('administer files') && (file_uri_scheme($file->uri) === 'private')) {
     return MENU_ACCESS_DENIED;
   }
 
   drupal_add_library('ombumedia', 'ombumedia');
 
-  $link = '<a href="#" class="select-link" data-fid="' . $file->fid . '">Use file: ' . $file->filename . '</a>';
-  return $link;
+  $form = drupal_get_form('ombumedia_file_entity_configure', $file->fid);
+
+  return drupal_render($form);
 }
 
 /**

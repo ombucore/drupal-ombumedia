@@ -42,7 +42,7 @@ Drupal.ombumedia.launchPopup = function(options) {
     query.view_modes = options.view_modes;
   }
   if (options.fid) {
-    path = '/file/' + options.fid + '/select';
+    path = '/file/' + options.fid + '/configure';
   }
   else {
     path = '/admin/dashboard/select-media';
@@ -54,14 +54,14 @@ Drupal.ombumedia.launchPopup = function(options) {
                   .attr('src', src)
                   .attr('width', options.width);
 
-  $iframe.on('load', function() {
-    // Inject a callback function that can be called from the iframe js.
-    $iframe[0].contentWindow.ombumediaSelectCallback = function(fid, viewMode) {
-      deferred.resolve({fid: fid, viewMode: viewMode});
-      $iframe.dialog('close');
-      $iframe.dialog('destroy');
-    };
-  });
+  //$iframe.on('load', function() {
+    //// Inject a callback function that can be called from the iframe js.
+    //$iframe[0].contentWindow.ombumediaSelectCallback = function(fid, viewMode) {
+      //deferred.resolve({fid: fid, viewMode: viewMode});
+      //$iframe.dialog('close');
+      //$iframe.dialog('destroy');
+    //};
+  //});
 
   var dialogOptions = {
     modal: true,
@@ -101,6 +101,12 @@ Drupal.ombumedia.launchPopup = function(options) {
   return deferred.promise();
 };
 
+/**
+ * Internal callback for media selection.
+ */
+Drupal.ombumedia._selectMediaCallback = function(fid, viewMode) {
+  console.log('selectMediaCallback', fid, viewMode);
+};
 
 
 })(jQuery);

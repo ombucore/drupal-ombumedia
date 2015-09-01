@@ -19,26 +19,6 @@ Drupal.behaviors.ombumediaPopupTabs = {
 
 
 /**
- * Binds the final file seleciton click.
- */
-Drupal.behaviors.ombumediaSelectConfigure = {
-  attach: function(context) {
-    $('.select-link[data-fid]', context)
-      .once('select-link-fid')
-      .on('click', function(e) {
-        e.preventDefault();
-        var $link = $(this);
-        var fid = $link.attr('data-fid');
-        if (ombumediaSelectCallback) {
-          ombumediaSelectCallback(fid, 'full');
-        }
-      });
-  }
-};
-
-
-
-/**
  * Drag n Drop uploading in popup.
  */
 
@@ -121,6 +101,21 @@ Drupal.behaviors.ombumediaDragUpload = {
       });
     }
 
+  }
+};
+
+
+
+/**
+ * Code to run on the configure form before a media file is selected.
+ */
+Drupal.behaviors.ombumediaFileEntityConfigure = {
+  attach: function(context) {
+    var $form = $('form.ombumedia-file-entity-configure').once('ombumedia-file-entity-configure');
+
+    if (!$form.length) {
+      return;
+    }
   }
 };
 

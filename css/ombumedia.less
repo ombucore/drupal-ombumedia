@@ -2,7 +2,7 @@
 
 // Upload target overlay.
 .ombumedia-upload-drag {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -29,7 +29,7 @@
 
 // Uploading overlay.
 .ombumedia-upload-progress {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -83,64 +83,69 @@
   .view-display-id-select_media & {}
 }
 
-.ombumedia-tabset {
-  padding: 0;
-  border: 0;
-  background: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
 
-  .top {
-    overflow: hidden;
-    position: relative;
-    background-color: #e0e0d8;
-    padding: 15px 15px 0 15px;
-  }
+.ombumedia-popup {
 
-
-  .ui-tabs-nav {
+  .ombumedia-tabset {
     padding: 0;
     border: 0;
-
-    li {
-      a {
-        font-weight: normal;
-        display: block;
-        float: left;
-        padding: 0 1em;
-        line-height: 2.5em;
-        background-color: #a6a7a2;
-        color: #000;
-        border: 0;
-        border-radius: 8px 8px 0 0;
-
-        &:focus {
-          outline: 0;
-        }
-      }
-
-      &.ui-state-active,
-      &.ui-state-hover {
-        a {
-          background-color: #FFFFFF;
-        }
-      }
-    }
-  }
-
-  .ui-tabs-panel {
-    border: 0;
-    padding: 15px;
+    background: none;
     position: absolute;
-    top: 55px;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    overflow: scroll;
+
+    .top {
+      overflow: hidden;
+      position: relative;
+      background-color: #e0e0d8;
+      padding: 15px 15px 0 15px;
+    }
+
+
+    .ui-tabs-nav {
+      padding: 0;
+      border: 0;
+
+      li {
+        a {
+          font-weight: normal;
+          display: block;
+          float: left;
+          padding: 0 1em;
+          line-height: 2.5em;
+          background-color: #a6a7a2;
+          color: #000;
+          border: 0;
+          border-radius: 8px 8px 0 0;
+
+          &:focus {
+            outline: 0;
+          }
+        }
+
+        &.ui-state-active,
+        &.ui-state-hover {
+          a {
+            background-color: #ffffff;
+          }
+        }
+      }
+    }
+
+    .ui-tabs-panel {
+      border: 0;
+      padding: 15px;
+      position: absolute;
+      top: 55px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: scroll;
+    }
   }
+
 }
 
 .ui-dialog {
@@ -148,3 +153,9 @@
     padding: 0;
   }
 }
+.page-file-configure {
+  .ombumedia-popup {
+    padding: 15px;
+  }
+}
+

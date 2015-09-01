@@ -54,8 +54,8 @@ function ombumedia_menu() {
     'file' => 'ombumedia.pages.inc',
   );
 
-  $items['file/%file/select'] = array(
-    'page callback' => 'ombumedia_page_file_select',
+  $items['file/%file/configure'] = array(
+    'page callback' => 'ombumedia_page_file_configure',
     'page arguments' => array(1),
     'access callback' => 'file_entity_access',
     'access arguments' => array('view', 1),
@@ -71,7 +71,7 @@ function ombumedia_menu() {
 function ombumedia_admin_paths() {
   $paths = array(
     'file/*/preview' => TRUE,
-    'file/*/select' => TRUE,
+    'file/*/configure' => TRUE,
   );
   return $paths;
 }
@@ -94,6 +94,10 @@ function ombumedia_theme($existing, $type, $theme, $path) {
         'file' => NULL,
       ),
       'template' => 'ombumedia_file_preview',
+    ),
+    'ombumedia_dialog_page' => array(
+      'render element' => 'page',
+      'template' => 'ombumedia-dialog-page',
     ),
   );
 }
@@ -194,7 +198,7 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
         $row = '<a href="' . $preview_url . '" ' . $data_fid . '>' . $row . '</a>';
         $row .= implode(' ', array(
           '<span class="actions">',
-            l('Select', 'file/' . $fid . '/select', array('query' => $query)),
+            l('Select', 'file/' . $fid . '/configure', array('query' => $query)),
           '</span>',
         ));
         $variables['rows'][$i] = $row;
@@ -202,4 +206,123 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
       }
     }
   }
+}
+
+
+/**
+ * Forms.
+ */
+
+function ombumedia_file_entity_add($form, &$form_state, array $options = array()) {
+  module_load_include('inc', 'file_entity', 'file_entity.pages');
+
+  $form['upload'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('Upload a new file'),
+    '#upload_location' => file_entity_upload_destination_uri($options),
+    '#upload_validators' => file_entity_get_upload_validators($options),
+    '#progress_indicator' => 'bar',
+    '#required' => TRUE,
+    '#pre_render' => array('file_managed_file_pre_render', 'file_entity_upload_validators_pre_render'),
+    '#default_value' => isset($form_state['storage']['upload']) ? $form_state['storage']['upload'] : NULL,
+  );
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['next'] = array(
+    '#type' => 'submit',
+    '#value' => t('Continue'),
+  );
+
+  form_load_include($form_state, 'inc', 'file_entity', 'file_entity.pages');
+
+  return $form;
+}
+
+function ombumedia_file_entity_add_validate($form, &$form_state) {
+  $file = file_load($form_state['values']['upload']);
+  $type_candidates = file_entity_get_filetype_candidates($file);
+  if (count($type_candidates) == 1) {
+    $type_candidates_keys = array_keys($type_candidates);
+    $form_state['type'] = reset($type_candidates_keys);
+  }
+  else {
+    form_set_error('upload', t('The type of file uploaded was not recognized.'));
+  }
+}
+
+function ombumedia_file_entity_add_submit($form, &$form_state) {
+  $file = file_load($form_state['values']['upload']);
+  $type = $form_state['type'];
+
+  $file->type = $type;
+  $file->display = TRUE;
+  $file->status = FILE_STATUS_PERMANENT;
+  file_save($file);
+
+  drupal_set_message(t('@type %name was uploaded.', array('@type' => file_entity_type_get_name($file), '%name' => $file->filename)));
+
+  $form_state['redirect'] = 'file/' . $file->fid . '/configure';
+}
+
+function ombumedia_file_entity_configure($form, &$form_state, $fid) {
+  $file = file_load($fid);
+
+  $form['#attributes'] = array(
+    'class' => array('ombumedia-file-entity-configure'),
+  );
+
+  $form['fid'] = array(
+    '#type' => 'hidden',
+    '#value' => $file->fid,
+  );
+
+  $form['file'] = array(
+    '#title' => t('Edit'),
+    '#type' => 'fieldset',
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+    'filename' => array(
+      '#title' => t('Name'),
+      '#type' => 'textfield',
+      '#required' => TRUE,
+      '#default_value' => $file->filename,
+      '#weight' => -100,
+    ),
+  );
+  field_attach_form('file', $file, $form['file'], $form_state);
+
+  unset($form['file']['redirect']);
+
+  $form['submit'] = array(
+    '#value' => 'Continue',
+    '#type' => 'submit',
+    '#weight' => 30,
+  );
+
+  return $form;
+}
+
+function ombumedia_file_entity_configure_validate($form, &$form_state) {
+  $file = $form['file']['#entity'];
+  field_attach_form_validate('file', $file, $form['file'], $form_state);
+}
+
+function ombumedia_file_entity_configure_submit($form, &$form_state) {
+  $file = $form['file']['#entity'];
+  field_attach_submit('file', $file, $form['file'], $form_state);
+  $file->filename = $form_state['values']['filename'];
+  file_save($file);
+
+  $fid = $file->fid;
+
+  print <<<JS
+<script type="text/javascript">
+  try {
+    window.parent.console.log($fid);
+    window.parent.Drupal.ombumedia._selectMediaCallback($fid, 'foobar');
+  }
+  catch (e) {}
+</script>
+JS;
+  drupal_exit();
 }
