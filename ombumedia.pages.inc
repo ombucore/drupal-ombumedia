@@ -125,7 +125,12 @@ function ombumedia_page_test() {
   drupal_add_js($path . '/js/ombumedia-test.js');
 
   return <<<HEREDOC
-<a href="#" class="select-media">Select Media</a>
+<ul>
+  <li><a href="#" class="select-media-all">Select Media</a></li>
+  <li><a href="#" class="select-media-image">Select Image</a></li>
+  <li><a href="#" class="select-media-document">Select Document</a></li>
+  <li><a href="#" class="select-media-video">Select Video</a></li>
+</ul>
 <dl>
   <dt>FID</dt>
   <dd class="fid"></dd>

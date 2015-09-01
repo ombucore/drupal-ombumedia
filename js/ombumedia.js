@@ -7,7 +7,7 @@ Drupal.ombumedia = Drupal.ombumedia || {};
  * Kicks off media selection workflow.
  *
  * @param {object} options
- *  - types: {array} 'image', 'video' 'document', 'audio'
+ *  - type: {string} 'image', 'video' 'document', 'audio'
  *  - viewModes: {object} keyed by file type, each with an array of view mode
  *                        strings
  */
@@ -19,7 +19,7 @@ Drupal.ombumedia.selectMedia = function(options) {
  * Skips the selection phase of the selection, goes straight to the
  * preview/edit form.
  */
-Drupal.ombumedia.editMedia = function(fid, options) {
+Drupal.ombumedia.configureMedia = function(fid, options) {
   options.fid = fid;
   return Drupal.ombumedia.launchPopup(options);
 };
@@ -35,8 +35,8 @@ Drupal.ombumedia.launchPopup = function(options) {
   };
   var src, path, $iframe;
 
-  if (options.types) {
-    query.types = options.types;
+  if (options.type) {
+    query.type = options.type;
   }
   if (options.viewModes) {
     query.view_modes = options.view_modes;

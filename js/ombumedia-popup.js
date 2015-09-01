@@ -96,7 +96,7 @@ Drupal.behaviors.ombumediaDragUpload = {
       })
       .done(function(data, textStatus, jQueryXHR) {
         if (data.file && data.file.fid) {
-          window.location = fileUrl(data.file.fid, 'select');
+          window.location = fileUrl(data.file.fid, 'configure');
         }
       });
     }
