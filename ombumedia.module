@@ -112,6 +112,7 @@ function ombumedia_library() {
 
   $libraries['ombumedia'] = array(
     'title' => 'OMBU Media',
+    'version' => '0.1',
     'js' => array(
       $path . '/js/ombumedia-util.js' => array(),
       $path . '/js/ombumedia.js' => array(),
@@ -240,7 +241,6 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
   }
 }
 
-
 /**
  * Forms.
  */
@@ -303,6 +303,29 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
     'class' => array('ombumedia-file-entity-configure'),
   );
 
+  $view_mode_options = ombumedia_file_type_view_modes($file->type);
+  if (isset($_GET['view_modes'])) {
+    $view_mode_options = array_intersect_key($view_mode_options, array_flip($_GET['view_modes']));
+  }
+  $view_mode = isset($_GET['view_mode']) ? $_GET['view_mode'] : array_keys($view_mode_options)[0];
+
+  $preview_id = 'ombumedia-configure-preview-' . $file->fid;
+  $form['#preview_id'] = $preview_id;
+  $form['preview'] = file_view_file($file, $view_mode);
+  $form['preview']['#prefix'] = '<div id="' . $preview_id . '">';
+  $form['preview']['#suffix'] = '</div>';
+
+  $form['view_mode'] = array(
+    '#type' => 'select',
+    '#title' => t('View Mode'),
+    '#options' => $view_mode_options,
+    '#default_value' => $view_mode,
+    '#ajax' => array(
+      'callback' => 'ombumedia_file_entity_configure_preview_callback',
+      'wrapper' => $preview_id,
+    ),
+  );
+
   $form['fid'] = array(
     '#type' => 'hidden',
     '#value' => $file->fid,
@@ -321,6 +344,8 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
       '#weight' => -100,
     ),
   );
+
+  $form['#file'] = $file;
   field_attach_form('file', $file, $form['file'], $form_state);
 
   unset($form['file']['redirect']);
@@ -341,14 +366,35 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
   return $form;
 }
 
+function ombumedia_file_entity_configure_preview_callback($form, &$form_state) {
+  $preview_id = $form['#preview_id'];
+  $file = file_load($form_state['values']['fid']);
+  $view_mode = $form_state['values']['view_mode'];
+
+  $rendered = '<div id="' . $preview_id . '">' . render(file_view_file($file, $view_mode)) . '</div>';
+
+  $commands = array();
+  $commands[] = ajax_command_replace('#' . $preview_id, $rendered);
+  return array(
+    '#type' => 'ajax',
+    '#commands' => $commands,
+  );
+}
+
 function ombumedia_file_entity_configure_validate($form, &$form_state) {
-  $file = $form['file']['#entity'];
-  field_attach_form_validate('file', $file, $form['file'], $form_state);
+  if (isset($form['file']['#entity'])) {
+    // Fields were attached.
+    $file = $form['file']['#entity'];
+    field_attach_form_validate('file', $file, $form['file'], $form_state);
+  }
 }
 
 function ombumedia_file_entity_configure_submit($form, &$form_state) {
-  $file = $form['file']['#entity'];
-  field_attach_submit('file', $file, $form['file'], $form_state);
+  $file = $form['#file'];
+  if (isset($form['file']['#entity'])) {
+    // Fields were attached.
+    field_attach_submit('file', $file, $form['file'], $form_state);
+  }
   $file->filename = $form_state['values']['filename'];
   file_save($file);
 
@@ -363,4 +409,30 @@ function ombumedia_file_entity_configure_submit($form, &$form_state) {
 </script>
 JS;
   drupal_exit();
+}
+
+
+/**
+ * Utilities.
+ */
+
+/**
+ * Returns an associative array with the view modes that are enabled for a file
+ * type.
+ */
+function ombumedia_file_type_view_modes($type) {
+  $entity_info = entity_get_info('file');
+  $view_modes = $entity_info['view modes'];
+  $type_view_mode_settings = field_view_mode_settings('file', $type);
+
+  $return = array();
+  foreach ($view_modes as $view_mode_slug => $view_mode) {
+    if (isset($type_view_mode_settings[$view_mode_slug])) {
+      if ($type_view_mode_settings[$view_mode_slug]['custom_settings'] == TRUE) {
+        $return[$view_mode_slug] = $view_mode['label'];
+      }
+    }
+  }
+
+  return $return;
 }

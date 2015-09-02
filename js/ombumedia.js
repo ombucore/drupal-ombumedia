@@ -8,7 +8,7 @@ Drupal.ombumedia = Drupal.ombumedia || {};
  *
  * @param {object} options
  *  - type: {string} 'image', 'video' 'document', 'audio'
- *  - viewModes: {object} keyed by file type, each with an array of view mode
+ *  - view_modes: {object} keyed by file type, each with an array of view mode
  *                        strings
  */
 Drupal.ombumedia.selectMedia = function(options) {
@@ -19,8 +19,9 @@ Drupal.ombumedia.selectMedia = function(options) {
  * Skips the selection phase of the selection, goes straight to the
  * preview/edit form.
  */
-Drupal.ombumedia.configureMedia = function(fid, options) {
+Drupal.ombumedia.configureMedia = function(fid, view_mode, options) {
   options.fid = fid;
+  options.view_mode = view_mode;
   return Drupal.ombumedia.launchPopup(options);
 };
 
@@ -38,9 +39,13 @@ Drupal.ombumedia.launchPopup = function(options) {
   if (options.type) {
     query.type = options.type;
   }
-  if (options.viewModes) {
+  if (options.view_mode) {
+    query.view_mode = options.view_mode;
+  }
+  if (options.view_modes) {
     query.view_modes = options.view_modes;
   }
+
   if (options.fid) {
     path = '/file/' + options.fid + '/configure';
   }
@@ -56,8 +61,9 @@ Drupal.ombumedia.launchPopup = function(options) {
 
   $iframe.on('load', function() {
     // Inject a callback function that can be called from the iframe js.
-    $iframe[0].contentWindow.ombumediaSelectCallback = function(fid, viewMode) {
-      deferred.resolve({fid: fid, viewMode: viewMode});
+    $iframe[0].contentWindow.ombumediaSelectCallback = function(data) {
+      console.log(data);
+      deferred.resolve(data);
     };
   });
 

@@ -26,7 +26,8 @@ function ombumedia_page_select_media() {
 
   $library = $view->preview();
 
-  $upload = drupal_render(drupal_get_form('ombumedia_file_entity_add'));
+  $form = drupal_get_form('ombumedia_file_entity_add');
+  $upload = drupal_render($form);
 
   $web = "WEB";
 
@@ -127,9 +128,9 @@ function ombumedia_page_test() {
   return <<<HEREDOC
 <ul>
   <li><a href="#" class="select-media-all">Select Media</a></li>
-  <li><a href="#" class="select-media-image">Select Image</a></li>
+  <li><a href="#" class="select-media-image">Select Image (view_modes: ['preview'])</a></li>
   <li><a href="#" class="select-media-document">Select Document</a></li>
-  <li><a href="#" class="select-media-video">Select Video</a></li>
+  <li><a href="#" class="select-media-video">Configure Video (fid: 35, view_mode: 'preview')</a></li>
 </ul>
 <dl>
   <dt>FID</dt>
