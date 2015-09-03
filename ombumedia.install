@@ -1,0 +1,9 @@
+<?php
+
+/**
+ * Implements hook_install().
+ */
+function ombumedia_install() {
+  variable_set('tagsadmin_enabled_media_folders', 0);
+  variable_set('tagsadmin_enabled_media_tags', 1);
+}

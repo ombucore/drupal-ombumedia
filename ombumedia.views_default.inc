@@ -113,6 +113,43 @@ function ombumedia_views_default_views() {
     3 => 0,
     4 => 0,
   );
+  /* Filter criterion: File: Folder (field_media_folder) */
+  $handler->display->display_options['filters']['field_media_folder_tid']['id'] = 'field_media_folder_tid';
+  $handler->display->display_options['filters']['field_media_folder_tid']['table'] = 'field_data_field_media_folder';
+  $handler->display->display_options['filters']['field_media_folder_tid']['field'] = 'field_media_folder_tid';
+  $handler->display->display_options['filters']['field_media_folder_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_media_folder_tid']['expose']['operator_id'] = 'field_media_folder_tid_op';
+  $handler->display->display_options['filters']['field_media_folder_tid']['expose']['label'] = 'Folder';
+  $handler->display->display_options['filters']['field_media_folder_tid']['expose']['operator'] = 'field_media_folder_tid_op';
+  $handler->display->display_options['filters']['field_media_folder_tid']['expose']['identifier'] = 'field_media_folder_tid';
+  $handler->display->display_options['filters']['field_media_folder_tid']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    4 => 0,
+  );
+  $handler->display->display_options['filters']['field_media_folder_tid']['type'] = 'select';
+  $handler->display->display_options['filters']['field_media_folder_tid']['vocabulary'] = 'media_folders';
+  $handler->display->display_options['filters']['field_media_folder_tid']['hierarchy'] = 1;
+  /* Filter criterion: File: Tags (field_media_tags) */
+  $handler->display->display_options['filters']['field_media_tags_tid']['id'] = 'field_media_tags_tid';
+  $handler->display->display_options['filters']['field_media_tags_tid']['table'] = 'field_data_field_media_tags';
+  $handler->display->display_options['filters']['field_media_tags_tid']['field'] = 'field_media_tags_tid';
+  $handler->display->display_options['filters']['field_media_tags_tid']['value'] = '';
+  $handler->display->display_options['filters']['field_media_tags_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_media_tags_tid']['expose']['operator_id'] = 'field_media_tags_tid_op';
+  $handler->display->display_options['filters']['field_media_tags_tid']['expose']['label'] = 'Tags';
+  $handler->display->display_options['filters']['field_media_tags_tid']['expose']['operator'] = 'field_media_tags_tid_op';
+  $handler->display->display_options['filters']['field_media_tags_tid']['expose']['identifier'] = 'field_media_tags_tid';
+  $handler->display->display_options['filters']['field_media_tags_tid']['expose']['multiple'] = TRUE;
+  $handler->display->display_options['filters']['field_media_tags_tid']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    4 => 0,
+  );
+  $handler->display->display_options['filters']['field_media_tags_tid']['reduce_duplicates'] = TRUE;
+  $handler->display->display_options['filters']['field_media_tags_tid']['vocabulary'] = 'media_tags';
 
   /* Display: Manage Media */
   $handler = $view->new_display('embed', 'Manage Media', 'manage_media');
