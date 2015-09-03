@@ -71,7 +71,7 @@
 }
 .view-ombumedia .view-content {
   overflow: hidden;
-  margin: 0 -10px;
+  margin: 20px -10px 0;
 }
 .view-ombumedia .view-content .views-row {
   float: left;

@@ -100,7 +100,7 @@ if (typeof Object.create != 'function') {
    */
   function destPath() {
     // Remove preceding slash '/'.
-    return window.location.pathname.slice(1);
+    return window.location.pathname.slice(1) + window.location.search;
   }
 
   /**

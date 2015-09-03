@@ -6,6 +6,11 @@
  */
 
 
+var preventDefault = Drupal.ombumedia.util.preventDefaultWrapper;
+var fileUrl = Drupal.ombumedia.util.fileUrl;
+var deparam = Drupal.ombumedia.util.deparam;
+var destPath = Drupal.ombumedia.util.destPath;
+
 
 /**
  * Initializes the Library/Upload/Web tabs.
@@ -19,14 +24,9 @@ Drupal.behaviors.ombumediaPopupTabs = {
 
 
 /**
- * Drag n Drop uploading in popup.
+ * Drag uploading in popup.
  */
-
-var preventDefault = Drupal.ombumedia.util.preventDefaultWrapper;
-var stopPropagation = Drupal.ombumedia.util.stopPropagationWrapper;
-var fileUrl = Drupal.ombumedia.util.fileUrl;
-
-Drupal.behaviors.ombumediaDragUpload = {
+Drupal.behaviors.ombumediaDragUploadPopup = {
   attach: function(context) {
     var $body = $('body.page-admin-dashboard-select-media').once('drag-upload');
 
@@ -34,72 +34,32 @@ Drupal.behaviors.ombumediaDragUpload = {
       return;
     }
 
-    var $dragOverlay = $('<div class="ombumedia-upload-drag"><span>Drop file to upload</span></div>').appendTo($body);
-    var $uploadOverlay = $(['',
-                            '<div class="ombumedia-upload-progress">',
-                              '<div class="progress-bar">',
-                                '<span class="bar"></span>',
-                                '<span class="progress-text">Uploading <span class="progress-text-filename"></span></span>',
-                              '</div>',
-                            '</div>',
-                          ''].join('')).appendTo($body);
-    var $progressFilename = $uploadOverlay.find('.progress-text-filename');
-    var $progressBarBar = $uploadOverlay.find('.progress-bar .bar');
+    Drupal.ombumedia.addDragUpload($body, function(file) {
+        window.location = fileUrl(file.fid, 'configure');
+    });
+  }
+};
 
-    $body.on('dragover', preventDefault(stopPropagation(dragOver)));
-    $dragOverlay.on('dragleave', preventDefault(stopPropagation(dragLeave)));
-    $dragOverlay.on('drop', preventDefault(stopPropagation(uploadDroppedFile)));
 
-    function dragOver () {
-      $body.addClass('drag-over');
+/**
+ * OMBU Media select grid items.
+ */
+Drupal.behaviors.ombumediaSelectGrid  = {
+  attach: function(context) {
+    var $files = $('.ombumedia-library-file-select_media').once('ombumedia-select-grid');
+
+    if (!$files.length) {
+      return;
     }
 
-    function dragLeave(e) {
-      $body.removeClass('drag-over');
-    }
-
-    function uploadDroppedFile(e) {
-      dragLeave(e);
-      $body.addClass('uploading');
-
-      var files = e.originalEvent.target.files || e.originalEvent.dataTransfer.files;
-      if (!files.length) {
-        return;
-      }
-      var file = files[0];
-      var formData = new FormData();
-      formData.append('files[]', file);
-
-      $progressFilename.text(file.name);
-
-      $.ajax({
-        url: Drupal.settings.ombumedia.upload.url,
-        type: 'POST',
-        xhr: function() {
-          var myXhr = $.ajaxSettings.xhr();
-          if (myXhr.upload) {
-            myXhr.upload.addEventListener('progress', function(e) {
-              if (e.lengthComputable) {
-                var loaded = e.loaded;
-                var total = e.total;
-                var width = ((loaded / total) * 100) + '%';
-                $progressBarBar.css('width', width);
-              }
-            }, false);
-          }
-          return myXhr;
-        },
-        data: formData,
-        cache: false,
-        contentType: false,
-        processData: false
-      })
-      .done(function(data, textStatus, jQueryXHR) {
-        if (data.file && data.file.fid) {
-          window.location = fileUrl(data.file.fid, 'configure');
-        }
+    var params = deparam(window.location.search.replace('?', ''));
+    params.destination = destPath();
+    var queryString = '?' + $.param(params);
+    $files.each(function(i, fileEl) {
+      $(fileEl).find('a').each(function(i, aEl) {
+        $(aEl).attr('href', $(aEl).attr('href') + queryString);
       });
-    }
+    });
 
   }
 };
