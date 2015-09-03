@@ -16,15 +16,31 @@ include_once 'ombumedia.features.inc';
  */
 function ombumedia_menu() {
   $items['admin/dashboard/manage-media'] = array(
-    'title' => 'Manage Media',
-    'type' => MENU_CALLBACK,
+    'title' => 'Media',
+    'type' => MENU_NORMAL_ITEM,
     'page callback' => 'ombumedia_page_magage_media',
     'access arguments' => array('administer files'),
     'file' => 'ombumedia.pages.inc',
   );
 
+  $items['admin/dashboard/manage-media/view'] = array(
+    'title' => 'Manage',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+
+  $items['admin/dashboard/manage-media/add'] = array(
+    'title' => 'Add',
+    'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_PAGE,
+    'page callback' => 'ombumedia_page_magage_media_add',
+    'access arguments' => array('administer files'),
+    'file' => 'ombumedia.pages.inc',
+    'weight' => -5,
+  );
+
   $items['admin/dashboard/select-media'] = array(
-    'title' => 'Manage Media',
+    'title' => 'Select Media',
     'type' => MENU_CALLBACK,
     'page callback' => 'ombumedia_page_select_media',
     'access arguments' => array('administer files'),
@@ -269,7 +285,7 @@ function ombumedia_preprocess_ombumedia_select(&$variables) {
 
   $variables['library'] = $view->preview();
 
-  $form = drupal_get_form('ombumedia_file_entity_add');
+  $form = drupal_get_form('ombumedia_file_entity_add', array(), 'configure');
   $variables['add'] = drupal_render($form);
 
   drupal_add_library('ombumedia', 'ombumedia');
@@ -283,8 +299,10 @@ function ombumedia_preprocess_ombumedia_select(&$variables) {
 /**
  * Form to upload a new file from the media select workflow.
  */
-function ombumedia_file_entity_add($form, &$form_state, array $options = array()) {
+function ombumedia_file_entity_add($form, &$form_state, array $options = array(), $redirect = array('action' => 'edit', 'query' => array())) {
   module_load_include('inc', 'file_entity', 'file_entity.pages');
+
+  $form['#redirect'] = $redirect;
 
   $form['upload'] = array(
     '#type' => 'managed_file',
@@ -331,7 +349,9 @@ function ombumedia_file_entity_add_submit($form, &$form_state) {
 
   drupal_set_message(t('@type %name was uploaded.', array('@type' => file_entity_type_get_name($file), '%name' => $file->filename)));
 
-  $form_state['redirect'] = 'file/' . $file->fid . '/configure';
+  $redirect_path = 'file/' . $file->fid . '/' . $form['#redirect']['action'];
+  $redirect_query = $form['#redirect']['query'];
+  $form_state['redirect'] = array($redirect_path, array('query' => $redirect_query));
 }
 
 function ombumedia_file_entity_configure($form, &$form_state, $fid) {

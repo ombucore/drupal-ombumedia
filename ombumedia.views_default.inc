@@ -70,7 +70,8 @@ function ombumedia_views_default_views() {
   $handler->display->display_options['fields']['timestamp']['table'] = 'file_managed';
   $handler->display->display_options['fields']['timestamp']['field'] = 'timestamp';
   $handler->display->display_options['fields']['timestamp']['label'] = 'Uploaded';
-  $handler->display->display_options['fields']['timestamp']['date_format'] = 'long';
+  $handler->display->display_options['fields']['timestamp']['date_format'] = 'custom';
+  $handler->display->display_options['fields']['timestamp']['custom_date_format'] = 'n/d/Y';
   $handler->display->display_options['fields']['timestamp']['second_date_format'] = 'long';
   /* Field: File: Size */
   $handler->display->display_options['fields']['filesize']['id'] = 'filesize';

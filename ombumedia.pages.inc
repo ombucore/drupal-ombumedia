@@ -20,6 +20,23 @@ function ombumedia_page_magage_media() {
 }
 
 /**
+ * Page callback for Manage Media Add page.
+ */
+function ombumedia_page_magage_media_add() {
+  drupal_add_library('ombumedia', 'ombumedia');
+  drupal_set_title(t('Media'));
+
+  $redirect = array(
+    'action' => 'edit',
+    'query' => array(
+      'destination' => 'admin/dashboard/manage-media',
+    ),
+  );
+  $form = drupal_get_form('ombumedia_file_entity_add', array(), $redirect);
+  return $form;
+}
+
+/**
  * Page callback for Select Media page.
  */
 function ombumedia_page_select_media() {
