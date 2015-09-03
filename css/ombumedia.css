@@ -106,6 +106,7 @@
 .view-ombumedia .ombumedia-library-file img {
   display: block;
   max-width: 100%;
+  height: auto;
 }
 .ombumedia-popup .ombumedia-tabset {
   padding: 0;

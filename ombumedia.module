@@ -4,7 +4,9 @@
  * Code for the OMBU Media feature.
  */
 
+
 include_once 'ombumedia.features.inc';
+include_once 'ombumedia.web.inc';
 
 
 /**
@@ -153,6 +155,17 @@ function ombumedia_library() {
 }
 
 /**
+ * Implements hook_hook_info().
+ */
+function ombumedia_hook_info() {
+  $hooks = array(
+    'media_internet_providers',
+  );
+
+  return array_fill_keys($hooks, array('group' => 'media'));
+}
+
+/**
  * Implements hook_page_alter().
  *
  * This is used to use our alternate template when ?render=media-popup is passed
@@ -234,43 +247,33 @@ function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
 function ombumedia_preprocess_views_view_unformatted(&$variables) {
   if ($variables['view']->name === 'ombumedia') {
     $display = $variables['view']->current_display;
-    if ($display === 'select_media') {
-      $results = $variables['view']->result;
-      foreach ($variables['rows'] as $i => $row) {
-        // These use JS to add the correct query string so that the destination,
-        // type filters and view modes are correct after AJAX filtering.
-        $fid = $results[$i]->fid;
+    $results = $variables['view']->result;
+    foreach ($variables['rows'] as $i => $row) {
+      // These use JS to add the correct query string so that the destination,
+      // type filters and view modes are correct after AJAX filtering.
+      $fid = $results[$i]->fid;
+      $actions = array();
+      if ($display === 'select_media') {
         $row = '<a href="' . url('file/' . $fid . '/preview') . '">' . $row . '</a>';
-        $row .= implode(' ', array(
-          '<span class="actions">',
-            l(t('Select'), 'file/' . $fid . '/configure'),
-          '</span>',
-        ));
-        $variables['rows'][$i] = $row;
-        $variables['classes_array'][$i] .= ' ombumedia-library-file';
-        $variables['classes_array'][$i] .= ' ombumedia-library-file-' . $display;
+        $actions[] = l(t('Select'), 'file/' . $fid . '/configure');
       }
-    }
-    if ($display === 'manage_media') {
-      $results = $variables['view']->result;
-      foreach ($variables['rows'] as $i => $row) {
-        $fid = $results[$i]->fid;
+      if ($display === 'manage_media') {
         $file = file_load($fid);
         $query = drupal_get_destination();
         $row = '<a href="' . url('file/' . $fid . '/view') . '">' . $row . '</a>';
-        $actions = array();
         if (file_entity_access('update', $file)) {
           $actions[] = l(t('Edit'), 'file/' . $fid . '/edit', array('query' => $query));
         }
         if (file_entity_access('delete', $file)) {
           $actions[] = l(t('Delete'), 'file/' . $fid . '/delete', array('query' => $query));
         }
-        $actions = '<span class="actions">' . implode(' ', $actions) . '</span>';
-        $variables['rows'][$i] = $row . $actions;
-        $variables['classes_array'][$i] .= ' ombumedia-library-file';
-        $variables['classes_array'][$i] .= ' ombumedia-library-file-' . $display;
       }
+      $actions = '<span class="actions">' . implode(' ', $actions) . '</span>';
+      $variables['rows'][$i] = $row . $actions;
+      $variables['classes_array'][$i] .= ' ombumedia-library-file';
+      $variables['classes_array'][$i] .= ' ombumedia-library-file-' . $display;
     }
+
   }
 }
 
@@ -471,7 +474,7 @@ JS;
 
 
 /**
- * Utilities.
+ * Helpers.
  */
 
 /**

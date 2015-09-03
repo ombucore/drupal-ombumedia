@@ -32,8 +32,19 @@ function ombumedia_page_magage_media_add() {
       'destination' => 'admin/dashboard/manage-media',
     ),
   );
-  $form = drupal_get_form('ombumedia_file_entity_add', array(), $redirect);
-  return $form;
+
+  $build = array(
+    '#prefix' => '<div class="ombumedia-add">',
+    '#suffix' => '</div>',
+    'upload' => array(
+      'form' => drupal_get_form('ombumedia_file_entity_add', array(), $redirect),
+    ),
+    'add' => array(
+      'form' => drupal_get_form('ombumedia_internet_add', array(), $redirect),
+    ),
+  );
+
+  return $build;
 }
 
 /**
