@@ -1,6 +1,10 @@
 <?php
 
 /**
+ * Page Callbacks.
+ */
+
+/**
  * Page callback for Manage Media page.
  */
 function ombumedia_page_magage_media() {
@@ -23,9 +27,9 @@ function ombumedia_page_select_media() {
 }
 
 /**
- * Page callback for Manage Media Ajax Upload page.
+ * Page callback for Media Ajax Upload page.
  */
-function ombumedia_page_magage_media_ajax_upload() {
+function ombumedia_page_media_ajax_upload() {
   module_load_include('inc', 'file_entity', 'file_entity.pages');
   $errors = array();
   if ($file = file_save_upload(0)) {

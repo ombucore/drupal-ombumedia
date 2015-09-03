@@ -39,9 +39,9 @@ function ombumedia_menu() {
     'file' => 'ombumedia.pages.inc',
   );
 
-  $items['admin/dashboard/manage-media/ajax-upload'] = array(
+  $items['admin/ombumedia/ajax-upload'] = array(
     'type' => MENU_CALLBACK,
-    'page callback' => 'ombumedia_page_magage_media_ajax_upload',
+    'page callback' => 'ombumedia_page_media_ajax_upload',
     'access arguments' => array('administer files'),
     'file' => 'ombumedia.pages.inc',
   );
@@ -118,7 +118,7 @@ function ombumedia_library() {
         'data' => array(
           'ombumedia' => array(
             'upload' => array(
-              'url' => url('admin/dashboard/manage-media/ajax-upload'),
+              'url' => url('admin/ombumedia/ajax-upload'),
             ),
           ),
         ),
