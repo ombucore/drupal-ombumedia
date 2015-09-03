@@ -63,8 +63,49 @@
 .uploading .ombumedia-upload-progress {
   display: block;
 }
-.view-display-id-manage_media .ombumedia-library-file a[href="#select"] {
-  display: none;
+.view-ombumedia,
+.view-ombumedia * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.view-ombumedia .view-content {
+  overflow: hidden;
+  margin: 0 -10px;
+}
+.view-ombumedia .view-content .views-row {
+  float: left;
+  padding: 10px;
+  width: 25%;
+}
+.view-ombumedia .view-content .views-row:nth-child(4n+1) {
+  clear: left;
+}
+@media (min-width: 600px) {
+  .view-ombumedia .view-content .views-row {
+    width: 20%;
+  }
+  .view-ombumedia .view-content .views-row:nth-child(4n+1) {
+    clear: none;
+  }
+  .view-ombumedia .view-content .views-row:nth-child(5n+1) {
+    clear: left;
+  }
+}
+@media (min-width: 1000px) {
+  .view-ombumedia .view-content .views-row {
+    width: 16.66666667%;
+  }
+  .view-ombumedia .view-content .views-row:nth-child(5n+1) {
+    clear: none;
+  }
+  .view-ombumedia .view-content .views-row:nth-child(6n+1) {
+    clear: left;
+  }
+}
+.view-ombumedia .ombumedia-library-file img {
+  display: block;
+  max-width: 100%;
 }
 .ombumedia-popup .ombumedia-tabset {
   padding: 0;

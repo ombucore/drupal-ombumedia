@@ -82,11 +82,7 @@ function ombumedia_admin_paths() {
 function ombumedia_theme($existing, $type, $theme, $path) {
   return array(
     'ombumedia_select' => array(
-      'variables' => array(
-        'library' => FALSE,
-        'upload' => FALSE,
-        'web' => FALSE,
-      ),
+      'variables' => array(),
       'template' => 'ombumedia_select',
     ),
     'ombumedia_file_preview' => array(
@@ -238,13 +234,41 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
         $variables['classes_array'][$i] .= ' ombumedia-library-file';
       }
     }
+    if ($variables['view']->current_display === 'manage_media') {
+      $results = $variables['view']->result;
+      foreach ($variables['rows'] as $i => $row) {
+        $variables['rows'][$i] = $row;
+        $variables['classes_array'][$i] .= ' ombumedia-library-file';
+      }
+    }
   }
 }
+
+/**
+ * Implements hook_preprocess_ombumedia_select().
+ */
+function ombumedia_preprocess_ombumedia_select(&$variables) {
+  $view = views_get_view('ombumedia');
+  $view->set_display('select_media');
+  $view->pre_execute();
+  $view->execute();
+
+  $variables['library'] = $view->preview();
+
+  $form = drupal_get_form('ombumedia_file_entity_add');
+  $variables['add'] = drupal_render($form);
+
+  drupal_add_library('ombumedia', 'ombumedia');
+}
+
 
 /**
  * Forms.
  */
 
+/**
+ * Form to upload a new file from the media select workflow.
+ */
 function ombumedia_file_entity_add($form, &$form_state, array $options = array()) {
   module_load_include('inc', 'file_entity', 'file_entity.pages');
 

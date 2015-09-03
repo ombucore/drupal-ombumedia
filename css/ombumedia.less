@@ -1,5 +1,11 @@
 @color-blue: #428bca;
 
+.box-sizing(@boxmodel) {
+  -webkit-box-sizing: @boxmodel;
+     -moz-box-sizing: @boxmodel;
+          box-sizing: @boxmodel;
+}
+
 // Upload target overlay.
 .ombumedia-upload-drag {
   position: fixed;
@@ -75,12 +81,37 @@
 }
 
 
-.ombumedia-library-file {
-
-  .view-display-id-manage_media & {
-    a[href="#select"] { display: none; }
+.view-ombumedia {
+  &, * {
+    .box-sizing(border-box);
   }
-  .view-display-id-select_media & {}
+  @padding: 20px;
+  .view-content {
+    overflow: hidden;
+    margin: 0 -@padding/2;
+    .views-row {
+      float: left;
+      padding: @padding/2;
+      width: percentage(1/4);
+      &:nth-child(4n+1) { clear: left; }
+      @media (min-width: 600px) {
+        width: percentage(1/5);
+        &:nth-child(4n+1) { clear: none; }
+        &:nth-child(5n+1) { clear: left; }
+      }
+      @media (min-width: 1000px) {
+        width: percentage(1/6);
+        &:nth-child(5n+1) { clear: none; }
+        &:nth-child(6n+1) { clear: left; }
+      }
+    }
+  }
+  .ombumedia-library-file {
+    img {
+      display: block;
+      max-width: 100%;
+    }
+  }
 }
 
 

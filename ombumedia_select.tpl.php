@@ -7,11 +7,8 @@
       <?php if ($library): ?>
         <li><a href="#library"><?php print t('Library'); ?></a></li>
       <?php endif; ?>
-      <?php if ($upload): ?>
-        <li><a href="#upload"><?php print t('Upload'); ?></a></li>
-      <?php endif; ?>
-      <?php if ($web): ?>
-        <li><a href="#web"><?php print t('Web'); ?></a></li>
+      <?php if ($add): ?>
+        <li><a href="#add"><?php print t('Add'); ?></a></li>
       <?php endif; ?>
     </ul>
   </div>
@@ -20,12 +17,8 @@
     <div id="library" class="ui-tabs-panel"><?php print $library; ?></div>
   <?php endif; ?>
 
-  <?php if ($upload): ?>
-    <div id="upload" class="ui-tabs-panel"><?php print $upload; ?></div>
-  <?php endif; ?>
-
-  <?php if ($web): ?>
-    <div id="web" class="ui-tabs-panel"><?php print $web; ?></div>
+  <?php if ($add): ?>
+    <div id="add" class="ui-tabs-panel"><?php print $add; ?></div>
   <?php endif; ?>
 
 </div>

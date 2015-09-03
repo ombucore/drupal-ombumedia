@@ -19,25 +19,7 @@ function ombumedia_page_magage_media() {
  * Page callback for Select Media page.
  */
 function ombumedia_page_select_media() {
-  $view = views_get_view('ombumedia');
-  $view->set_display('select_media');
-  $view->pre_execute();
-  $view->execute();
-
-  $library = $view->preview();
-
-  $form = drupal_get_form('ombumedia_file_entity_add');
-  $upload = drupal_render($form);
-
-  $web = "WEB";
-
-  drupal_add_library('ombumedia', 'ombumedia');
-
-  return theme('ombumedia_select', array(
-    'library' => $library,
-    'upload' => $upload,
-    'web' => $web,
-  ));
+  return theme('ombumedia_select');
 }
 
 /**
