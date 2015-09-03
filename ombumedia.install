@@ -10,4 +10,27 @@ function ombumedia_install() {
   $file_extensions = variable_get('file_entity_default_allowed_extensions', 'jpg jpeg gif png txt doc docx xls xlsx pdf ppt pptx pps ppsx odt ods odp') . ' mp3 mov mp4 m4a m4v mpeg avi ogg oga ogv wmv ico';
   variable_set('ombumedia__file_extensions', $file_extensions);
   variable_set('ombumedia__fromurl_supported_schemes', array('http', 'https'));
+
+  // Set default view modes for images.
+  module_load_include('inc', 'file_entity', 'file_entity.file_api');
+  $default_image_styles = array(
+    'preview' => 'ombumedia_thumbnail',
+    'teaser' => 'medium',
+    'full' => 'large',
+  );
+  foreach ($default_image_styles as $view_mode => $image_style) {
+    $existing_display = file_displays_load('image', $view_mode);
+    if (empty($existing_display)) {
+      $display_name = 'image__' . $view_mode . '__file_image';
+      $display = array(
+        'api_version' => 1,
+        'name' => $display_name,
+        'status' => 1,
+        'weight' => 5,
+        'settings' => array('image_style' => $image_style),
+        'export_type' => NULL,
+      );
+      file_display_save((object) $display);
+    }
+  }
 }

@@ -113,6 +113,9 @@ function ombumedia_theme($existing, $type, $theme, $path) {
       'render element' => 'page',
       'template' => 'ombumedia-dialog-page',
     ),
+    'ombumedia_formatter_large_icon' => array(
+      'variables' => array('file' => NULL, 'attributes' => array()),
+    ),
   );
 }
 
@@ -163,6 +166,88 @@ function ombumedia_hook_info() {
   );
 
   return array_fill_keys($hooks, array('group' => 'media'));
+}
+
+/**
+ * Implements hook_image_default_styles().
+ */
+function ombumedia_image_default_styles() {
+  $styles = array();
+  $styles['ombumedia_thumbnail'] = array(
+    'effects' => array(
+      array(
+        'name' => 'image_scale_and_crop',
+        'data' => array('width' => 100, 'height' => 100),
+        'weight' => 0,
+      ),
+    ),
+  );
+  return $styles;
+}
+
+/**
+ * Implements hook_file_displays_alter().
+ */
+function ombumedia_file_displays_alter(&$displays, $file, $view_mode) {
+  if ($view_mode == 'preview' && empty($displays)) {
+    // We re in the media browser and this file has no formatters enabled.
+    // Instead of letting it go through theme_file_link(), pass it through
+    // theme_media_formatter_large_icon() to get our cool file icon instead.
+    $displays['file_field_ombumedia_large_icon'] = array(
+      'weight' => 0,
+      'status' => 1,
+      'settings' => NULL,
+    );
+  }
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ *
+ * Provides legacy support for the "Large filetype icon" file field formatter.
+ * This was originally used when media entities contained file fields. The
+ * current file entity architecture no longer needs this, but people may
+ * have used this formatter for other file fields on their website.
+ *
+ * @todo Some day, remove this.
+ */
+function ombumedia_field_formatter_info() {
+  $formatters = array(
+    'ombumedia_large_icon' => array(
+      'label' => t('Large filetype icon'),
+      'field types' => array('file'),
+    ),
+  );
+  return $formatters;
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ *
+ * Legacy support for the "Large filetype icon" file field formatter.
+ * @see media_field_formatter_info()
+ */
+function ombumedia_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  if ($display['type'] == 'ombumedia_large_icon') {
+    // Add height/width variable according to ombumedia_thumbnail image style
+    // so that the output in media browser is consistent.
+    // @todo is this the correct place to put this?
+    $style = image_style_load('ombumedia_thumbnail');
+    foreach ($items as $delta => $item) {
+      $element[$delta] = array(
+        '#theme' => 'ombumedia_formatter_large_icon',
+        '#file' => (object) $item,
+        '#attributes' => array(
+          'width' => $style['effects'][0]['data']['width'],
+          'height' => $style['effects'][0]['data']['height'],
+        ),
+      );
+    }
+  }
+
+  return $element;
 }
 
 /**
@@ -470,6 +555,27 @@ function ombumedia_file_entity_configure_submit($form, &$form_state) {
 </script>
 JS;
   drupal_exit();
+}
+
+
+/**
+ * Theme.
+ */
+
+/**
+ * Field formatter for displaying a file as a large icon.
+ */
+function theme_ombumedia_formatter_large_icon($variables) {
+  $file = $variables['file'];
+  $icon_dir = drupal_get_path('module', 'ombumedia') . '/icons';
+  $icon = file_icon_path($file, $icon_dir);
+  $variables['path'] = $icon;
+  // theme_image() requires the 'alt' attribute passed as its own variable.
+  // @see http://drupal.org/node/999338
+  if (!isset($variables['alt']) && isset($variables['attributes']['alt'])) {
+    $variables['alt'] = $variables['attributes']['alt'];
+  }
+  return theme('image', $variables);
 }
 
 
