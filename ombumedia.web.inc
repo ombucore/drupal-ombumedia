@@ -101,8 +101,8 @@ function ombumedia_internet_add($form, &$form_state = array(), $types = NULL, $r
 
   $form['embed_code'] = array(
     '#type' => 'textfield',
-    '#title' => t('Enter a URL to an image'),
-    '#description' => t('Enter a URL to an image on the web.'),
+    '#title' => t('Upload a video from YouTube or Vimeo'),
+    '#description' => t('Enter a URL to a video on YouTube or Vimeo.'),
     '#attributes' => array('class' => array('media-add-from-url')),
     // There is no standard specifying a maximum length for a URL. Internet
     // Explorer supports up to 2083 (http://support.microsoft.com/kb/208427)
@@ -124,25 +124,6 @@ function ombumedia_internet_add($form, &$form_state = array(), $types = NULL, $r
     }
   }
 
-  // Notify the user of any available providers.
-  if ($providers) {
-    // If any providers are enabled it is assumed that some kind of embed is supported.
-    $form['embed_code']['#title'] = t('Enter an image URL or an embed code');
-    $form['embed_code']['#description'] = t('Enter a URL or the embed code from a media provider.');
-
-    // Providers are displayed in an unordered list below the embed input.
-    // Providers can easily style their own listing by targeting the unique
-    // class assigned to each list item.
-    $form['providers'] = array(
-      '#theme' => 'item_list',
-      '#title' => t('Supported providers'),
-      '#items' => $providers,
-      '#attributes' => array(
-        'class' => array('media-internet-providers'),
-      ),
-    );
-  }
-
   $form['#validators'] = array();
   if ($types) {
     $form['#validators']['media_file_validate_types'] = array($types);
@@ -153,7 +134,7 @@ function ombumedia_internet_add($form, &$form_state = array(), $types = NULL, $r
   );
   $form['actions']['submit'] = array(
     '#type' => 'submit',
-    '#value' => t('Submit'),
+    '#value' => t('Continue'),
   );
 
   return $form;

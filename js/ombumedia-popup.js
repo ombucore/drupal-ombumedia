@@ -17,7 +17,20 @@ var destPath = Drupal.ombumedia.util.destPath;
  */
 Drupal.behaviors.ombumediaPopupTabs = {
   attach: function(context) {
-    $('.ombumedia-tabset').tabs();
+    var $ombumediaTabset = $('.ombumedia-tabset', context).once('ombumedia-tabset');
+
+    if (!$ombumediaTabset.length) {
+      return;
+    }
+
+    var active = 0;
+    $ombumediaTabset.find('.ui-tabs-panel').each(function(i, panelEl) {
+      if ($(panelEl).find('.error').length) {
+        active = i;
+      }
+    });
+
+    $ombumediaTabset.tabs({active: active});
   }
 };
 

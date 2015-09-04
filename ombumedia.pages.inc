@@ -36,6 +36,9 @@ function ombumedia_page_magage_media_add() {
   $build = array(
     '#prefix' => '<div class="ombumedia-add">',
     '#suffix' => '</div>',
+    'drag' => array(
+      '#markup' => '<h3>' . t('Drag a file to upload') . '</h3><h4>' . t('or') . '</h4>',
+    ),
     'upload' => array(
       'form' => drupal_get_form('ombumedia_file_entity_add', array(), $redirect),
     ),

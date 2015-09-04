@@ -373,10 +373,38 @@ function ombumedia_preprocess_ombumedia_select(&$variables) {
 
   $variables['library'] = $view->preview();
 
-  $form = drupal_get_form('ombumedia_file_entity_add', array(), 'configure');
-  $variables['add'] = drupal_render($form);
+  $redirect = array(
+    'action' => 'configure',
+    'query' =>  drupal_get_query_parameters(),
+  );
+
+  $add = array(
+    '#prefix' => '<div class="ombumedia-add">',
+    '#suffix' => '</div>',
+    'messages' => array(
+      '#markup' => theme('status_messages'),
+    ),
+    'drag' => array(
+      '#markup' => '<h3>' . t('Drag a file to upload') . '</h3><h4>' . t('or') . '</h4>',
+    ),
+    'upload' => array(
+      'form' => drupal_get_form('ombumedia_file_entity_add', array(), $redirect),
+    ),
+    'add' => array(
+      'form' => drupal_get_form('ombumedia_internet_add', array(), $redirect),
+    ),
+  );
+
+  $variables['add'] = drupal_render($add);
 
   drupal_add_library('ombumedia', 'ombumedia');
+}
+
+/**
+ * Implements hook_preprocess_ombumedia_dialog_page().
+ */
+function ombumedia_preprocess_ombumedia_dialog_page(&$variables) {
+  $variables['messages'] = theme('status_messages');
 }
 
 

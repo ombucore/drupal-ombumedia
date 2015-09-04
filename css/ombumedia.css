@@ -187,3 +187,20 @@
 .page-file-preview .actions input.form-submit {
   margin-top: 1em;
 }
+.ombumedia-add {
+  overflow: hidden;
+}
+.ombumedia-add,
+.ombumedia-add * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.ombumedia-add form {
+  float: left;
+  width: 50%;
+  padding-right: 50px;
+}
+.ombumedia-add form + form {
+  padding: 0;
+}
