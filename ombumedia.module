@@ -6,6 +6,7 @@
 
 
 include_once 'ombumedia.features.inc';
+include_once 'ombumedia.field.inc';
 include_once 'ombumedia.web.inc';
 
 
@@ -286,18 +287,7 @@ function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
 
   $variables['title'] = !empty($file->title) ? $file->title : $file->filename;
 
-  if ($file->type == 'document') {
-    $preview = file_view_file($file, 'preview');
-    $preview['#prefix'] = '<div>';
-    $preview['#suffix'] = '</div>';
-    $variables['preview'] = array(
-      'preview' => $preview,
-      'full' => file_view_file($file, 'full'),
-    );
-  }
-  else {
-    $variables['preview'] = file_view_file($file, 'full');
-  }
+  $variables['preview'] = ombumedia_render_file_preview($file);
 
   $variables['actions'] = array(
     '#prefix' => '<div class="actions">',
@@ -630,4 +620,28 @@ function ombumedia_file_type_view_modes($type) {
   }
 
   return $return;
+}
+
+/**
+ * Returns a render array for rendering a file preview.
+ *
+ * Treats documents and images different, JG to fill in why.
+ */
+function ombumedia_render_file_preview($file) {
+  $output = array();
+
+  if ($file->type == 'document') {
+    $preview = file_view_file($file, 'preview');
+    $preview['#prefix'] = '<div>';
+    $preview['#suffix'] = '</div>';
+    $output = array(
+      'preview' => $preview,
+      'full' => file_view_file($file, 'full'),
+    );
+  }
+  else {
+    $output = file_view_file($file, 'full');
+  }
+
+  return $output;
 }
