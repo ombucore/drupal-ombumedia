@@ -54,7 +54,42 @@ function ombumedia_page_magage_media_add() {
  * Page callback for Select Media page.
  */
 function ombumedia_page_select_media() {
-  return theme('ombumedia_select');
+  $view = views_get_view('ombumedia');
+  $view->set_display('select_media');
+  $view->pre_execute();
+  $view->execute();
+
+  $redirect = array(
+    'action' => 'configure',
+    'query' =>  drupal_get_query_parameters(),
+  );
+
+  $build = array(
+    'tabs' => array(
+      'library' => array(
+        '#title' => t('Library'),
+        '#markup' => $view->preview(),
+      ),
+      'add' => array(
+        '#title' => t('Add'),
+        '#prefix' => '<div class="ombumedia-add">',
+        '#suffix' => '</div>',
+        'drag' => array(
+          '#markup' => '<h3>' . t('Drag a file to upload') . '</h3><h4>' . t('or') . '</h4>',
+        ),
+        'upload' => array(
+          'form' => drupal_get_form('ombumedia_file_entity_add', array(), $redirect),
+        ),
+        'add' => array(
+          'form' => drupal_get_form('ombumedia_internet_add', array(), $redirect),
+        ),
+      ),
+    ),
+  );
+
+  drupal_add_library('ombumedia', 'ombumedia');
+
+  return $build;
 }
 
 /**

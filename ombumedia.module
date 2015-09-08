@@ -91,6 +91,10 @@ function ombumedia_admin_paths() {
   $paths = array(
     'file/*/preview' => TRUE,
     'file/*/configure' => TRUE,
+    'admin/dashboard/manage-media' => TRUE,
+    'admin/dashboard/manage-media/view' => TRUE,
+    'admin/dashboard/manage-media/add' => TRUE,
+    'admin/dashboard/select-media' => TRUE,
   );
   return $paths;
 }
@@ -100,10 +104,6 @@ function ombumedia_admin_paths() {
  */
 function ombumedia_theme($existing, $type, $theme, $path) {
   return array(
-    'ombumedia_select' => array(
-      'variables' => array(),
-      'template' => 'ombumedia_select',
-    ),
     'ombumedia_file_preview' => array(
       'variables' => array(
         'file' => NULL,
@@ -270,6 +270,24 @@ function ombumedia_page_alter(&$page) {
         unset($page[$key]);
       }
     }
+
+    // Set up tabs and stash in $page['#tabs'] key.
+    if (isset($page['content']['system_main']['tabs'])) {
+      $messages_tab = reset(array_keys($page['content']['system_main']['tabs']));
+      $page['#tabs'] = array();
+      foreach($page['content']['system_main']['tabs'] as $tab_key => $tab) {
+        $tab_content = drupal_render($tab);
+        $page['#tabs'][$tab_key] = array(
+          '#title' => $tab['#title'],
+          '#markup' => $tab_content,
+        );
+        if (strstr($tab_content, 'error')) {
+          $messages_tab = $tab_key;
+        }
+      }
+      $page['#tabs']['#messages_tab'] = $messages_tab;
+    }
+
   }
 }
 
@@ -361,44 +379,6 @@ function ombumedia_preprocess_views_view_fields(&$variables) {
     $fields =& $variables['fields'];
     $fields['rendered']->content = '<span class="field-content-wrapper">' . $fields['rendered']->content . '</span>';
   }
-}
-
-/**
- * Implements hook_preprocess_ombumedia_select().
- */
-function ombumedia_preprocess_ombumedia_select(&$variables) {
-  $view = views_get_view('ombumedia');
-  $view->set_display('select_media');
-  $view->pre_execute();
-  $view->execute();
-
-  $variables['library'] = $view->preview();
-
-  $redirect = array(
-    'action' => 'configure',
-    'query' =>  drupal_get_query_parameters(),
-  );
-
-  $add = array(
-    '#prefix' => '<div class="ombumedia-add">',
-    '#suffix' => '</div>',
-    'messages' => array(
-      '#markup' => theme('status_messages'),
-    ),
-    'drag' => array(
-      '#markup' => '<h3>' . t('Drag a file to upload') . '</h3><h4>' . t('or') . '</h4>',
-    ),
-    'upload' => array(
-      'form' => drupal_get_form('ombumedia_file_entity_add', array(), $redirect),
-    ),
-    'add' => array(
-      'form' => drupal_get_form('ombumedia_internet_add', array(), $redirect),
-    ),
-  );
-
-  $variables['add'] = drupal_render($add);
-
-  drupal_add_library('ombumedia', 'ombumedia');
 }
 
 /**

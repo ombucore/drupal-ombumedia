@@ -25,7 +25,7 @@ Drupal.behaviors.ombumediaPopupTabs = {
 
     var active = 0;
     $ombumediaTabset.find('.ui-tabs-panel').each(function(i, panelEl) {
-      if ($(panelEl).find('.error').length) {
+      if ($(panelEl).find('.messages').length) {
         active = i;
       }
     });
