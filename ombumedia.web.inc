@@ -135,6 +135,7 @@ function ombumedia_internet_add($form, &$form_state = array(), $types = NULL, $r
   $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Continue'),
+    '#attributes' => array('class' => array('ombumedia-button')),
   );
 
   return $form;

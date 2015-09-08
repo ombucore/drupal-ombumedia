@@ -313,13 +313,13 @@ function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
     'back' => array(
       '#markup' => l(t('Back'), 'admin/dashboard/select-media', array(
         'query' => drupal_get_query_parameters(),
-        'attributes' => array('class' => 'ombumedia-fake-button'),
+        'attributes' => array('class' => 'ombumedia-button'),
       )),
     ),
     'continue' => array(
       '#markup' => l(t('Continue'), 'file/' . $file->fid . '/configure', array(
         'query' => drupal_get_query_parameters(),
-        'attributes' => array('class' => 'ombumedia-fake-button'),
+        'attributes' => array('class' => 'ombumedia-button'),
       )),
     ),
   );
@@ -349,21 +349,29 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
       $actions = array();
       if ($display === 'select_media') {
         $row = '<a href="' . url('file/' . $fid . '/preview') . '">' . $row . '</a>';
-        $actions[] = l(t('Select'), 'file/' . $fid . '/configure');
+        $actions[] = l(t('Select'), 'file/' . $fid . '/configure', array(
+          'attributes' => array('class' => 'ombumedia-button'),
+        ));
       }
       if ($display === 'manage_media') {
         $file = file_load($fid);
         $query = drupal_get_destination();
         $row = '<a href="' . url('file/' . $fid . '/view') . '">' . $row . '</a>';
         if (file_entity_access('update', $file)) {
-          $actions[] = l(t('Edit'), 'file/' . $fid . '/edit', array('query' => $query));
+          $actions[] = l(t('Edit'), 'file/' . $fid . '/edit', array(
+            'query' => $query,
+            'attributes' => array('class' => 'ombumedia-button'),
+          ));
         }
         if (file_entity_access('delete', $file)) {
-          $actions[] = l(t('Delete'), 'file/' . $fid . '/delete', array('query' => $query));
+          $actions[] = l(t('Delete'), 'file/' . $fid . '/delete', array(
+            'query' => $query,
+            'attributes' => array('class' => 'ombumedia-button'),
+          ));
         }
       }
       $actions_count = count($actions);
-      $actions = '<span class="actions actions-' . $actions_count . '">' . implode(' ', $actions) . '</span>';
+      $actions = '<ul class="actions actions-' . $actions_count . '"><li>' . implode('</li><li>', $actions) . '</li></ul>';
       $variables['rows'][$i] = '<div class="views-row-inner">' . $row . $actions . '</div>';
       $variables['classes_array'][$i] .= ' ombumedia-library-file';
       $variables['classes_array'][$i] .= ' ombumedia-library-file-' . $display;
@@ -417,6 +425,7 @@ function ombumedia_file_entity_add($form, &$form_state, array $options = array()
   $form['actions']['next'] = array(
     '#type' => 'submit',
     '#value' => t('Continue'),
+    '#attributes' => array('class' => array('ombumedia-button')),
   );
 
   form_load_include($form_state, 'inc', 'file_entity', 'file_entity.pages');
@@ -512,12 +521,15 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
     'back' => array(
       '#markup' => l(t('Back'), 'admin/dashboard/select-media', array(
         'query' => drupal_get_query_parameters(),
-        'attributes' => array('class' => 'ombumedia-fake-button'),
+        'attributes' => array('class' => 'ombumedia-button'),
       )),
     ),
     'continue' => array(
       '#value' => 'Continue',
       '#type' => 'submit',
+      '#attributes' => array(
+        'class' => array('ombumedia-button'),
+      ),
     ),
   );
 

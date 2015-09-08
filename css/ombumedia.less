@@ -136,32 +136,32 @@
         display: block;
         position: relative;
       }
-      .actions {
+      ul.actions {
+        list-style: none;
         display: block;
         padding: 0 @padding/2 @padding/2 @padding/2;
-        margin-right: -1px;
+        margin: 0 -2px;
         overflow: hidden;
         opacity: 0;
         .transition(opacity 0.2s ease);
 
-        a {
-          display: block;
+        li {
+          list-style: none;
+          margin: 0;
+          padding: 0;
           float: left;
           width: 100%;
-          text-align: center;
-          padding: 3px;
-          background-color: #666;
-          color: #FFF;
-          border-right: 1px solid #f1f1f1;
-          text-decoration: none;
-          .transition(background-color 0.2s ease);
+          padding: 0 2px;
+        }
+        a {
+          display: block;
+          margin: 0;
           &:hover {
-            background-color: #333;
           }
         }
-        &.actions-2 a { width: percentage(1/2); }
-        &.actions-3 a { width: percentage(1/3); }
-        &.actions-4 a { width: percentage(1/2); }
+        &.actions-2 li { width: percentage(1/2); }
+        &.actions-3 li { width: percentage(1/3); }
+        &.actions-4 li { width: percentage(1/2); }
       }
 
     }
@@ -197,6 +197,7 @@
 
     .views-field-filename {
       font-weight: bold;
+      word-break: break-word;
     }
     .views-field-type,
     .views-field-timestamp {
@@ -337,7 +338,8 @@
   }
 }
 
-.ombumedia-fake-button {
+.ombumedia-button,
+input.form-submit.ombumedia-button {
   display: inline-block;
   cursor: pointer;
   padding: 4px 17px;
@@ -352,12 +354,15 @@
   border-bottom: 1px solid #b4b4b4;
   border-left-color: #d2d2d2;
   border-right-color: #d2d2d2;
-  background: rgb(240, 240, 240);
+  background-color: rgb(230, 230, 230);
+  background-image: none;
   -moz-border-radius: 20px;
   -webkit-border-radius: 20px;
   border-radius: 20px;
   text-decoration: none;
+  .transition(background-color 0.2s ease);
   &:hover {
     text-decoration: none;
+    background-color: rgb(210, 210, 210);
   }
 }

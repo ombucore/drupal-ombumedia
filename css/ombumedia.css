@@ -120,38 +120,35 @@
   display: block;
   position: relative;
 }
-.view-ombumedia .ombumedia-library-file .views-row-inner .actions {
+.view-ombumedia .ombumedia-library-file .views-row-inner ul.actions {
+  list-style: none;
   display: block;
   padding: 0 10px 10px 10px;
-  margin-right: -1px;
+  margin: 0 -2px;
   overflow: hidden;
   opacity: 0;
   -webkit-transition: opacity 0.2s ease;
   transition: opacity 0.2s ease;
 }
-.view-ombumedia .ombumedia-library-file .views-row-inner .actions a {
-  display: block;
+.view-ombumedia .ombumedia-library-file .views-row-inner ul.actions li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   float: left;
   width: 100%;
-  text-align: center;
-  padding: 3px;
-  background-color: #666;
-  color: #FFF;
-  border-right: 1px solid #f1f1f1;
-  text-decoration: none;
-  -webkit-transition: background-color 0.2s ease;
-  transition: background-color 0.2s ease;
+  padding: 0 2px;
 }
-.view-ombumedia .ombumedia-library-file .views-row-inner .actions a:hover {
-  background-color: #333;
+.view-ombumedia .ombumedia-library-file .views-row-inner ul.actions a {
+  display: block;
+  margin: 0;
 }
-.view-ombumedia .ombumedia-library-file .views-row-inner .actions.actions-2 a {
+.view-ombumedia .ombumedia-library-file .views-row-inner ul.actions.actions-2 li {
   width: 50%;
 }
-.view-ombumedia .ombumedia-library-file .views-row-inner .actions.actions-3 a {
+.view-ombumedia .ombumedia-library-file .views-row-inner ul.actions.actions-3 li {
   width: 33.33333333%;
 }
-.view-ombumedia .ombumedia-library-file .views-row-inner .actions.actions-4 a {
+.view-ombumedia .ombumedia-library-file .views-row-inner ul.actions.actions-4 li {
   width: 50%;
 }
 .view-ombumedia .ombumedia-library-file .views-field-rendered {
@@ -182,6 +179,7 @@
 }
 .view-ombumedia .ombumedia-library-file .views-field-filename {
   font-weight: bold;
+  word-break: break-word;
 }
 .view-ombumedia .ombumedia-library-file .views-field-type,
 .view-ombumedia .ombumedia-library-file .views-field-timestamp {
@@ -296,7 +294,8 @@
 .ombumedia-add form + form {
   padding: 0;
 }
-.ombumedia-fake-button {
+.ombumedia-button,
+input.form-submit.ombumedia-button {
   display: inline-block;
   cursor: pointer;
   padding: 4px 17px;
@@ -311,12 +310,17 @@
   border-bottom: 1px solid #b4b4b4;
   border-left-color: #d2d2d2;
   border-right-color: #d2d2d2;
-  background: #f0f0f0;
+  background-color: #e6e6e6;
+  background-image: none;
   -moz-border-radius: 20px;
   -webkit-border-radius: 20px;
   border-radius: 20px;
   text-decoration: none;
+  -webkit-transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease;
 }
-.ombumedia-fake-button:hover {
+.ombumedia-button:hover,
+input.form-submit.ombumedia-button:hover {
   text-decoration: none;
+  background-color: #d2d2d2;
 }
