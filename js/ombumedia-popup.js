@@ -90,14 +90,6 @@ Drupal.behaviors.ombumediaFilePreview = {
       return;
     }
 
-    $preview.find('input[type="submit"][value="Back"]').on('click', preventDefault(function(e) {
-      window.history.back();
-    }));
-
-    $preview.find('input[type="submit"][value="Select"]').on('click', preventDefault(function(e) {
-      window.location = $(this).attr('data-href');
-    }));
-
   }
 };
 
@@ -113,10 +105,6 @@ Drupal.behaviors.ombumediaFileEntityConfigure = {
     if (!$form.length) {
       return;
     }
-
-    $form.find('input[type="submit"][value="Back"]').on('click', preventDefault(function(e) {
-      window.history.back();
-    }));
 
     // Grab values we need from the form on submit.
     $form.on('submit', function(e) {

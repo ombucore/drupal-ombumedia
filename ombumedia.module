@@ -308,18 +308,19 @@ function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
   $variables['preview'] = ombumedia_render_file_preview($file);
 
   $variables['actions'] = array(
-    '#prefix' => '<div class="actions">',
+    '#prefix' => '<div class="form-actions">',
     '#suffix' => '</div>',
     'back' => array(
-      '#value' => 'Back',
-      '#type' => 'submit',
+      '#markup' => l(t('Back'), 'admin/dashboard/select-media', array(
+        'query' => drupal_get_query_parameters(),
+        'attributes' => array('class' => 'ombumedia-fake-button'),
+      )),
     ),
     'continue' => array(
-      '#value' => 'Select',
-      '#type' => 'submit',
-      '#attributes' => array(
-        'data-href' => url('file/' . $file->fid . '/configure', array('query' => drupal_get_query_parameters())),
-      ),
+      '#markup' => l(t('Continue'), 'file/' . $file->fid . '/configure', array(
+        'query' => drupal_get_query_parameters(),
+        'attributes' => array('class' => 'ombumedia-fake-button'),
+      )),
     ),
   );
 
@@ -509,8 +510,10 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
     '#type' => 'actions',
     '#weight' => 30,
     'back' => array(
-      '#value' => 'Back',
-      '#type' => 'submit',
+      '#markup' => l(t('Back'), 'admin/dashboard/select-media', array(
+        'query' => drupal_get_query_parameters(),
+        'attributes' => array('class' => 'ombumedia-fake-button'),
+      )),
     ),
     'continue' => array(
       '#value' => 'Continue',
