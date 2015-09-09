@@ -475,15 +475,9 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
   }
   $view_mode = isset($_GET['view_mode']) ? $_GET['view_mode'] : array_keys($view_mode_options)[0];
 
-  $preview_id = 'ombumedia-configure-preview-' . $file->fid;
-  $form['#preview_id'] = $preview_id;
-  $form['preview'] = file_view_file($file, $view_mode);
-  $form['preview']['#prefix'] = '<div id="' . $preview_id . '">';
-  $form['preview']['#suffix'] = '</div>';
-
   $form['view_mode'] = array(
     '#type' => 'select',
-    '#title' => t('View Mode'),
+    '#title' => t('Style'),
     '#options' => $view_mode_options,
     '#default_value' => $view_mode,
     '#ajax' => array(
@@ -492,13 +486,20 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
     ),
   );
 
+  $preview_id = 'ombumedia-configure-preview-' . $file->fid;
+  $form['#preview_id'] = $preview_id;
+  $form['preview'] = file_view_file($file, $view_mode);
+  $form['preview']['#prefix'] = '<div id="' . $preview_id . '">';
+  $form['preview']['#suffix'] = '</div>';
+
   $form['fid'] = array(
     '#type' => 'hidden',
     '#value' => $file->fid,
   );
 
   $form['file'] = array(
-    '#title' => t('Edit'),
+    '#title' => t('Edit File'),
+    '#description' => t('Changing these fields update them everwhere this file is used.'),
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
@@ -526,7 +527,7 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
       )),
     ),
     'continue' => array(
-      '#value' => 'Continue',
+      '#value' => t('Use this @type', array('@type' => $file->type)),
       '#type' => 'submit',
       '#attributes' => array(
         'class' => array('ombumedia-button'),
