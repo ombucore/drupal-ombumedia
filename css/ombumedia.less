@@ -199,11 +199,8 @@
       font-weight: bold;
       word-break: break-word;
     }
-    .views-field-type,
-    .views-field-timestamp {
-      font-size: 0.9em;
-    }
     .views-field-type {
+      font-size: 0.9em;
       display: block;
       position: absolute;
       top: @padding;
@@ -212,9 +209,6 @@
       padding: 0 3px;
       border-radius: 3px;
       color: #FFFFFF;
-    }
-    .views-field-filesize {
-      display: none;
     }
   }
 }
@@ -284,7 +278,23 @@
 
 }
 
+body.ui-dialog-open {
+  overflow: hidden;
+}
+
+.ombumedia-ui-overlay {
+  z-index: 5000;
+  background-color: #000000;
+  opacity: 0.7;
+
+  &.ombumedia-ui-overlay-preview {
+    opacity: 0.85;
+  }
+}
 .ombumedia-ui-dialog {
+  z-index: 5010;
+  border: 0;
+
   .ui-dialog-titlebar {
     background: transparent;
     position: relative;
@@ -314,13 +324,34 @@
 }
 
 .page-file-preview {
-  .file-preview {
-    margin-bottom: 1em;
-  }
-  .form-actions {
-    .ombumedia-fake-button {
-      margin-top: 1em;
+  background: transparent;
+
+  .ombumedia-file-preview {
+    max-width: 800px;
+    margin: 0 auto;
+
+    .file-preview {
+      margin-bottom: 1em;
+      text-align: center;
+
+      iframe, img {
+        max-width: 100%;
+      }
     }
+
+    fieldset,
+    fieldset.collapsed {
+      background: #FFFFFF;
+    }
+
+    .metadata {
+      color: #FFFFFF;
+
+      h1 {
+        text-align: center;
+      }
+    }
+
   }
 }
 
@@ -366,3 +397,4 @@ input.form-submit.ombumedia-button {
     background-color: rgb(210, 210, 210);
   }
 }
+

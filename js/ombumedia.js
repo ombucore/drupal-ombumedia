@@ -59,14 +59,13 @@ Drupal.ombumedia.launchPopup = function(options) {
 
   src = path + '?' + $.param(query);
 
-  $iframe = $('<iframe class="ombumedia-modal-frame"/>')
-                  .attr('src', src)
-                  .attr('width', options.width);
+  $iframe = $('<iframe class="ombumedia-modal-frame"/>');
+
+  $iframe.attr('src', src);
 
   $iframe.on('load', function() {
     // Inject a callback function that can be called from the iframe js.
     $iframe[0].contentWindow.ombumediaSelectCallback = function(data) {
-      console.log(data);
       deferred.resolve(data);
     };
   });
@@ -77,8 +76,11 @@ Drupal.ombumedia.launchPopup = function(options) {
     resizable: false,
     zIndex: 10000,
     position: { my: "top center", at: "top center" },
-    overlay: { backgroundColor: "#000000", opacity: 0.4 },
+    open: function(e, ui) {
+      $('body').addClass('ui-dialog-open');
+    },
     close: function(e, ui) {
+      $('body').removeClass('ui-dialog-open');
       $(e.target).remove();
       var deferredState = deferred.state();
       if (deferredState != 'resolved') {
@@ -92,7 +94,9 @@ Drupal.ombumedia.launchPopup = function(options) {
   $iframe.dialog(dialogOptions);
 
   var $uiDialog = $iframe.parents('.ui-dialog:eq(0)');
+  var $uiOverlay = $uiDialog.siblings('.ui-widget-overlay');
 
+  $uiOverlay.addClass('ombumedia-ui-overlay');
   $uiDialog.addClass('ombumedia-ui-dialog');
 
   $uiDialog.css({

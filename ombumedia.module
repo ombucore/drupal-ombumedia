@@ -135,6 +135,7 @@ function ombumedia_library() {
       $path . '/js/ombumedia-util.js' => array(),
       $path . '/js/ombumedia.js' => array(),
       $path . '/js/ombumedia-popup.js' => array(),
+      $path . '/js/ombumedia-preview.js' => array(),
       array(
         'type' => 'setting',
         'data' => array(
@@ -318,45 +319,6 @@ function ombumedia_page_alter(&$page) {
  */
 
 /**
- * Implements hook_preprocess_ombumedia_file_preview().
- */
-function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
-  module_load_include('inc', 'file_entity', 'file_entity.pages');
-  $file = $variables['file'];
-
-  $variables['title'] = !empty($file->title) ? $file->title : $file->filename;
-
-  $variables['preview'] = ombumedia_render_file_preview($file);
-
-  $variables['actions'] = array(
-    '#prefix' => '<div class="form-actions">',
-    '#suffix' => '</div>',
-    'back' => array(
-      '#markup' => l(t('Back'), 'admin/dashboard/select-media', array(
-        'query' => drupal_get_query_parameters(),
-        'attributes' => array('class' => 'ombumedia-button'),
-      )),
-    ),
-    'continue' => array(
-      '#markup' => l(t('Continue'), 'file/' . $file->fid . '/configure', array(
-        'query' => drupal_get_query_parameters(),
-        'attributes' => array('class' => 'ombumedia-button'),
-      )),
-    ),
-  );
-
-  $variables['usage'] = array(
-    '#theme' => 'fieldset',
-    '#title' => t('Usage'),
-    '#attributes' => array(
-      'class' => array('collapsible', 'collapsed'),
-    ),
-    '#children' => render(file_entity_usage_page($file)),
-  );
-  drupal_add_library('system', 'drupal.collapse');
-}
-
-/**
  * Implements hook_preprocess_views_view_unformatted().
  */
 function ombumedia_preprocess_views_view_unformatted(&$variables) {
@@ -369,7 +331,6 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
       $fid = $results[$i]->fid;
       $actions = array();
       if ($display === 'select_media') {
-        $row = '<a href="' . url('file/' . $fid . '/preview') . '">' . $row . '</a>';
         $actions[] = l(t('Select'), 'file/' . $fid . '/configure', array(
           'attributes' => array('class' => 'ombumedia-button'),
         ));
@@ -377,7 +338,6 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
       if ($display === 'manage_media') {
         $file = file_load($fid);
         $query = drupal_get_destination();
-        $row = '<a href="' . url('file/' . $fid . '/view') . '">' . $row . '</a>';
         if (file_entity_access('update', $file)) {
           $actions[] = l(t('Edit'), 'file/' . $fid . '/edit', array(
             'query' => $query,
@@ -393,6 +353,7 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
       }
       $actions_count = count($actions);
       $actions = '<ul class="actions actions-' . $actions_count . '"><li>' . implode('</li><li>', $actions) . '</li></ul>';
+      $row = '<a class="launch-preview-popup" href="' . url('file/' . $fid . '/preview') . '">' . $row . '</a>';
       $variables['rows'][$i] = '<div class="views-row-inner">' . $row . $actions . '</div>';
       $variables['classes_array'][$i] .= ' ombumedia-library-file';
       $variables['classes_array'][$i] .= ' ombumedia-library-file-' . $display;
@@ -409,6 +370,46 @@ function ombumedia_preprocess_views_view_fields(&$variables) {
     $fields =& $variables['fields'];
     $fields['rendered']->content = '<span class="field-content-wrapper">' . $fields['rendered']->content . '</span>';
   }
+}
+
+/**
+ * Implements hook_preprocess_ombumedia_file_preview().
+ */
+function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
+  module_load_include('inc', 'file_entity', 'file_entity.pages');
+  $file = $variables['file'];
+
+  $variables['title'] = !empty($file->title) ? $file->title : $file->filename;
+
+  $variables['preview'] = ombumedia_render_file_preview($file);
+
+  $info_rows = array();
+  foreach (ombumedia_file_get_info($file) as $info) {
+    $info_rows[] = array(
+      array('data' => $info['label'], 'header' => TRUE),
+      $info['value'],
+    );
+  }
+
+  $variables['info'] = array(
+    '#theme' => 'fieldset',
+    '#title' => t('Info'),
+    '#attributes' => array(
+      'class' => array('collapsible'),
+    ),
+    '#children' => theme('table', array('rows' => $info_rows)),
+  );
+
+  $variables['usage'] = array(
+    '#theme' => 'fieldset',
+    '#title' => t('Usage'),
+    '#attributes' => array(
+      'class' => array('collapsible', 'collapsed'),
+    ),
+    '#children' => render(file_entity_usage_page($file)),
+  );
+
+  drupal_add_library('system', 'drupal.collapse');
 }
 
 /**
@@ -495,15 +496,9 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
   }
   $view_mode = isset($_GET['view_mode']) ? $_GET['view_mode'] : array_keys($view_mode_options)[0];
 
-  $preview_id = 'ombumedia-configure-preview-' . $file->fid;
-  $form['#preview_id'] = $preview_id;
-  $form['preview'] = file_view_file($file, $view_mode);
-  $form['preview']['#prefix'] = '<div id="' . $preview_id . '">';
-  $form['preview']['#suffix'] = '</div>';
-
   $form['view_mode'] = array(
     '#type' => 'select',
-    '#title' => t('View Mode'),
+    '#title' => t('Style'),
     '#options' => $view_mode_options,
     '#default_value' => $view_mode,
     '#ajax' => array(
@@ -512,13 +507,20 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
     ),
   );
 
+  $preview_id = 'ombumedia-configure-preview-' . $file->fid;
+  $form['#preview_id'] = $preview_id;
+  $form['preview'] = file_view_file($file, $view_mode);
+  $form['preview']['#prefix'] = '<div id="' . $preview_id . '">';
+  $form['preview']['#suffix'] = '</div>';
+
   $form['fid'] = array(
     '#type' => 'hidden',
     '#value' => $file->fid,
   );
 
   $form['file'] = array(
-    '#title' => t('Edit'),
+    '#title' => t('Edit File'),
+    '#description' => t('Changing these fields update them everwhere this file is used.'),
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
@@ -546,7 +548,7 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
       )),
     ),
     'continue' => array(
-      '#value' => 'Continue',
+      '#value' => t('Use this @type', array('@type' => $file->type)),
       '#type' => 'submit',
       '#attributes' => array(
         'class' => array('ombumedia-button'),
@@ -671,4 +673,77 @@ function ombumedia_render_file_preview($file) {
   }
 
   return $output;
+}
+
+/**
+ * Returns metadata for a file, depending on type.
+ */
+function ombumedia_file_get_info($file) {
+  $info = array();
+
+  $info[]= array(
+    'label' => t('Type'),
+    'value' => ucwords($file->type),
+  );
+
+  $info[]= array(
+    'label' => t('Uploaded'),
+    'value' => format_date($file->timestamp, 'custom', 'F j, Y g:i a'),
+  );
+
+  if ($file->filesize) {
+    $info[] = array(
+      'label' => t('Size'),
+      'value' => format_size($file->filesize),
+    );
+  }
+
+  if (isset($file->oembed)) {
+    $info[] = array(
+      'label' => t('Source'),
+      'value' => $file->oembed['provider_name'],
+    );
+    $info[] = array(
+      'label' => t('URL'),
+      'value' => l($file->oembed['original_url'], $file->oembed['original_url']),
+    );
+    if (isset($file->oembed['width'])) {
+      $info[] = array(
+        'label' => t('Width'),
+        'value' => $file->oembed['width']
+      );
+      $info[] = array(
+        'label' => t('Height'),
+        'value' => $file->oembed['height']
+      );
+    }
+  }
+
+  if (isset($file->metadata)) {
+    if (isset($file->metadata['width'])) {
+      $info[] = array(
+        'label' => t('Width'),
+        'value' => $file->metadata['width']
+      );
+      $info[] = array(
+        'label' => t('Height'),
+        'value' => $file->metadata['height']
+      );
+    }
+  }
+
+  $fields = field_info_instances('file', $file->type);
+  foreach ($fields as $field) {
+    $field_name = $field['field_name'];
+    $values = array();
+    foreach (field_get_items('file', $file, $field_name) as $field_item) {
+      $values[] = render(field_view_value('file', $file, $field_name, $field_item, array()));
+    }
+    $info[] = array(
+      'label' => $field['label'],
+      'value' => implode(', ', $values),
+    );
+  }
+
+  return $info;
 }
