@@ -135,6 +135,7 @@ function ombumedia_library() {
       $path . '/js/ombumedia-util.js' => array(),
       $path . '/js/ombumedia.js' => array(),
       $path . '/js/ombumedia-popup.js' => array(),
+      $path . '/js/ombumedia-preview.js' => array(),
       array(
         'type' => 'setting',
         'data' => array(
@@ -307,23 +308,6 @@ function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
 
   $variables['preview'] = ombumedia_render_file_preview($file);
 
-  $variables['actions'] = array(
-    '#prefix' => '<div class="form-actions">',
-    '#suffix' => '</div>',
-    'back' => array(
-      '#markup' => l(t('Back'), 'admin/dashboard/select-media', array(
-        'query' => drupal_get_query_parameters(),
-        'attributes' => array('class' => 'ombumedia-button'),
-      )),
-    ),
-    'continue' => array(
-      '#markup' => l(t('Continue'), 'file/' . $file->fid . '/configure', array(
-        'query' => drupal_get_query_parameters(),
-        'attributes' => array('class' => 'ombumedia-button'),
-      )),
-    ),
-  );
-
   $variables['usage'] = array(
     '#theme' => 'fieldset',
     '#title' => t('Usage'),
@@ -332,6 +316,7 @@ function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
     ),
     '#children' => render(file_entity_usage_page($file)),
   );
+
   drupal_add_library('system', 'drupal.collapse');
 }
 
@@ -348,7 +333,6 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
       $fid = $results[$i]->fid;
       $actions = array();
       if ($display === 'select_media') {
-        $row = '<a href="' . url('file/' . $fid . '/preview') . '">' . $row . '</a>';
         $actions[] = l(t('Select'), 'file/' . $fid . '/configure', array(
           'attributes' => array('class' => 'ombumedia-button'),
         ));
@@ -356,7 +340,6 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
       if ($display === 'manage_media') {
         $file = file_load($fid);
         $query = drupal_get_destination();
-        $row = '<a href="' . url('file/' . $fid . '/view') . '">' . $row . '</a>';
         if (file_entity_access('update', $file)) {
           $actions[] = l(t('Edit'), 'file/' . $fid . '/edit', array(
             'query' => $query,
@@ -372,6 +355,7 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
       }
       $actions_count = count($actions);
       $actions = '<ul class="actions actions-' . $actions_count . '"><li>' . implode('</li><li>', $actions) . '</li></ul>';
+      $row = '<a class="launch-preview-popup" href="' . url('file/' . $fid . '/preview') . '">' . $row . '</a>';
       $variables['rows'][$i] = '<div class="views-row-inner">' . $row . $actions . '</div>';
       $variables['classes_array'][$i] .= ' ombumedia-library-file';
       $variables['classes_array'][$i] .= ' ombumedia-library-file-' . $display;

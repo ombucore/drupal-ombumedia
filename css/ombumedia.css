@@ -246,6 +246,21 @@
   bottom: 0;
   overflow: scroll;
 }
+body.ui-dialog-open {
+  overflow: hidden;
+}
+.ombumedia-ui-overlay {
+  z-index: 5000;
+  background-color: #000000;
+  opacity: 0.7;
+}
+.ombumedia-ui-overlay.ombumedia-ui-overlay-preview {
+  opacity: 0.85;
+}
+.ombumedia-ui-dialog {
+  z-index: 5010;
+  border: 0;
+}
 .ombumedia-ui-dialog .ui-dialog-titlebar {
   background: transparent;
   position: relative;
@@ -271,11 +286,30 @@
 .page-file-preview .ombumedia-popup {
   padding: 15px;
 }
-.page-file-preview .file-preview {
-  margin-bottom: 1em;
+.page-file-preview {
+  background: transparent;
 }
-.page-file-preview .form-actions .ombumedia-fake-button {
-  margin-top: 1em;
+.page-file-preview .ombumedia-file-preview {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.page-file-preview .ombumedia-file-preview .file-preview {
+  margin-bottom: 1em;
+  text-align: center;
+}
+.page-file-preview .ombumedia-file-preview .file-preview iframe,
+.page-file-preview .ombumedia-file-preview .file-preview img {
+  max-width: 100%;
+}
+.page-file-preview .ombumedia-file-preview fieldset,
+.page-file-preview .ombumedia-file-preview fieldset.collapsed {
+  background: #FFFFFF;
+}
+.page-file-preview .ombumedia-file-preview .metadata {
+  color: #FFFFFF;
+}
+.page-file-preview .ombumedia-file-preview .metadata h1 {
+  text-align: center;
 }
 .ombumedia-add {
   overflow: hidden;
