@@ -25,7 +25,9 @@ Drupal.behaviors.ombumediaPreviewPopup = {
 
     $previewLinks.on('click', function(e) {
       e.preventDefault();
-      launchPreviewPopup($(this).attr('href'));
+      var $link = $(this);
+      $link.blur();
+      launchPreviewPopup($link.attr('href'));
     });
   }
 };

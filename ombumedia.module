@@ -298,29 +298,6 @@ function ombumedia_page_alter(&$page) {
  */
 
 /**
- * Implements hook_preprocess_ombumedia_file_preview().
- */
-function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
-  module_load_include('inc', 'file_entity', 'file_entity.pages');
-  $file = $variables['file'];
-
-  $variables['title'] = !empty($file->title) ? $file->title : $file->filename;
-
-  $variables['preview'] = ombumedia_render_file_preview($file);
-
-  $variables['usage'] = array(
-    '#theme' => 'fieldset',
-    '#title' => t('Usage'),
-    '#attributes' => array(
-      'class' => array('collapsible', 'collapsed'),
-    ),
-    '#children' => render(file_entity_usage_page($file)),
-  );
-
-  drupal_add_library('system', 'drupal.collapse');
-}
-
-/**
  * Implements hook_preprocess_views_view_unformatted().
  */
 function ombumedia_preprocess_views_view_unformatted(&$variables) {
@@ -372,6 +349,46 @@ function ombumedia_preprocess_views_view_fields(&$variables) {
     $fields =& $variables['fields'];
     $fields['rendered']->content = '<span class="field-content-wrapper">' . $fields['rendered']->content . '</span>';
   }
+}
+
+/**
+ * Implements hook_preprocess_ombumedia_file_preview().
+ */
+function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
+  module_load_include('inc', 'file_entity', 'file_entity.pages');
+  $file = $variables['file'];
+
+  $variables['title'] = !empty($file->title) ? $file->title : $file->filename;
+
+  $variables['preview'] = ombumedia_render_file_preview($file);
+
+  $info_rows = array();
+  foreach (ombumedia_file_get_info($file) as $info) {
+    $info_rows[] = array(
+      array('data' => $info['label'], 'header' => TRUE),
+      $info['value'],
+    );
+  }
+
+  $variables['info'] = array(
+    '#theme' => 'fieldset',
+    '#title' => t('Info'),
+    '#attributes' => array(
+      'class' => array('collapsible'),
+    ),
+    '#children' => theme('table', array('rows' => $info_rows)),
+  );
+
+  $variables['usage'] = array(
+    '#theme' => 'fieldset',
+    '#title' => t('Usage'),
+    '#attributes' => array(
+      'class' => array('collapsible', 'collapsed'),
+    ),
+    '#children' => render(file_entity_usage_page($file)),
+  );
+
+  drupal_add_library('system', 'drupal.collapse');
 }
 
 /**
@@ -634,4 +651,77 @@ function ombumedia_render_file_preview($file) {
   }
 
   return $output;
+}
+
+/**
+ * Returns metadata for a file, depending on type.
+ */
+function ombumedia_file_get_info($file) {
+  $info = array();
+
+  $info[]= array(
+    'label' => t('Type'),
+    'value' => ucwords($file->type),
+  );
+
+  $info[]= array(
+    'label' => t('Uploaded'),
+    'value' => format_date($file->timestamp, 'custom', 'F j, Y g:i a'),
+  );
+
+  if ($file->filesize) {
+    $info[] = array(
+      'label' => t('Size'),
+      'value' => format_size($file->filesize),
+    );
+  }
+
+  if (isset($file->oembed)) {
+    $info[] = array(
+      'label' => t('Source'),
+      'value' => $file->oembed['provider_name'],
+    );
+    $info[] = array(
+      'label' => t('URL'),
+      'value' => l($file->oembed['original_url'], $file->oembed['original_url']),
+    );
+    if (isset($file->oembed['width'])) {
+      $info[] = array(
+        'label' => t('Width'),
+        'value' => $file->oembed['width']
+      );
+      $info[] = array(
+        'label' => t('Height'),
+        'value' => $file->oembed['height']
+      );
+    }
+  }
+
+  if (isset($file->metadata)) {
+    if (isset($file->metadata['width'])) {
+      $info[] = array(
+        'label' => t('Width'),
+        'value' => $file->metadata['width']
+      );
+      $info[] = array(
+        'label' => t('Height'),
+        'value' => $file->metadata['height']
+      );
+    }
+  }
+
+  $fields = field_info_instances('file', $file->type);
+  foreach ($fields as $field) {
+    $field_name = $field['field_name'];
+    $values = array();
+    foreach (field_get_items('file', $file, $field_name) as $field_item) {
+      $values[] = render(field_view_value('file', $file, $field_name, $field_item, array()));
+    }
+    $info[] = array(
+      'label' => $field['label'],
+      'value' => implode(', ', $values),
+    );
+  }
+
+  return $info;
 }
