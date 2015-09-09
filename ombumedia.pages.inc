@@ -177,7 +177,7 @@ function ombumedia_page_test() {
   drupal_add_library('ombumedia', 'ombumedia');
   drupal_add_js($path . '/js/ombumedia-test.js');
 
-  return <<<HEREDOC
+  $test_selection = <<<HEREDOC
 <ul>
   <li><a href="#" class="select-media-all">Select Media</a></li>
   <li><a href="#" class="select-media-image">Select Image (view_modes: ['preview'])</a></li>
@@ -191,4 +191,21 @@ function ombumedia_page_test() {
   <dd class="view-mode"></dd>
 </dl>
 HEREDOC;
+
+  $form = drupal_get_form('ombumedia_page_test_form');
+
+  return array(
+    'test' => array('#markup' => $test_selection),
+    'form' => $form,
+  );
+}
+
+function ombumedia_page_test_form($form, &$form_state) {
+  $form['text'] = array(
+    '#title' => t('WYSIWYG Integration'),
+    '#type' => 'text_format',
+    '#format' => 'default',
+  );
+
+  return $form;
 }

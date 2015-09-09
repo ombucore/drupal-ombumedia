@@ -252,6 +252,27 @@ function ombumedia_field_formatter_view($entity_type, $entity, $field, $instance
 }
 
 /**
+ * Implements hook_wysiwyg_plugin().
+ */
+function ombumedia_wysiwyg_plugin($editor, $version) {
+  if ($editor == 'ckeditor') {
+    return array(
+      'ombumedia' => array(
+        'path' => drupal_get_path('module', 'ombumedia') . '/js/ckeditor',
+        'file' => 'plugin.js',
+        'buttons' => array(
+          'ombumedia' => t('OMBU Media'),
+        ),
+        'extensions' => array(
+          'ombumedia' => t('OMBU Media'),
+        ),
+        'load' => TRUE,
+      ),
+    );
+  }
+}
+
+/**
  * Implements hook_page_alter().
  *
  * This is used to use our alternate template when ?render=media-popup is passed
