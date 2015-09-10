@@ -3,6 +3,27 @@
  */
 (function() {
 
+  function setWidgetData(widget, data) {
+    for (var key in data) {
+      if (data.hasOwnProperty(key)) {
+        widget.setData(key, data[key]);
+      }
+    }
+  }
+
+  function getWidgetData(widget) {
+    var data = {};
+    for (var key in widget.data) {
+      if (widget.data.hasOwnProperty(key)) {
+        data[key] = widget.data[key];
+      }
+    }
+    if (data.hasOwnProperty('classes')) {
+        delete data.classes;
+    }
+    return data;
+  }
+
   CKEDITOR.plugins.add('ombumedia', {
     requires: 'widget',
     icons: 'ombumedia',
@@ -36,29 +57,22 @@
         // Populate widget data from DOM.
         init: function() {
           var widget = this;
-          var settingsJson = widget.element.getAttribute('data-ombumedia') || '{}';
-          var settings = JSON.parse(settingsJson) || {};
-          for (var key in settings) {
-            if (settings.hasOwnProperty(key)) {
-              widget.setData(key, settings[key]);
-            }
-          }
+          var dataJson = widget.element.getAttribute('data-ombumedia') || '{}';
+          var data = JSON.parse(dataJson) || {};
+          setWidgetData(widget, data);
         },
 
         // Move widget data into DOM.
         data: function() {
           var widget = this;
-          var settings = {};
-          for (var key in widget.data) {
-            if (widget.data.hasOwnProperty(key)) {
-              settings[key] = widget.data[key];
+          var data = getWidgetData(widget);
+          widget.element.setAttribute('data-ombumedia', JSON.stringify(data));
+          for (var key in data) {
+            if (data.hasOwnProperty(key)) {
+              widget.element.setAttribute('data-ombumedia-' + key, data[key]);
             }
           }
-          if (settings.hasOwnProperty('classes')) {
-              delete settings.classes;
-          }
-          widget.element.setAttribute('data-ombumedia', JSON.stringify(settings));
-          widget.element.setHtml('<span>fid: ' + settings.fid + ' style: ' + settings.view_mode + '</span>');
+          widget.element.setHtml('<span>' + JSON.stringify(data) + '</span>');
         },
 
         // Triggered when widget is double clicked or the button is pushed.
@@ -68,30 +82,21 @@
           var widget = this;
           widget.editor.fire('saveSnapshot');
 
-          var options = CKEDITOR.tools.extend({}, widget.editor.config.ombumedia);
-
-          if (widget.data.fid) {
-            options.fid = widget.data.fid;
-          }
-          if (widget.data.view_mode) {
-            options.view_mode = widget.data.view_mode;
-          }
+          var options = CKEDITOR.tools.extend({}, widget.data, widget.editor.config.ombumedia);
+          delete options.classes;
 
           Drupal.ombumedia.selectMedia(options).then(selectSuccess, selectFail);
 
           function selectSuccess(data) {
             widget.editor.fire('saveSnapshot');
-            for (var key in data) {
-              if (data.hasOwnProperty(key)) {
-                widget.setData(key, data[key]);
-              }
-            }
+            setWidgetData(widget, data);
             widget.fire('data', widget.data);
             widget.editor.fire('saveSnapshot');
           }
 
           function selectFail() {}
         }
+
       });
 
     }
