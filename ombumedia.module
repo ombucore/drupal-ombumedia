@@ -264,12 +264,21 @@ function ombumedia_wysiwyg_plugin($editor, $version) {
         'buttons' => array(
           'ombumedia' => t('OMBU Media'),
         ),
-        'extensions' => array(
-          'ombumedia' => t('OMBU Media'),
-        ),
         'load' => TRUE,
       ),
     );
+  }
+}
+
+/**
+ * Implements hook_wysiwyg_editor_settings_alter().
+ */
+function ombumedia_wysiwyg_editor_settings_alter(&$settings, &$context) {
+  if ($context['profile']->editor == 'ckeditor') {
+    // Ensure the ombumedia js is loaded.
+    if (isset($context['profile']->settings['buttons']['ombumedia']['ombumedia'])) {
+      drupal_add_library('ombumedia', 'ombumedia');
+    }
   }
 }
 

@@ -65,8 +65,8 @@ Drupal.ombumedia.launchPopup = function(options) {
 
   $iframe.on('load', function() {
     // Inject a callback function that can be called from the iframe js.
-    $iframe[0].contentWindow.ombumediaSelectCallback = function(data) {
-      deferred.resolve(data);
+    $iframe[0].contentWindow.ombumediaSelectCallback = function() {
+      deferred.resolve.apply(null, arguments);
     };
   });
 
