@@ -283,11 +283,10 @@ function ombumedia_wysiwyg_editor_settings_alter(&$settings, &$context) {
       foreach ($context['profile']->settings['ombumedia']['view_modes'] as $type => $modes) {
         $view_modes[$type] = array_values($modes);
       }
-      drupal_add_js(array(
-        'ombumedia' => array(
-          'view_modes' => $view_modes,
-        ),
-      ), 'setting');
+      $settings['ombumedia'] = array(
+        'view_modes' => $view_modes,
+        'wysiwyg_format' => $context['profile']->format,
+      );
     }
   }
 }
@@ -544,7 +543,13 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
   if (isset($_GET['view_modes']) && isset($_GET['view_modes'][$file->type])) {
     $view_mode_options = array_intersect_key($view_mode_options, array_flip($_GET['view_modes'][$file->type]));
   }
-  $view_mode = isset($_GET['view_mode']) ? $_GET['view_mode'] : array_keys($view_mode_options)[0];
+
+  if (isset($_GET['view_mode']) && in_array($_GET['view_mode'], $view_mode_options)) {
+    $view_mode =  $_GET['view_mode'];
+  }
+  else {
+    $view_mode = array_keys($view_mode_options)[0];
+  }
 
   $form['view_mode'] = array(
     '#type' => 'select',
@@ -563,9 +568,14 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
   $form['preview']['#prefix'] = '<div id="' . $preview_id . '">';
   $form['preview']['#suffix'] = '</div>';
 
-  $form['fid'] = array(
-    '#type' => 'hidden',
-    '#value' => $file->fid,
+  // Any values in `select_data` will automatically be returned to the browser
+  // upon selection completion.
+  $form['select_data'] = array(
+    '#tree' => TRUE,
+    'fid' => array(
+      '#type' => 'hidden',
+      '#value' => $file->fid,
+    ),
   );
 
   $form['file'] = array(
@@ -611,7 +621,7 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
 
 function ombumedia_file_entity_configure_preview_callback($form, &$form_state) {
   $preview_id = $form['#preview_id'];
-  $file = file_load($form_state['values']['fid']);
+  $file = $form['#file'];
   $view_mode = $form_state['values']['view_mode'];
 
   $rendered = '<div id="' . $preview_id . '">' . render(file_view_file($file, $view_mode)) . '</div>';
@@ -641,10 +651,9 @@ function ombumedia_file_entity_configure_submit($form, &$form_state) {
   $file->filename = $form_state['values']['filename'];
   file_save($file);
 
-  $return = array(
-    'fid' => $file->fid,
-    'view_mode' => $form_state['values']['view_mode'],
-  );
+  $return = $form_state['values']['select_data'];
+  $return['view_mode'] = $form_state['values']['view_mode'];
+
   $return_json = drupal_json_encode($return);
 
   print <<<JS

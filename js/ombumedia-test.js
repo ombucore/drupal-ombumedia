@@ -18,7 +18,9 @@ $(function() {
     e.preventDefault();
     Drupal.ombumedia.selectMedia({
       type: 'image',
-      view_modes: ['preview']
+      view_modes: {
+        image: ['preview']
+      }
     }).then(populateValues);
   });
 
@@ -42,7 +44,10 @@ $(function() {
     e.preventDefault();
     Drupal.ombumedia.selectMedia({
       type: 'image',
-      view_modes: ['preview'],
+      view_modes: {
+        image: ['preview'],
+        video: ['preview', 'full']
+      },
       wywiwyg_format: 'default',
     }).then(populateValues);
   });

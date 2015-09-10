@@ -68,16 +68,13 @@
           var widget = this;
           widget.editor.fire('saveSnapshot');
 
-          var options = {};
+          var options = CKEDITOR.tools.extend({}, widget.editor.config.ombumedia);
 
           if (widget.data.fid) {
             options.fid = widget.data.fid;
           }
           if (widget.data.view_mode) {
             options.view_mode = widget.data.view_mode;
-          }
-          if (Drupal.settings.ombumedia && Drupal.settings.ombumedia.view_modes) {
-            options.view_modes = Drupal.settings.ombumedia.view_modes;
           }
 
           Drupal.ombumedia.selectMedia(options).then(selectSuccess, selectFail);
