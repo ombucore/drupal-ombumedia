@@ -58,6 +58,7 @@
               delete settings.classes;
           }
           widget.element.setAttribute('data-ombumedia', JSON.stringify(settings));
+          widget.element.setHtml('<span>fid: ' + settings.fid + ' style: ' + settings.view_mode + '</span>');
         },
 
         // Triggered when widget is double clicked or the button is pushed.
@@ -67,9 +68,16 @@
           var widget = this;
           widget.editor.fire('saveSnapshot');
 
-          // Set up popup options.
+          var options = {};
 
-          Drupal.ombumedia.selectMedia({ type: 'image' }).then(selectSuccess, selectFail);
+          if (widget.data.fid) {
+            options.fid = widget.data.fid;
+          }
+          if (widget.data.view_mode) {
+            options.view_mode = widget.data.view_mode;
+          }
+
+          Drupal.ombumedia.selectMedia(options).then(selectSuccess, selectFail);
 
           function selectSuccess(data) {
             widget.editor.fire('saveSnapshot');

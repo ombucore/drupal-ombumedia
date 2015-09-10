@@ -551,7 +551,7 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
     '#type' => 'actions',
     '#weight' => 30,
     'back' => array(
-      '#markup' => l(t('Back'), 'admin/dashboard/select-media', array(
+      '#markup' => l(t('Library'), 'admin/dashboard/select-media', array(
         'query' => drupal_get_query_parameters(),
         'attributes' => array('class' => 'ombumedia-button'),
       )),
