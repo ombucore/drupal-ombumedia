@@ -253,7 +253,7 @@ function ombumedia_field_widget_form(&$form, &$form_state, $field, $instance, $l
  *
  * @see media_field_widget_form()
  */
-function media_field_widget_value($element, $input, $form_state) {
+function ombumedia_field_widget_value($element, $input, $form_state) {
   $return = $input;
 
   if (!is_array($return)) {
