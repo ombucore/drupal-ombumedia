@@ -183,6 +183,7 @@ function ombumedia_page_test() {
   <li><a href="#" class="select-media-image">Select Image (view_modes: ['preview'])</a></li>
   <li><a href="#" class="select-media-document">Select Document</a></li>
   <li><a href="#" class="select-media-video">Configure Video (fid: 35, view_mode: 'preview')</a></li>
+  <li><a href="#" class="select-media-image-wysiwyg">Select Image for WYSIWYG format</a></li>
 </ul>
 <dl>
   <dt>FID</dt>

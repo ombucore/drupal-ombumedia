@@ -641,12 +641,16 @@ function ombumedia_file_entity_configure_submit($form, &$form_state) {
   $file->filename = $form_state['values']['filename'];
   file_save($file);
 
-  $fid = $file->fid;
+  $return = array(
+    'fid' => $file->fid,
+    'view_mode' => $form_state['values']['view_mode'],
+  );
+  $return_json = drupal_json_encode($return);
 
   print <<<JS
 <script type="text/javascript">
   try {
-    window.parent.Drupal.ombumedia.closePopup();
+    window.parent.Drupal.ombumedia._popupCallback($return_json);
   }
   catch (e) {}
 </script>
