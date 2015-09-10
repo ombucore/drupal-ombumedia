@@ -76,6 +76,9 @@
           if (widget.data.view_mode) {
             options.view_mode = widget.data.view_mode;
           }
+          if (Drupal.settings.ombumedia && Drupal.settings.ombumedia.view_modes) {
+            options.view_modes = Drupal.settings.ombumedia.view_modes;
+          }
 
           Drupal.ombumedia.selectMedia(options).then(selectSuccess, selectFail);
 

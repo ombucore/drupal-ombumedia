@@ -278,6 +278,47 @@ function ombumedia_wysiwyg_editor_settings_alter(&$settings, &$context) {
     // Ensure the ombumedia js is loaded.
     if (isset($context['profile']->settings['buttons']['ombumedia']['ombumedia'])) {
       drupal_add_library('ombumedia', 'ombumedia');
+      // Add view_modes saved with the profile.
+      $view_modes = array();
+      foreach ($context['profile']->settings['ombumedia']['view_modes'] as $type => $modes) {
+        $view_modes[$type] = array_values($modes);
+      }
+      drupal_add_js(array(
+        'ombumedia' => array(
+          'view_modes' => $view_modes,
+        ),
+      ), 'setting');
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Add settings for OMBU Media.
+ */
+function ombumedia_form_wysiwyg_profile_form_alter(&$form, &$form_state, $form_id) {
+  $profile = $form_state['wysiwyg_profile'];
+  if (isset($form['buttons']['ombumedia']['ombumedia'])) {
+    $form['ombumedia'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('OMBU Media'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#tree' => TRUE,
+      'view_modes' => array(),
+    );
+
+    $entity_info = entity_get_info('file');
+    $types = array_keys($entity_info['bundles']);
+    foreach ($types as $type) {
+      $form['ombumedia']['view_modes'][$type] = array(
+        '#title' => ucwords($type) . ' Styles',
+        '#type' => 'select',
+        '#multiple' => TRUE,
+        '#options' => ombumedia_file_type_view_modes($type),
+        '#default_value' => $profile->settings['ombumedia']['view_modes'][$type],
+      );
     }
   }
 }
@@ -500,8 +541,8 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
   );
 
   $view_mode_options = ombumedia_file_type_view_modes($file->type);
-  if (isset($_GET['view_modes'])) {
-    $view_mode_options = array_intersect_key($view_mode_options, array_flip($_GET['view_modes']));
+  if (isset($_GET['view_modes']) && isset($_GET['view_modes'][$file->type])) {
+    $view_mode_options = array_intersect_key($view_mode_options, array_flip($_GET['view_modes'][$file->type]));
   }
   $view_mode = isset($_GET['view_mode']) ? $_GET['view_mode'] : array_keys($view_mode_options)[0];
 
