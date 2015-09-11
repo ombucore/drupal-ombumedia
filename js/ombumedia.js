@@ -19,7 +19,7 @@ Drupal.ombumedia.selectMedia = function(options) {
  * Opens the OMBU Media pop-up for selecting or editing a media file.
  *
  * @param {object} options, all optional
- *  - type: {string} 'image', 'video' 'document', 'audio'
+ *  - types: {array} of types to allow: 'image', 'video' 'document', 'audio'
  *  - view_modes: {object} keyed by file type, each with an array of view mode
  *                        strings
  *  - view_mode: {string} the default view mode for the configure form

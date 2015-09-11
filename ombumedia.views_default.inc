@@ -94,7 +94,8 @@ function ombumedia_views_default_views() {
   $handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
   $handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
   $handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
-  $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
+  $handler->display->display_options['filters']['type']['expose']['identifier'] = 'types';
+  $handler->display->display_options['filters']['type']['expose']['multiple'] = TRUE;
   $handler->display->display_options['filters']['type']['expose']['remember_roles'] = array(
     2 => '2',
     1 => 0,

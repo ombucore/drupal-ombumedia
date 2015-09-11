@@ -323,6 +323,24 @@ function ombumedia_form_wysiwyg_profile_form_alter(&$form, &$form_state, $form_i
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Tweaks to the OMBU Media filter form.
+ */
+function ombumedia_form_views_exposed_form_alter(&$form, &$form_state) {
+  $view = $form_state['view'];
+  if ($view->name === 'ombumedia') {
+    if (isset($_GET['types'])) {
+      foreach ($form['types']['#options'] as $key => $label) {
+        if (!in_array($key, $_GET['types'])) {
+          unset($form['types']['#options'][$key]);
+        }
+      }
+    }
+  }
+}
+
+/**
  * Implements hook_page_alter().
  *
  * This is used to use our alternate template when ?render=media-popup is passed

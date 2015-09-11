@@ -180,7 +180,8 @@ function ombumedia_page_test() {
   $test_selection = <<<HEREDOC
 <ul>
   <li><a href="#" class="select-media-all">Select Media</a></li>
-  <li><a href="#" class="select-media-image">Select Image (view_modes: ['preview'])</a></li>
+  <li><a href="#" class="select-media-image">Select Image (view_modes: {image: ['preview']})</a></li>
+  <li><a href="#" class="select-media-image-video">Select Image or Video</a></li>
   <li><a href="#" class="select-media-document">Select Document</a></li>
   <li><a href="#" class="select-media-video">Configure Video (fid: 35, view_mode: 'preview')</a></li>
   <li><a href="#" class="select-media-image-wysiwyg">Select Image for WYSIWYG format</a></li>
