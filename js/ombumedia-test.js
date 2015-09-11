@@ -4,7 +4,7 @@
 $(function() {
 
   function populateValues(values) {
-    console.log('resolved');
+    console.log('resolved', values);
     $('dd.fid').text(values.fid);
     $('dd.view-mode').text(values.view_mode);
   }
@@ -18,7 +18,9 @@ $(function() {
     e.preventDefault();
     Drupal.ombumedia.selectMedia({
       type: 'image',
-      view_modes: ['preview']
+      view_modes: {
+        image: ['preview']
+      }
     }).then(populateValues);
   });
 
@@ -35,6 +37,18 @@ $(function() {
       fid: 35,
       type: 'video',
       view_mode: 'preview'
+    }).then(populateValues);
+  });
+
+  $('.select-media-image-wysiwyg').on('click', function(e) {
+    e.preventDefault();
+    Drupal.ombumedia.selectMedia({
+      type: 'image',
+      view_modes: {
+        image: ['preview'],
+        video: ['preview', 'full']
+      },
+      wywiwyg_format: 'default',
     }).then(populateValues);
   });
 

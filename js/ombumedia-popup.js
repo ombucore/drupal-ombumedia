@@ -94,30 +94,4 @@ Drupal.behaviors.ombumediaFilePreview = {
 };
 
 
-
-/**
- * Code to run on the configure form before a media file is selected.
- */
-Drupal.behaviors.ombumediaFileEntityConfigure = {
-  attach: function(context) {
-    var $form = $('form.ombumedia-file-entity-configure').once('ombumedia-file-entity-configure');
-
-    if (!$form.length) {
-      return;
-    }
-
-    // Grab values we need from the form on submit.
-    $form.on('submit', function(e) {
-      var fid = $form.find('[name="fid"]').val();
-      var view_mode = $form.find('[name="view_mode"]').val();
-      try {
-        ombumediaSelectCallback({fid: fid, view_mode: view_mode});
-      }
-      catch (error) {}
-    });
-  }
-};
-
-
-
 })(jQuery);

@@ -10,48 +10,36 @@ var fileUrl = Drupal.ombumedia.util.fileUrl;
 /**
  * Kicks off media selection workflow.
  *
- * @param {object} options
- *  - type: {string} 'image', 'video' 'document', 'audio'
- *  - view_modes: {object} keyed by file type, each with an array of view mode
- *                        strings
  */
 Drupal.ombumedia.selectMedia = function(options) {
   return Drupal.ombumedia.launchPopup(options);
 };
 
 /**
- * Skips the selection phase of the selection, goes straight to the
- * preview/edit form.
- */
-Drupal.ombumedia.configureMedia = function(fid, view_mode, options) {
-  options.fid = fid;
-  options.view_mode = view_mode;
-  return Drupal.ombumedia.launchPopup(options);
-};
-
-/**
  * Opens the OMBU Media pop-up for selecting or editing a media file.
+ *
+ * @param {object} options, all optional
+ *  - type: {string} 'image', 'video' 'document', 'audio'
+ *  - view_modes: {object} keyed by file type, each with an array of view mode
+ *                        strings
+ *  - view_mode: {string} the default view mode for the configure form
+ *  - fid: the file id to configure
+ *  - wysiwyg_format: {string} the wysiwyg format, useful for adding configure
+ *                    form functionality to specific cases.
+ *
+ *  @returns Promise
  */
 Drupal.ombumedia.launchPopup = function(options) {
   options = options || {};
   var deferred = $.Deferred();
-  var query = {
-    render: 'ombumedia-popup'
-  };
+  var query = options;
   var src, path, $iframe;
 
-  if (options.type) {
-    query.type = options.type;
-  }
-  if (options.view_mode) {
-    query.view_mode = options.view_mode;
-  }
-  if (options.view_modes) {
-    query.view_modes = options.view_modes;
-  }
+  query.render = 'ombumedia-popup';
 
   if (options.fid) {
     path = '/file/' + options.fid + '/configure';
+    delete query.fid;
   }
   else {
     path = '/admin/dashboard/select-media';
@@ -63,12 +51,12 @@ Drupal.ombumedia.launchPopup = function(options) {
 
   $iframe.attr('src', src);
 
-  $iframe.on('load', function() {
-    // Inject a callback function that can be called from the iframe js.
-    $iframe[0].contentWindow.ombumediaSelectCallback = function(data) {
-      deferred.resolve(data);
-    };
-  });
+  Drupal.ombumedia._popupCallback = function() {
+      deferred.resolve.apply(null, arguments);
+      $iframe
+        .dialog('close')
+        .dialog('destroy');
+  };
 
   var dialogOptions = {
     modal: true,

@@ -253,6 +253,76 @@ function ombumedia_field_formatter_view($entity_type, $entity, $field, $instance
 }
 
 /**
+ * Implements hook_wysiwyg_plugin().
+ */
+function ombumedia_wysiwyg_plugin($editor, $version) {
+  if ($editor == 'ckeditor') {
+    return array(
+      'ombumedia' => array(
+        'path' => drupal_get_path('module', 'ombumedia') . '/js/ckeditor',
+        'file' => 'plugin.js',
+        'buttons' => array(
+          'ombumedia' => t('OMBU Media'),
+        ),
+        'load' => TRUE,
+      ),
+    );
+  }
+}
+
+/**
+ * Implements hook_wysiwyg_editor_settings_alter().
+ */
+function ombumedia_wysiwyg_editor_settings_alter(&$settings, &$context) {
+  if ($context['profile']->editor == 'ckeditor') {
+    // Ensure the ombumedia js is loaded.
+    if (isset($context['profile']->settings['buttons']['ombumedia']['ombumedia'])) {
+      drupal_add_library('ombumedia', 'ombumedia');
+      // Add view_modes saved with the profile.
+      $view_modes = array();
+      foreach ($context['profile']->settings['ombumedia']['view_modes'] as $type => $modes) {
+        $view_modes[$type] = array_values($modes);
+      }
+      $settings['ombumedia'] = array(
+        'view_modes' => $view_modes,
+        'wysiwyg_format' => $context['profile']->format,
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Add settings for OMBU Media.
+ */
+function ombumedia_form_wysiwyg_profile_form_alter(&$form, &$form_state, $form_id) {
+  $profile = $form_state['wysiwyg_profile'];
+  if (isset($form['buttons']['ombumedia']['ombumedia'])) {
+    $form['ombumedia'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('OMBU Media'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#tree' => TRUE,
+      'view_modes' => array(),
+    );
+
+    $entity_info = entity_get_info('file');
+    $types = array_keys($entity_info['bundles']);
+    foreach ($types as $type) {
+      $form['ombumedia']['view_modes'][$type] = array(
+        '#title' => ucwords($type) . ' Styles',
+        '#type' => 'select',
+        '#multiple' => TRUE,
+        '#options' => ombumedia_file_type_view_modes($type),
+        '#default_value' => $profile->settings['ombumedia']['view_modes'][$type],
+      );
+    }
+  }
+}
+
+/**
  * Implements hook_page_alter().
  *
  * This is used to use our alternate template when ?render=media-popup is passed
@@ -470,10 +540,16 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
   );
 
   $view_mode_options = ombumedia_file_type_view_modes($file->type);
-  if (isset($_GET['view_modes'])) {
-    $view_mode_options = array_intersect_key($view_mode_options, array_flip($_GET['view_modes']));
+  if (isset($_GET['view_modes']) && isset($_GET['view_modes'][$file->type])) {
+    $view_mode_options = array_intersect_key($view_mode_options, array_flip($_GET['view_modes'][$file->type]));
   }
-  $view_mode = isset($_GET['view_mode']) ? $_GET['view_mode'] : array_keys($view_mode_options)[0];
+
+  if (isset($_GET['view_mode']) && in_array($_GET['view_mode'], $view_mode_options)) {
+    $view_mode =  $_GET['view_mode'];
+  }
+  else {
+    $view_mode = array_keys($view_mode_options)[0];
+  }
 
   $form['view_mode'] = array(
     '#type' => 'select',
@@ -492,10 +568,30 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
   $form['preview']['#prefix'] = '<div id="' . $preview_id . '">';
   $form['preview']['#suffix'] = '</div>';
 
-  $form['fid'] = array(
-    '#type' => 'hidden',
-    '#value' => $file->fid,
+  // Any values in `select_data` will automatically be returned to the browser
+  // upon selection completion.
+  $form['select_data'] = array(
+    '#tree' => TRUE,
+    'fid' => array(
+      '#type' => 'hidden',
+      '#value' => $file->fid,
+    ),
   );
+
+  if (isset($_GET['wysiwyg_format'])) {
+    if ($file->type === 'image') {
+      $form['select_data']['position'] = array(
+        '#type' => 'select',
+        '#title' => t('Position'),
+        '#options' => array(
+          'center' => t('Center'),
+          'left' => t('Left'),
+          'right' => t('Right'),
+        ),
+        '#default_value' => isset($_GET['position']) ? $_GET['position'] : 'center',
+      );
+    }
+  }
 
   $form['file'] = array(
     '#title' => t('Edit File'),
@@ -521,7 +617,7 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
     '#type' => 'actions',
     '#weight' => 30,
     'back' => array(
-      '#markup' => l(t('Back'), 'admin/dashboard/select-media', array(
+      '#markup' => l(t('Library'), 'admin/dashboard/select-media', array(
         'query' => drupal_get_query_parameters(),
         'attributes' => array('class' => 'ombumedia-button'),
       )),
@@ -540,7 +636,7 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
 
 function ombumedia_file_entity_configure_preview_callback($form, &$form_state) {
   $preview_id = $form['#preview_id'];
-  $file = file_load($form_state['values']['fid']);
+  $file = $form['#file'];
   $view_mode = $form_state['values']['view_mode'];
 
   $rendered = '<div id="' . $preview_id . '">' . render(file_view_file($file, $view_mode)) . '</div>';
@@ -570,12 +666,15 @@ function ombumedia_file_entity_configure_submit($form, &$form_state) {
   $file->filename = $form_state['values']['filename'];
   file_save($file);
 
-  $fid = $file->fid;
+  $return = $form_state['values']['select_data'];
+  $return['view_mode'] = $form_state['values']['view_mode'];
+
+  $return_json = drupal_json_encode($return);
 
   print <<<JS
 <script type="text/javascript">
   try {
-    window.parent.Drupal.ombumedia.closePopup();
+    window.parent.Drupal.ombumedia._popupCallback($return_json);
   }
   catch (e) {}
 </script>
