@@ -206,6 +206,10 @@ function ombumedia_page_test_form($form, &$form_state) {
     '#title' => t('WYSIWYG Integration'),
     '#type' => 'text_format',
     '#format' => 'default',
+    '#default_value' => <<<HEREDOC
+<p>This is some text before the media element</p>
+<ombumedia data-ombumedia="{&quot;fid&quot;:&quot;47&quot;,&quot;position&quot;:&quot;center&quot;,&quot;view_mode&quot;:&quot;teaser&quot;}" data-ombumedia-fid="47" data-ombumedia-position="center" data-ombumedia-view_mode="teaser"><span>{&quot;fid&quot;:&quot;47&quot;,&quot;position&quot;:&quot;center&quot;,&quot;view_mode&quot;:&quot;teaser&quot;}</span></ombumedia><p>This is some text after the media element</p>
+HEREDOC
   );
 
   return $form;

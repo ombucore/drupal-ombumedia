@@ -50,11 +50,30 @@
         template: '<div data-ombumedia=""></div>',
         allowedContent: 'div[data-ombumedia];',
         requiredContent: 'div[data-ombumedia]',
+
+        /**
+         * Changes <ombumedia> tag to <div> while editing.
+         */
         upcast: function(element) {
-          return element && element.name == 'div' && element.attributes['data-ombumedia'];
+          if (element && element.name == 'ombumedia') {
+            element.name = 'div';
+            return element;
+          }
         },
 
-        // Populate widget data from DOM.
+        /**
+         * Changes <div> tag to <ombumedia> when done editing.
+         */
+        downcast: function(element) {
+          if (element && element.name == 'div' && element.attributes['data-ombumedia']) {
+            element.name = 'ombumedia';
+            return element;
+          }
+        },
+
+        /**
+         * Populate widget data from DOM.
+         */
         init: function() {
           var widget = this;
           var dataJson = widget.element.getAttribute('data-ombumedia') || '{}';
@@ -62,7 +81,9 @@
           setWidgetData(widget, data);
         },
 
-        // Move widget data into DOM.
+        /**
+         * Move widget data into DOM.
+         */
         data: function() {
           var widget = this;
           var data = getWidgetData(widget);
@@ -75,9 +96,11 @@
           widget.element.setHtml('<span>' + JSON.stringify(data) + '</span>');
         },
 
-        // Triggered when widget is double clicked or the button is pushed.
-        // Used instead of the widget dialog system.
-        // @see https://stackoverflow.com/a/29509042/325018
+        /**
+         * Triggered when widget is double clicked or the button is pushed.
+         * Used instead of the widget dialog system.
+         * @see https://stackoverflow.com/a/29509042/325018
+         */
         edit: function() {
           var widget = this;
           widget.editor.fire('saveSnapshot');
