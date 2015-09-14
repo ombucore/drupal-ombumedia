@@ -616,21 +616,6 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
     ),
   );
 
-  if (isset($_GET['wysiwyg_format'])) {
-    if ($file->type === 'image') {
-      $form['select_data']['position'] = array(
-        '#type' => 'select',
-        '#title' => t('Position'),
-        '#options' => array(
-          'center' => t('Center'),
-          'left' => t('Left'),
-          'right' => t('Right'),
-        ),
-        '#default_value' => isset($_GET['position']) ? $_GET['position'] : 'center',
-      );
-    }
-  }
-
   $form['file'] = array(
     '#title' => t('Edit File'),
     '#description' => t('Changing these fields update them everwhere this file is used.'),

@@ -1,0 +1,42 @@
+<?php
+/**
+ * @file
+ * Code for the OMBU Media Image Positioning.
+ *
+ * Adds fields to the configuration form for media images being embedded in
+ * rich text.
+ *
+ * An example of how to add fields and pass data back through the media
+ * selection workflow.
+ */
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function ombumedia_image_position_form_ombumedia_file_entity_configure_alter(&$form, &$form_state) {
+
+  // Add fields to the configuration form for the 'default' text format.
+  if (isset($_GET['wysiwyg_format']) && $_GET['wysiwyg_format'] == 'default') {
+
+    // Grab the file from here.
+    $file = $form['#file'];
+
+    if ($file->type === 'image') {
+
+      // Any values added to ['select_data'] will be returned to the browser
+      // after submission.
+      $form['select_data']['position'] = array(
+        '#type' => 'select',
+        '#title' => t('Position'),
+        '#options' => array(
+          'center' => t('Center'),
+          'left' => t('Left'),
+          'right' => t('Right'),
+        ),
+        '#default_value' => isset($_GET['position']) ? $_GET['position'] : 'center',
+      );
+
+    }
+  }
+
+}

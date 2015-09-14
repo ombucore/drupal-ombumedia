@@ -7,13 +7,6 @@ var preventDefault = Drupal.ombumedia.util.preventDefaultWrapper;
 var stopPropagation = Drupal.ombumedia.util.stopPropagationWrapper;
 var fileUrl = Drupal.ombumedia.util.fileUrl;
 
-/**
- * Kicks off media selection workflow.
- *
- */
-Drupal.ombumedia.selectMedia = function(options) {
-  return Drupal.ombumedia.launchPopup(options);
-};
 
 /**
  * Opens the OMBU Media pop-up for selecting or editing a media file.
@@ -29,7 +22,7 @@ Drupal.ombumedia.selectMedia = function(options) {
  *
  *  @returns Promise
  */
-Drupal.ombumedia.launchPopup = function(options) {
+Drupal.ombumedia.selectMedia = function(options) {
   options = options || {};
   var deferred = $.Deferred();
   var query = options;
