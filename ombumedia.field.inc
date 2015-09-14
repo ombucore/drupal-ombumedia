@@ -6,6 +6,10 @@
  */
 
 /**
+ * Form Element Hooks
+ */
+
+/**
  * Implements hook_element_info().
  */
 function ombumedia_element_info() {
@@ -23,6 +27,8 @@ function ombumedia_element_info() {
         'types' => array(),
         // Example: array('http', 'ftp', 'flickr');
         'schemes' => array(),
+        // Example: array('default', 'teaser');
+        'view_modes' => array(),
       ),
     ),
     '#attributes' => array(
@@ -52,8 +58,7 @@ function ombumedia_element_process(&$element, &$form_state, $form) {
 
   // Set options via data attributes.
   $element['#attributes']['data-types'] = join(',', $element['#media_options']['global']['types']);
-  // @todo: support configurable view modes.
-  $element['#attributes']['data-view-modes'] = '';
+  $element['#attributes']['data-view-modes'] = join(',', $element['#media_options']['global']['view_modes']);
 
   $element['title'] = array(
     '#type' => 'item',
@@ -124,6 +129,244 @@ function ombumedia_element_validate(&$element, &$form_state) {
 }
 
 /**
+ * Field Hooks
+ *
+ * Borrowed from mediafield.module.
+ */
+
+/**
+ * Implements hook_field_info().
+ */
+function ombumedia_field_info() {
+  return array(
+    'ombumedia' => array(
+      'label' => t('Media asset'),
+      'description' => t('This field stores media file along with display settings'),
+      'settings' => array(),
+      'instance_settings' => array(
+        'file_extensions' => variable_get('ombumedia__file_extensions'),
+      ),
+      'default_widget' => 'media_generic',
+      'default_formatter' => 'media',
+      'property_type' => 'field_item_file',
+      'property_callbacks' => array('entity_metadata_field_file_callback'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_instance_settings_form().
+ */
+function ombumedia_field_instance_settings_form($field, $instance) {
+  $settings = $instance['settings'];
+
+  // Make the extension list a little more human-friendly by comma-separation.
+  $extensions = str_replace(' ', ', ', $settings['file_extensions']);
+  $form['file_extensions'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Allowed file extensions for uploaded files'),
+    '#default_value' => $extensions,
+    '#description' => t('Separate extensions with a space or comma and do not include the leading dot.'),
+    '#element_validate' => array('_file_generic_settings_extensions'),
+    // By making this field required, we prevent a potential security issue
+    // that would allow files of any type to be uploaded.
+    '#required' => TRUE,
+    '#maxlength' => 255,
+  );
+
+  return $form;
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function ombumedia_field_is_empty($item, $field) {
+  return empty($item['fid']);
+}
+
+/**
+ * Implements hook_field_prepare_view().
+ */
+function ombumedia_field_prepare_view($entity_type, $entities, $field, $instances, $langcode, &$items) {
+  // Collect all file IDs that need loading.
+  $fids = array();
+  foreach ($entities as $id => $entity) {
+    // Load the files from the files table.
+    foreach ($items[$id] as $delta => $item) {
+      if (!empty($item['fid'])) {
+        $fids[] = $item['fid'];
+      }
+    }
+  }
+
+  // Load the file entities.
+  $files = file_load_multiple($fids);
+
+  // Add the loaded file entities to the field item array.
+  foreach ($entities as $id => $entity) {
+    foreach ($items[$id] as $delta => $item) {
+      // If the file does not exist, mark the entire item as empty.
+      if (empty($files[$item['fid']])) {
+        unset($items[$id][$delta]);
+      }
+      else {
+        $items[$id][$delta]['file'] = $files[$item['fid']];
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_field_validate().
+ *
+ * Possible error codes:
+ * - 'media_remote_file_type_not_allowed': The remote file is not an allowed
+ *   file type.
+ */
+function ombumedia_field_validate($obj_type, $object, $field, $instance, $langcode, $items, &$errors) {
+  $allowed_types = array_keys(array_filter($instance['widget']['settings']['allowed_types']));
+
+    // @TODO: merge in stuff from media_uri_value
+  foreach ($items as $delta => $item) {
+    if (empty($item['fid'])) {
+      return TRUE;
+      //@TODO: make support for submiting with just a URI here?
+    }
+
+    $file = file_load($item['fid']);
+
+    // Only validate allowed types if the file is remote and not local.
+    if (!file_entity_file_is_local($file)) {
+      if (!in_array($file->type, $allowed_types)) {
+        $errors[$field['field_name']][$langcode][$delta][] = array(
+          'error' => 'media_remote_file_type_not_allowed',
+          'message' => t('%name: Only remote files with the following types are allowed: %types-allowed.', array('%name' => t($instance['label']), '%types-allowed' => !empty($allowed_types) ? implode(', ', $allowed_types) : t('no file types selected'))),
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Implements_hook_field_widget_error().
+ */
+function ombumedia_field_widget_error($element, $error, $form, &$form_state) {
+  form_error($element['fid'], $error['message']);
+}
+
+/**
+ * @todo The following hook_field_(insert|update|delete|delete_revision)
+ *   implementations are nearly identical to the File module implementations of
+ *   the same field hooks. The only differences are:
+ *   - We pass 'media' rather than 'file' as the module argument to the
+ *     file_usage_(add|delete)() functions.
+ *   - We do not delete the file / media entity when its usage count goes to 0.
+ *   We should submit a core patch to File module to make it flexible with
+ *   respect to the above, so that we can reuse its implementation rather than
+ *   duplicating it.
+ */
+
+/**
+ * Implements hook_field_insert().
+ */
+function ombumedia_field_insert($entity_type, $entity, $field, $instance, $langcode, &$items) {
+  list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
+
+  // Add a new usage of each uploaded file.
+  foreach ($items as $item) {
+    $file = (object) $item;
+    file_usage_add($file, 'ombumedia', $entity_type, $id);
+  }
+}
+
+/**
+ * Implements hook_field_update().
+ *
+ * Checks for files that have been removed from the object.
+ */
+function ombumedia_field_update($entity_type, $entity, $field, $instance, $langcode, &$items) {
+  list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
+
+  // On new revisions, all files are considered to be a new usage and no
+  // deletion of previous file usages are necessary.
+  if (!empty($entity->revision)) {
+    foreach ($items as $item) {
+      $file = (object) $item;
+      file_usage_add($file, 'ombumedia', $entity_type, $id);
+    }
+    return;
+  }
+
+  // Build a display of the current FIDs.
+  $current_fids = array();
+  foreach ($items as $item) {
+    $current_fids[] = $item['fid'];
+  }
+
+  // Compare the original field values with the ones that are being saved.
+  $original_fids = array();
+  if (!empty($entity->original->{$field['field_name']}[$langcode])) {
+    foreach ($entity->original->{$field['field_name']}[$langcode] as $original_item) {
+      $original_fids[] = $original_item['fid'];
+      if (isset($original_item['fid']) && !in_array($original_item['fid'], $current_fids)) {
+        // Decrement the file usage count by 1.
+        $file = (object) $original_item;
+        file_usage_delete($file, 'ombumedia', $entity_type, $id, 1);
+      }
+    }
+  }
+
+  // Add new usage entries for newly added files.
+  foreach ($items as $item) {
+    if (!in_array($item['fid'], $original_fids)) {
+      $file = (object) $item;
+      file_usage_add($file, 'ombumedia', $entity_type, $id);
+    }
+  }
+}
+
+/**
+ * Implements hook_field_delete().
+ */
+function ombumedia_field_delete($entity_type, $entity, $field, $instance, $langcode, &$items) {
+  list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
+
+  // Delete all file usages within this entity.
+  foreach ($items as $delta => $item) {
+    $file = (object) $item;
+    file_usage_delete($file, 'ombumedia', $entity_type, $id, 0);
+  }
+}
+
+/**
+ * Implements hook_field_delete_revision().
+ */
+function ombumedia_field_delete_revision($entity_type, $entity, $field, $instance, $langcode, &$items) {
+  list($id, $vid, $bundle) = entity_extract_ids($entity_type, $entity);
+  foreach ($items as $delta => $item) {
+    // @TODO: Not sure if this is correct
+    $file = (object)$item;
+    if (file_usage_delete($file, 'ombumedia', $entity_type, $id, 1)) {
+      $items[$delta] = NULL;
+    }
+  }
+}
+
+/**
+ * Implements hook_field_instance_update().
+ */
+function ombumedia_field_update_instance($instance, $prior_instance) {
+  // Clear the filter cache when updating instance settings for a media entity.
+  if ($instance['entity_type'] == 'media') {
+    // media_filter_invalidate_caches();
+  }
+}
+
+/**
+ * Field Widget Hooks
+ */
+
+/**
  * Implements hook_field_widget_info().
  */
 function ombumedia_field_widget_info() {
@@ -134,6 +377,7 @@ function ombumedia_field_widget_info() {
       'settings' => array(
         'allowed_types' => array('image'),
         'allowed_schemes' => array('public', 'private'),
+        'allowed_view_modes' => array('default'),
       ),
       'behaviors' => array(
         'multiple values' => FIELD_BEHAVIOR_DEFAULT,
@@ -152,6 +396,20 @@ function ombumedia_field_widget_settings_form($field, $instance) {
   $form = array();
 
   $streams = file_get_stream_wrappers(STREAM_WRAPPERS_VISIBLE);
+
+  // View modes only work with ombumedia field types, since file and image field
+  // types can't store additional settings.
+  if ($field['type'] == 'ombumedia') {
+    $form['allowed_view_modes'] = array(
+      '#type' => 'checkboxes',
+      '#title' => t('Allowed view modes'),
+      '#options' => file_entity_view_mode_labels(),
+      '#default_value' => $settings['allowed_types'],
+      '#description' => t('View modes that are allowed when selecting media.  If only one then no view mode selector will be presented. If no view mode is selected then all are available.'),
+      '#weight' => 1,
+    );
+  }
+
 
   $form['allowed_types'] = array(
     '#type' => 'checkboxes',
@@ -211,9 +469,10 @@ function ombumedia_field_widget_form(&$form, &$form_state, $field, $instance, $l
     '#media_options' => array(
       'global' => array(
         'types' => array_filter($widget_settings['allowed_types']),
+        'view_modes' => array_filter($widget_settings['allowed_view_modes']),
         'schemes' => $widget_settings['allowed_schemes'],
         'file_directory' => isset($field_settings['file_directory']) ? $field_settings['file_directory'] : '',
-        'file_extensions' => isset($field_settings['file_extensions']) ? $field_settings['file_extensions'] : media_variable_get('file_extensions'),
+        'file_extensions' => isset($field_settings['file_extensions']) ? $field_settings['file_extensions'] : variable_get('ombumedia__file_extensions'),
         'max_filesize' => isset($field_settings['max_filesize']) ? $field_settings['max_filesize'] : 0,
         'uri_scheme' => !empty($field['settings']['uri_scheme']) ? $field['settings']['uri_scheme'] : file_default_scheme(),
       ),
