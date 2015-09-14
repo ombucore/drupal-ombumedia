@@ -40,3 +40,16 @@ function ombumedia_image_position_form_ombumedia_file_entity_configure_alter(&$f
   }
 
 }
+
+/**
+ * Implements hook_preprocess_file_entity().
+ */
+function ombumedia_preprocess_file_entity(&$variables) {
+  $file = $variables['file'];
+  if (isset($file->ombumedia_settings)) {
+    $settings = $file->ombumedia_settings;
+    if ($file->type === 'image' && $settings->position != 'center') {
+      $variables['classes_array'][] = 'pull-' . $settings->position;
+    }
+  }
+}

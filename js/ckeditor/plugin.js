@@ -24,6 +24,17 @@
     return data;
   }
 
+  var innerTemplate = new CKEDITOR.template(['',
+      '<span>',
+        '<span class="title"><strong>{type}</strong>: {title}</span>',
+        '<span class="style"><strong>Style</strong>: {viewMode}</span>',
+      '</span>',
+  ''].join(''));
+
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.substring(1);
+  }
+
   CKEDITOR.plugins.add('ombumedia', {
     requires: 'widget',
     icons: 'ombumedia',
@@ -38,9 +49,14 @@
        * @see https://www.drupal.org/node/2129915#comment-8494415
        */
       editor.ui.addButton('ombumedia', {
-        label: 'Media',
+        label: 'Embed Media',
         command: 'ombumedia',
       });
+
+      /**
+       * Add the CSS.
+       */
+      editor.addContentsCss(Drupal.settings.ombumedia.path + '/js/ckeditor/plugin.css');
 
       /**
        * Widget definition.
@@ -67,6 +83,14 @@
         downcast: function(element) {
           if (element && element.name == 'div' && element.attributes['data-ombumedia']) {
             element.name = 'ombumedia';
+            element.children = [];
+            for (var key in element.attributes) {
+              if (element.attributes.hasOwnProperty(key)) {
+                if (key !== 'data-ombumedia') {
+                  delete element.attributes[key];
+                }
+              }
+            }
             return element;
           }
         },
@@ -93,7 +117,13 @@
               widget.element.setAttribute('data-ombumedia-' + key, data[key]);
             }
           }
-          widget.element.setHtml('<span>' + JSON.stringify(data) + '</span>');
+
+          var templateVars = {
+            type: data.type ? capitalize(data.type) : '',
+            title: data.title ? data.title : '',
+            viewMode: data.view_mode ? capitalize(data.view_mode) : ''
+          };
+          widget.element.setHtml(innerTemplate.output(templateVars));
         },
 
         /**

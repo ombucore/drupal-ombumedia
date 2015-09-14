@@ -43,13 +43,16 @@ function ombumedia_render_filter_placeholders($text, $filter, $format, $langcode
       $file = file_load($media_info->fid);
 
       if ($file) {
+        $file->ombumedia_settings = $media_info;
         $file_output = file_view($file, $media_info->view_mode);
         $file_output = drupal_render($file_output);
 
-        $file_node = $dom->createDocumentFragment();
-        $file_node->appendXML($file_output);
-
-        $node->parentNode->replaceChild($file_node, $node);
+        $new_nodes = ombumedia_html_to_xmlnodes($file_output);
+        foreach ($new_nodes as $new_node) {
+          $new_node = $dom->importNode($new_node, TRUE);
+          $node->parentNode->insertBefore($new_node, $node);
+        }
+        $node->parentNode->removeChild($node);
       }
 
     }
@@ -85,4 +88,13 @@ EOD;
   @$dom->loadHTML($document);
 
   return $dom;
+}
+
+/**
+ * Helper function to load a html snippet and return a DOMDocument NodeList
+ * representation of the html.
+ */
+function ombumedia_html_to_xmlnodes($snippet) {
+  $doc = ombumedia_dom_load_html($snippet);
+  return $doc->getElementsByTagName('body')->item(0)->childNodes;
 }

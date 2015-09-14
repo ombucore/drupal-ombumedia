@@ -144,6 +144,7 @@ function ombumedia_library() {
             'upload' => array(
               'url' => url('admin/ombumedia/ajax-upload'),
             ),
+            'path' => url($path),
           ),
         ),
       ),
@@ -691,6 +692,8 @@ function ombumedia_file_entity_configure_submit($form, &$form_state) {
 
   $return = $form_state['values']['select_data'];
   $return['view_mode'] = $form_state['values']['view_mode'];
+  $return['title'] = $file->filename;
+  $return['type'] = $file->type;
 
   $return_json = drupal_json_encode($return);
 

@@ -1,0 +1,29 @@
+@gray: #e0e0d8;
+
+.cke_widget_wrapper {
+  margin: 1em 0;
+}
+
+[data-ombumedia] {
+  padding: 0.5em;
+  background: @gray;
+
+  span.title {
+    display: block;
+  }
+
+  span.style {
+    display: block;
+  }
+
+  &[data-ombumedia-type="image"] {
+    &[data-ombumedia-position="left"] {
+      float: left;
+      margin: 0 1em 1em 0;
+    }
+    &[data-ombumedia-position="right"] {
+      float: right;
+      margin: 0 0 1em 1em;
+    }
+  }
+}

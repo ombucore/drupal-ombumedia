@@ -196,22 +196,30 @@ HEREDOC;
 
   $form = drupal_get_form('ombumedia_page_test_form');
 
+  $wysiwyg_test = variable_get('ombumedia_wysiwyg_test', array());
+
   return array(
     'test' => array('#markup' => $test_selection),
     'form' => $form,
+    'wysiwyg' => array(
+      '#markup' => check_markup($wysiwyg_test['value'], $wysiwyg_test['format'], '', FALSE),
+    ),
   );
 }
 
 function ombumedia_page_test_form($form, &$form_state) {
-  $form['text'] = array(
+  $rendered_wysiwyg = variable_get('ombumedia_wysiwyg_test', array());
+
+  $form['ombumedia_wysiwyg_test'] = array(
     '#title' => t('WYSIWYG Integration'),
     '#type' => 'text_format',
-    '#format' => 'default',
-    '#default_value' => <<<HEREDOC
-<p>This is some text before the media element</p>
-<ombumedia data-ombumedia="{&quot;fid&quot;:&quot;47&quot;,&quot;position&quot;:&quot;center&quot;,&quot;view_mode&quot;:&quot;teaser&quot;}" data-ombumedia-fid="47" data-ombumedia-position="center" data-ombumedia-view_mode="teaser"><span>{&quot;fid&quot;:&quot;47&quot;,&quot;position&quot;:&quot;center&quot;,&quot;view_mode&quot;:&quot;teaser&quot;}</span></ombumedia><p>This is some text after the media element</p>
-HEREDOC
+    '#format' => $rendered_wysiwyg['format'],
+    '#default_value' => $rendered_wysiwyg['value'],
   );
+
+  $form = system_settings_form($form);
+
+  $form['actions']['submit']['#value'] = t('Render HTML');
 
   return $form;
 }
