@@ -147,7 +147,13 @@
             widget.editor.fire('saveSnapshot');
           }
 
-          function selectFail() {}
+          function selectFail() {
+            // Delete it if we're adding a new widget and the workflow is
+            // cancelled.
+            if (!widget.data.fid) {
+              widget.editor.widgets.del(widget);
+            }
+          }
         }
 
       });
