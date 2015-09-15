@@ -20,7 +20,6 @@ function ombumedia_filter_info() {
   return $filters;
 }
 
-
 /**
  * Implements callback_filter_process().
  *

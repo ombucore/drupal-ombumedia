@@ -140,7 +140,8 @@ function ombumedia_page_media_ajax_upload() {
 }
 
 /**
- * Page callback to preview an OMBU Media file.
+ * Page callback to preview an OMBU Media file rendered as 'full' so videos can
+ * play and images are large.
  */
 function ombumedia_page_file_preview($file) {
   if (!user_access('administer files') && (file_uri_scheme($file->uri) === 'private')) {
@@ -167,6 +168,30 @@ function ombumedia_page_file_configure($file) {
   $form = drupal_get_form('ombumedia_file_entity_configure', $file->fid);
 
   return drupal_render($form);
+}
+
+/**
+ * Page callback for a field to get a file preview.
+ */
+function ombumedia_page_file_field_preview($file, $view_mode = 'preview') {
+  $output = array(
+    '#prefix' => '<div class="ombumedia-file-field-preview">',
+    '#suffix' => '</div>',
+  );
+  if ($file->type == 'document') {
+    $preview = file_view_file($file, $view_mode);
+    $preview['#prefix'] = '<div>';
+    $preview['#suffix'] = '</div>';
+    $output['preview'] = array(
+      'preview' => $preview,
+      'full' => file_view_file($file, 'full'),
+    );
+  }
+  else {
+    $output['preview'] = file_view_file($file, $view_mode);
+  }
+
+  return array('content' => $output);
 }
 
 /**

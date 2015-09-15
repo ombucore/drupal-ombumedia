@@ -81,7 +81,7 @@ function ombumedia_element_process(&$element, &$form_state, $form) {
     '#prefix' => '<div class="preview launcher">',
     '#suffix' => '</div>',
     '#weight' => 0,
-    'content' => $file ? ombumedia_render_file_preview($file) : array(),
+    'content' => $file ? ombumedia_page_file_field_preview($file) : array(),
   );
 
   $element['select'] = array(

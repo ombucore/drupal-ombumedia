@@ -33,11 +33,19 @@
             delete data.fid;
             $data.val(JSON.stringify(data));
 
-            $.get(Drupal.settings.basePath + 'file/' + values.fid + '/preview', function(content) {
-              $('.preview', $container).html($('.ombumedia-file-preview .file-preview', content).html());
+            $.ajax({
+              url: Drupal.settings.basePath + 'file/' + values.fid + '/field/preview'
+            })
+            .done(function(content) {
+              $('.preview', $container).html($('.ombumedia-file-field-preview', content).html());
+            })
+            .fail(function() {
             });
+
           });
+
         });
+
       });
     }
   };
