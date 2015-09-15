@@ -5,11 +5,11 @@
       $('.ombumedia-widget', context).each(function() {
         var $container = $(this);
         var $fid = $('input.fid', $container);
-        var $view_mode = $('input.view_mode', $container);
+        var $data = $('input.data', $container);
 
         var options = {
-          types: $container.data('types'),
-          view_modes: $container.data('view-modes').split(',')
+          types: $.parseJSON($container.attr('data-types')),
+          view_modes: $.parseJSON($container.attr('data-view-modes'))
         };
 
         $('.select-media').on('click', function(e) {
@@ -19,9 +19,19 @@
             options.fid = $fid.val();
           }
 
+          try {
+            var data = $.parseJSON($data.val());
+            if (data.view_mode) {
+              options.view_mode = data.view_mode;
+            }
+          } catch (error) {}
+
           Drupal.ombumedia.selectMedia(options).then(function(values) {
             $fid.val(values.fid);
-            $view_mode.val(values.view_mode);
+
+            var data = $.extend({}, values);
+            delete data.fid;
+            $data.val(JSON.stringify(data));
 
             $.get(Drupal.settings.basePath + 'file/' + values.fid + '/preview', function(content) {
               $('.preview', $container).html($('.ombumedia-file-preview .file-preview', content).html());

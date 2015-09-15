@@ -206,55 +206,6 @@ function ombumedia_file_displays_alter(&$displays, $file, $view_mode) {
 }
 
 /**
- * Implements hook_field_formatter_info().
- *
- * Provides legacy support for the "Large filetype icon" file field formatter.
- * This was originally used when media entities contained file fields. The
- * current file entity architecture no longer needs this, but people may
- * have used this formatter for other file fields on their website.
- *
- * @todo Some day, remove this.
- */
-function ombumedia_field_formatter_info() {
-  $formatters = array(
-    'ombumedia_large_icon' => array(
-      'label' => t('Large filetype icon'),
-      'field types' => array('file'),
-    ),
-  );
-  return $formatters;
-}
-
-/**
- * Implements hook_field_formatter_view().
- *
- * Legacy support for the "Large filetype icon" file field formatter.
- * @see media_field_formatter_info()
- */
-function ombumedia_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
-  $element = array();
-
-  if ($display['type'] == 'ombumedia_large_icon') {
-    // Add height/width variable according to ombumedia_thumbnail image style
-    // so that the output in media browser is consistent.
-    // @todo is this the correct place to put this?
-    $style = image_style_load('ombumedia_thumbnail');
-    foreach ($items as $delta => $item) {
-      $element[$delta] = array(
-        '#theme' => 'ombumedia_formatter_large_icon',
-        '#file' => (object) $item,
-        '#attributes' => array(
-          'width' => $style['effects'][0]['data']['width'],
-          'height' => $style['effects'][0]['data']['height'],
-        ),
-      );
-    }
-  }
-
-  return $element;
-}
-
-/**
  * Implements hook_wysiwyg_plugin().
  */
 function ombumedia_wysiwyg_plugin($editor, $version) {
@@ -583,8 +534,8 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
     $view_mode_options = array_intersect_key($view_mode_options, array_flip($_GET['view_modes'][$file->type]));
   }
 
-  if (isset($_GET['view_mode']) && in_array($_GET['view_mode'], $view_mode_options)) {
-    $view_mode =  $_GET['view_mode'];
+  if (isset($_GET['view_mode']) && in_array($_GET['view_mode'], array_keys($view_mode_options))) {
+    $view_mode = $_GET['view_mode'];
   }
   else {
     $view_mode = array_keys($view_mode_options)[0];

@@ -35,16 +35,17 @@ function ombumedia_render_filter_placeholders($text, $filter, $format, $langcode
 
     foreach ($xpath->query('//*[@data-ombumedia]') as $node) {
       $media_info = $node->getAttribute('data-ombumedia');
-      $media_info = json_decode($media_info);
+      $media_info = json_decode($media_info, TRUE);
 
       $file = NULL;
       $file_output = '';
 
-      $file = file_load($media_info->fid);
+      $file = file_load($media_info['fid']);
 
       if ($file) {
         $file->ombumedia_settings = $media_info;
-        $file_output = file_view($file, $media_info->view_mode);
+        $file->ombumedia_settings['context'] = 'filter';
+        $file_output = file_view($file, $media_info['view_mode']);
         $file_output = drupal_render($file_output);
 
         $new_nodes = ombumedia_html_to_xmlnodes($file_output);

@@ -14,7 +14,7 @@
  */
 function ombumedia_element_info() {
   $types = array();
-  $types['media'] = array(
+  $types['ombumedia'] = array(
     '#input' => TRUE,
     '#process' => array('ombumedia_element_process'),
     '#element_validate' => array('ombumedia_element_validate'),
@@ -51,14 +51,19 @@ function ombumedia_element_info() {
  */
 function ombumedia_element_process(&$element, &$form_state, $form) {
   $fid = isset($element['#value']['fid']) ? $element['#value']['fid'] : 0;
+  $data = isset($element['#value']['data']) ? $element['#value']['data'] : array();
   $file = $fid ? file_load($fid) : FALSE;
 
   // Set some default element properties.
   $element['#file'] = $file;
 
   // Set options via data attributes.
-  $element['#attributes']['data-types'] = join(',', $element['#media_options']['global']['types']);
-  $element['#attributes']['data-view-modes'] = join(',', $element['#media_options']['global']['view_modes']);
+  $element['#attributes']['data-types'] = drupal_json_encode(array_values($element['#media_options']['global']['types']));
+  $view_modes = array();
+  foreach ($element['#media_options']['global']['view_modes'] as $type => $modes) {
+    $view_modes[$type] = array_values($modes);
+  }
+  $element['#attributes']['data-view-modes'] = drupal_json_encode($view_modes);
 
   $element['title'] = array(
     '#type' => 'item',
@@ -99,6 +104,13 @@ function ombumedia_element_process(&$element, &$form_state, $form) {
     '#weight' => 100,
   );
 
+  $element['data'] = array(
+    '#type' => 'hidden',
+    '#value' => drupal_json_encode($data),
+    '#attributes' => array('class' => array('data')),
+    '#weight' => 100,
+  );
+
   $setting = array();
   $setting['media']['elements'][$element['#id']] = $element['#media_options'];
 
@@ -112,11 +124,11 @@ function ombumedia_element_process(&$element, &$form_state, $form) {
  * necessary in order to respect the #required property.
  */
 function ombumedia_element_validate(&$element, &$form_state) {
+  $widget_parents = $element['#array_parents'];
+  array_pop($widget_parents);
+  $items = &drupal_array_get_nested_value($form_state['values'], $widget_parents);
   if ($element['#required']) {
     $has_value = FALSE;
-    $widget_parents = $element['#array_parents'];
-    array_pop($widget_parents);
-    $items = drupal_array_get_nested_value($form_state['values'], $widget_parents);
     foreach ($items as $value) {
       if (is_array($value) && !empty($value['fid'])) {
         $has_value = TRUE;
@@ -124,6 +136,17 @@ function ombumedia_element_validate(&$element, &$form_state) {
     }
     if (!$has_value) {
       form_error($element, t('%element_title is required.', array('%element_title' => $element['#title'])));
+    }
+  }
+
+  // Decode the JSON values and serialize for the database.
+  foreach ($items as $i => $value) {
+    if (isset($value['data'])) {
+      try {
+        $serialized = serialize(json_decode($value['data'], TRUE));
+        $items[$i]['data'] = $serialized;
+      }
+      catch (Exception $e) {}
     }
   }
 }
@@ -146,8 +169,8 @@ function ombumedia_field_info() {
       'instance_settings' => array(
         'file_extensions' => variable_get('ombumedia__file_extensions'),
       ),
-      'default_widget' => 'media_generic',
-      'default_formatter' => 'media',
+      'default_widget' => 'ombumedia',
+      'default_formatter' => 'ombumedia_render',
       'property_type' => 'field_item_file',
       'property_callbacks' => array('entity_metadata_field_file_callback'),
     ),
@@ -373,7 +396,7 @@ function ombumedia_field_widget_info() {
   return array(
     'ombumedia' => array(
       'label' => t('OMBU Media file selector'),
-      'field types' => array('file', 'image'),
+      'field types' => array('file', 'image', 'ombumedia'),
       'settings' => array(
         'allowed_types' => array('image'),
         'allowed_schemes' => array('public', 'private'),
@@ -397,29 +420,35 @@ function ombumedia_field_widget_settings_form($field, $instance) {
 
   $streams = file_get_stream_wrappers(STREAM_WRAPPERS_VISIBLE);
 
-  // View modes only work with ombumedia field types, since file and image field
-  // types can't store additional settings.
-  if ($field['type'] == 'ombumedia') {
-    $form['allowed_view_modes'] = array(
-      '#type' => 'checkboxes',
-      '#title' => t('Allowed view modes'),
-      '#options' => file_entity_view_mode_labels(),
-      '#default_value' => $settings['allowed_types'],
-      '#description' => t('View modes that are allowed when selecting media.  If only one then no view mode selector will be presented. If no view mode is selected then all are available.'),
-      '#weight' => 1,
-    );
-  }
-
-
   $form['allowed_types'] = array(
     '#type' => 'checkboxes',
     '#title' => t('Allowed remote media types'),
     '#options' => file_entity_type_get_names(),
     '#default_value' => $settings['allowed_types'],
     '#description' => t('Media types which are allowed for this field when using remote streams.'),
-    '#weight' => 1,
     '#access' => count(file_get_stream_wrappers(STREAM_WRAPPERS_VISIBLE | STREAM_WRAPPERS_LOCAL)) != count($streams),
   );
+
+  // View modes only work with ombumedia field types, since file and image field
+  // types can't store additional settings.
+  if ($field['type'] == 'ombumedia') {
+    $entity_info = entity_get_info('file');
+    $types = array_keys($entity_info['bundles']);
+    $form['allowed_view_modes'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Allowed view modes'),
+      '#tree' => TRUE,
+    );
+    foreach ($types as $type) {
+      $form['allowed_view_modes'][$type] = array(
+        '#title' => ucwords($type),
+        '#type' => 'select',
+        '#multiple' => TRUE,
+        '#options' => ombumedia_file_type_view_modes($type),
+        '#default_value' => $settings['allowed_view_modes'][$type],
+      );
+    }
+  }
 
   $options = array();
   foreach ($streams as $scheme => $data) {
@@ -462,7 +491,7 @@ function ombumedia_field_widget_form(&$form, &$form_state, $field, $instance, $l
   }
 
   $element += array(
-    '#type' => 'media',
+    '#type' => 'ombumedia',
     '#collapsed' => TRUE,
     '#default_value' => $current_value,
     '#required' => $instance['required'],
@@ -530,4 +559,60 @@ function ombumedia_field_widget_value($element, $input, $form_state) {
   );
 
   return $return;
+}
+
+/**
+ * Field Formatter Hooks.
+ */
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function ombumedia_field_formatter_info() {
+  $formatters = array(
+    'ombumedia_render' => array(
+      'label' => t('OMBU Media Render'),
+      'field types' => array('ombumedia'),
+    ),
+    'ombumedia_large_icon' => array(
+      'label' => t('Large filetype icon'),
+      'field types' => array('file'),
+    ),
+  );
+  return $formatters;
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function ombumedia_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  if ($display['type'] == 'ombumedia_render') {
+    foreach ($items as $delta => $item) {
+      $file = $item['file'];
+      $data = unserialize($item['data']);
+      $file->ombumedia_settings = $data;
+      $file->ombumedia_settings['context'] = 'field';
+      $element[$delta] = file_view($file, $data['view_mode']);
+    }
+  }
+  elseif ($display['type'] == 'ombumedia_large_icon') {
+    // Add height/width variable according to ombumedia_thumbnail image style
+    // so that the output in media browser is consistent.
+    // @todo is this the correct place to put this?
+    $style = image_style_load('ombumedia_thumbnail');
+    foreach ($items as $delta => $item) {
+      $element[$delta] = array(
+        '#theme' => 'ombumedia_formatter_large_icon',
+        '#file' => (object) $item,
+        '#attributes' => array(
+          'width' => $style['effects'][0]['data']['width'],
+          'height' => $style['effects'][0]['data']['height'],
+        ),
+      );
+    }
+  }
+
+  return $element;
 }
