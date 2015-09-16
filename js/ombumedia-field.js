@@ -2,7 +2,7 @@
 
   Drupal.behaviors.ombumediaField = {
     attach: function(context, settings) {
-      $('.ombumedia-widget', context).each(function() {
+      $('.ombumedia-widget', context).once('ombumedia-widget').each(function() {
         var $container = $(this);
         var $fid = $('input.fid', $container);
         var $data = $('input.data', $container);
@@ -12,7 +12,7 @@
           view_modes: $.parseJSON($container.attr('data-view-modes'))
         };
 
-        $('.select-media').on('click', function(e) {
+        $container.find('.select-media').on('click', function(e) {
           e.preventDefault();
 
           if ($fid.val() != 0) {

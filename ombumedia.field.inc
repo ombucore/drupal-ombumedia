@@ -18,9 +18,11 @@ function ombumedia_element_info() {
     '#input' => TRUE,
     '#process' => array('ombumedia_element_process'),
     '#element_validate' => array('ombumedia_element_validate'),
+    '#value_callback' => 'ombumedia_element_value_callback',
     '#theme_wrappers' => array('container'),
     '#extended' => FALSE,
     '#required' => FALSE,
+    '#tree' => TRUE,
     '#media_options' => array(
       'global' => array(
         // Example: array('image', 'audio');
@@ -63,7 +65,7 @@ function ombumedia_element_process(&$element, &$form_state, $form) {
   foreach ($element['#media_options']['global']['view_modes'] as $type => $modes) {
     $view_modes[$type] = array_values($modes);
   }
-  $element['#attributes']['data-view-modes'] = drupal_json_encode($view_modes);
+  $element['#attributes']['data-view-modes'] = !empty($view_modes) ? drupal_json_encode($view_modes) : "{}";
 
   $element['title'] = array(
     '#type' => 'item',
@@ -106,7 +108,7 @@ function ombumedia_element_process(&$element, &$form_state, $form) {
 
   $element['data'] = array(
     '#type' => 'hidden',
-    '#value' => drupal_json_encode($data),
+    '#value' => !empty($data) ? drupal_json_encode($data) : "{}",
     '#attributes' => array('class' => array('data')),
     '#weight' => 100,
   );
@@ -124,11 +126,11 @@ function ombumedia_element_process(&$element, &$form_state, $form) {
  * necessary in order to respect the #required property.
  */
 function ombumedia_element_validate(&$element, &$form_state) {
-  $widget_parents = $element['#array_parents'];
-  array_pop($widget_parents);
-  $items = &drupal_array_get_nested_value($form_state['values'], $widget_parents);
   if ($element['#required']) {
     $has_value = FALSE;
+    $widget_parents = $element['#array_parents'];
+    array_pop($widget_parents);
+    $items = drupal_array_get_nested_value($form_state['values'], $widget_parents);
     foreach ($items as $value) {
       if (is_array($value) && !empty($value['fid'])) {
         $has_value = TRUE;
@@ -138,18 +140,25 @@ function ombumedia_element_validate(&$element, &$form_state) {
       form_error($element, t('%element_title is required.', array('%element_title' => $element['#title'])));
     }
   }
-
-  // Decode the JSON values and serialize for the database.
-  foreach ($items as $i => $value) {
-    if (isset($value['data'])) {
-      try {
-        $serialized = serialize(json_decode($value['data'], TRUE));
-        $items[$i]['data'] = $serialized;
-      }
-      catch (Exception $e) {}
-    }
-  }
 }
+
+/**
+ * Value callback for ombumedia elements.
+ */
+function ombumedia_element_value_callback($element, $input = FALSE, &$form_state) {
+  if ($input !== FALSE) {
+    if (isset($input['data'])) {
+      $input['data'] = json_decode($input['data'], TRUE);
+    }
+    return $input;
+  }
+  elseif (!empty($element['#default_value'])) {
+    return $element['#default_value'];
+  }
+
+  return;
+}
+
 
 /**
  * Field Hooks
@@ -271,10 +280,30 @@ function ombumedia_field_validate($obj_type, $object, $field, $instance, $langco
 }
 
 /**
- * Implements_hook_field_widget_error().
+ * Implements hook_field_widget_error().
  */
 function ombumedia_field_widget_error($element, $error, $form, &$form_state) {
   form_error($element['fid'], $error['message']);
+}
+
+/**
+ * Implements hook_field_load().
+ */
+function ombumedia_field_load($entity_type, $entities, $field, $instances, $langcode, &$items, $age) {
+  foreach ($entities as $id => $entity) {
+    foreach ($items[$id] as $delta => $item) {
+      $items[$id][$delta]['data'] = unserialize($items[$id][$delta]['data']);
+    }
+  }
+}
+
+/**
+ * Implements hook_field_presave().
+ */
+function ombumedia_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
+  foreach ($items as $delta => $item) {
+    $items[$delta]['data'] = serialize($items[$delta]['data']);
+  }
 }
 
 /**
@@ -385,6 +414,7 @@ function ombumedia_field_update_instance($instance, $prior_instance) {
   }
 }
 
+
 /**
  * Field Widget Hooks
  */
@@ -445,7 +475,7 @@ function ombumedia_field_widget_settings_form($field, $instance) {
         '#type' => 'select',
         '#multiple' => TRUE,
         '#options' => ombumedia_file_type_view_modes($type),
-        '#default_value' => $settings['allowed_view_modes'][$type],
+        '#default_value' => isset($settings['allowed_view_modes'][$type]) ? $settings['allowed_view_modes'][$type] : array(),
       );
     }
   }
@@ -485,8 +515,10 @@ function ombumedia_field_widget_form(&$form, &$form_state, $field, $instance, $l
     //   example, it results in fatal errors when previewing a node with a
     //   multi-valued media field), so should be fixed. In the meantime, don't
     //   assume that $current_value is an array.
-    if (is_array($current_value) && isset($current_value['data']) && is_string($current_value['data'])) {
-      $current_value['data'] = unserialize($current_value['data']);
+    if (is_array($current_value) && isset($current_value['data'])) {
+      if (is_string($current_value['data'])) {
+        $current_value['data'] = unserialize($current_value['data']);
+      }
     }
   }
 
@@ -531,35 +563,6 @@ function ombumedia_field_widget_form(&$form, &$form_state, $field, $instance, $l
   return $element;
 }
 
-/**
- * Widget value.
- *
- * @todo Is this function ever called? If not, remove it. The Field API now
- *   supports automatic serialization / unserialization, so this should no
- *   longer be needed. After verifying with a module that uses the 'data'
- *   column, remove this.
- *
- * @see media_field_widget_form()
- */
-function ombumedia_field_widget_value($element, $input, $form_state) {
-  $return = $input;
-
-  if (!is_array($return)) {
-    $return = array();
-  }
-
-  if (isset($return['data'])) {
-    $return['data'] = serialize($return['data']);
-  }
-
-  $return += array(
-    'fid' => 0,
-    'title' => '',
-    'data' => NULL,
-  );
-
-  return $return;
-}
 
 /**
  * Field Formatter Hooks.
@@ -591,7 +594,7 @@ function ombumedia_field_formatter_view($entity_type, $entity, $field, $instance
   if ($display['type'] == 'ombumedia_render') {
     foreach ($items as $delta => $item) {
       $file = $item['file'];
-      $data = unserialize($item['data']);
+      $data = $item['data'];
       $file->ombumedia_settings = $data;
       $file->ombumedia_settings['context'] = 'field';
       $element[$delta] = file_view($file, $data['view_mode']);
