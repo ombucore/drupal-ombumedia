@@ -25,6 +25,7 @@ Drupal.behaviors.ombumediaPreviewPopup = {
 
     $previewLinks.on('click', function(e) {
       e.preventDefault();
+      e.stopPropagation();
       var $link = $(this);
       $link.blur();
       launchPreviewPopup($link.attr('href'));

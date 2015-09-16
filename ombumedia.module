@@ -460,13 +460,14 @@ function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
     '#children' => theme('table', array('rows' => $info_rows)),
   );
 
+  $usage_render = file_entity_usage_page($file);
   $variables['usage'] = array(
     '#theme' => 'fieldset',
     '#title' => t('Usage'),
     '#attributes' => array(
       'class' => array('collapsible', 'collapsed'),
     ),
-    '#children' => render(file_entity_usage_page($file)),
+    '#children' => render($usage_render),
   );
 
   drupal_add_library('system', 'drupal.collapse');
@@ -789,8 +790,12 @@ function ombumedia_file_get_info($file) {
   foreach ($fields as $field) {
     $field_name = $field['field_name'];
     $values = array();
-    foreach (field_get_items('file', $file, $field_name) as $field_item) {
-      $values[] = render(field_view_value('file', $file, $field_name, $field_item, array()));
+    $field_items = field_get_items('file', $file, $field_name);
+    if (!empty($field_items)) {
+      foreach ($field_items as $field_item) {
+        $field_render = field_view_value('file', $file, $field_name, $field_item, array());
+        $values[] = render($field_render);
+      }
     }
     $info[] = array(
       'label' => $field['label'],
