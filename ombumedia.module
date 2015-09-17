@@ -717,7 +717,11 @@ function ombumedia_file_type_view_modes($type) {
   $view_modes = $entity_info['view modes'];
   $type_view_mode_settings = field_view_mode_settings('file', $type);
 
-  $return = array();
+  // For some reason, default isn't treated like a normal "view mode", so have
+  // to hard code it here in order for it to display properly.
+  $return = array(
+    'default' => 'Default',
+  );
   foreach ($view_modes as $view_mode_slug => $view_mode) {
     if (isset($type_view_mode_settings[$view_mode_slug])) {
       if ($type_view_mode_settings[$view_mode_slug]['custom_settings'] == TRUE) {
