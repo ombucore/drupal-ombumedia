@@ -597,7 +597,7 @@ function ombumedia_field_formatter_view($entity_type, $entity, $field, $instance
       $data = $item['data'];
       $file->ombumedia_settings = $data;
       $file->ombumedia_settings['context'] = 'field';
-      $element[$delta] = file_view($file, $data['view_mode']);
+      $element[$delta] = file_view($file, isset($data['view_mode']) ? $data['view_mode'] : 'default');
     }
   }
   elseif ($display['type'] == 'ombumedia_large_icon') {
