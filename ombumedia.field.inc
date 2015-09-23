@@ -430,7 +430,12 @@ function ombumedia_field_widget_info() {
       'settings' => array(
         'allowed_types' => array('image'),
         'allowed_schemes' => array('public', 'private'),
-        'allowed_view_modes' => array('default'),
+        'allowed_view_modes' => array(array(
+          'audio' => array('default'),
+          'document' => array('default'),
+          'image' => array('default'),
+          'video' => array('default'),
+        )),
       ),
       'behaviors' => array(
         'multiple values' => FIELD_BEHAVIOR_DEFAULT,
