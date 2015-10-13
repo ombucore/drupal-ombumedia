@@ -809,3 +809,34 @@ function ombumedia_file_get_info($file) {
 
   return $info;
 }
+
+/**
+ * Helper function for embedding files as ombumedia elements.
+ *
+ * @param array $file
+ *  File definition for embedding. For example:
+ *  @code
+ *  array(
+ *    'fid' => 1,
+ *    'position' => 'right',
+ *    'view_mode' => 'default',
+ *    'title' => 'Placeholder Image',
+ *    'type' => 'image',
+ *  )
+ *  @endcode
+ *
+ * @return string
+ *   <ombumedia> tag with json encoded data-ombumedia attribute for embedding in
+ *   rich text strings.
+ */
+function ombumedia_file_embed_tag($file) {
+  // Set sane defaults.
+  $file += array(
+    'view_mode' => 'default',
+    'position' => 'left',
+    'title' => '',
+    'type' => 'image',
+  );
+
+  return '<ombumedia data-ombumedia="' . htmlentities(json_encode($file), ENT_COMPAT) . '"></ombumedia>';
+}
