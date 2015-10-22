@@ -292,7 +292,7 @@ function ombumedia_field_widget_error($element, $error, $form, &$form_state) {
 function ombumedia_field_load($entity_type, $entities, $field, $instances, $langcode, &$items, $age) {
   foreach ($entities as $id => $entity) {
     foreach ($items[$id] as $delta => $item) {
-      $items[$id][$delta]['data'] = unserialize($items[$id][$delta]['data']);
+      $items[$id][$delta]['data'] = isset($item['data']) ? unserialize($item['data']) : array();
     }
   }
 }
@@ -302,7 +302,13 @@ function ombumedia_field_load($entity_type, $entities, $field, $instances, $lang
  */
 function ombumedia_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
   foreach ($items as $delta => $item) {
-    $items[$delta]['data'] = serialize($items[$delta]['data']);
+    if (empty($items[$delta]['data'])) {
+      $items[$delta]['data'] = array();
+    }
+
+    if (!is_string($items[$delta]['data'])) {
+      $items[$delta]['data'] = serialize($items[$delta]['data']);
+    }
   }
 }
 
