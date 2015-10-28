@@ -29,11 +29,11 @@ function ombumedia_image_position_form_ombumedia_file_entity_configure_alter(&$f
         '#type' => 'select',
         '#title' => t('Position'),
         '#options' => array(
-          'center' => t('Center'),
+          'default' => t('Default'),
           'left' => t('Left'),
           'right' => t('Right'),
         ),
-        '#default_value' => isset($_GET['position']) ? $_GET['position'] : 'center',
+        '#default_value' => isset($_GET['position']) ? $_GET['position'] : 'default',
       );
 
     }
@@ -48,7 +48,7 @@ function ombumedia_preprocess_file_entity(&$variables) {
   $file = $variables['file'];
   if (isset($file->ombumedia_settings)) {
     $settings = $file->ombumedia_settings;
-    if ($file->type === 'image' && isset($settings['position']) && $settings['position'] != 'center') {
+    if ($file->type === 'image' && isset($settings['position']) && $settings['position'] != 'default') {
       $variables['classes_array'][] = 'pull-' . $settings['position'];
     }
   }
