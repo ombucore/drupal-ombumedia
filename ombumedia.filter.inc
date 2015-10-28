@@ -45,6 +45,9 @@ function ombumedia_render_filter_placeholders($text, $filter, $format, $langcode
         $file->ombumedia_settings = $media_info;
         $file->ombumedia_settings['context'] = 'filter';
         $file_output = file_view($file, $media_info['view_mode']);
+        if (isset($file_output['#contextual_links'])) {
+          unset($file_output['#contextual_links']);
+        }
         $file_output = drupal_render($file_output);
 
         $new_nodes = ombumedia_html_to_xmlnodes($file_output);
