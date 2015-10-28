@@ -95,6 +95,14 @@ function ombumedia_menu() {
 }
 
 /**
+ * Implements hook_menu_alter().
+ */
+function ombumedia_menu_alter(&$items) {
+  // Remove the usage tab.
+  unset($items['file/%file/usage']);
+}
+
+/**
  * Implements hook_admin_paths().
  */
 function ombumedia_admin_paths() {
@@ -473,16 +481,6 @@ function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
       'class' => array('collapsible'),
     ),
     '#children' => theme('table', array('rows' => $info_rows)),
-  );
-
-  $usage_render = file_entity_usage_page($file);
-  $variables['usage'] = array(
-    '#theme' => 'fieldset',
-    '#title' => t('Usage'),
-    '#attributes' => array(
-      'class' => array('collapsible', 'collapsed'),
-    ),
-    '#children' => render($usage_render),
   );
 
   drupal_add_library('system', 'drupal.collapse');

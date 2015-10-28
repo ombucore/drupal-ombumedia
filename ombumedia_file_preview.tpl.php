@@ -9,5 +9,4 @@
     <h1><?php print $title; ?></h1>
   </div>
   <?php print render($info); ?>
-  <?php print render($usage); ?>
 </div>
