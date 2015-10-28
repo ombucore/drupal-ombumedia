@@ -11,7 +11,6 @@ dependencies[] = file_entity
 dependencies[] = options
 dependencies[] = taxonomy
 dependencies[] = views
-explanation = Field type(s) in use - see <a href="/admin/reports/fields">Field list</a>
 features[ctools][] = views:views_default:3.0
 features[features_api][] = api:2
 features[field_base][] = field_media_folder
@@ -27,5 +26,5 @@ features[field_instance][] = file-video-field_media_tags
 features[taxonomy][] = media_folders
 features[taxonomy][] = media_tags
 features[views_view][] = ombumedia
+mtime = 1441934675
 project path = sites/all/modules/custom
-required = 1

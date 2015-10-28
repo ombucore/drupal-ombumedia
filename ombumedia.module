@@ -405,14 +405,16 @@ function ombumedia_htmlpurifier_html_definition_alter($html_definition) {
  * Implements hook_preprocess_views_view().
  */
 function ombumedia_preprocess_views_view(&$variables) {
-  // Move count summaries to `attachment_before` and `attachment_after`.
-  if (isset($variables['header'])) {
-    $variables['attachment_before'] = $variables['header'];
-    $variables['header'] = FALSE;
-  }
-  if (isset($variables['footer'])) {
-    $variables['pager'] = $variables['footer'] . $variables['pager'];
-    $variables['footer'] = FALSE;
+  if ($variables['view']->name === 'ombumedia') {
+    // Move count summaries to `attachment_before` and `attachment_after`.
+    if (isset($variables['header'])) {
+      $variables['attachment_before'] = $variables['header'];
+      $variables['header'] = FALSE;
+    }
+    if (isset($variables['footer'])) {
+      $variables['pager'] = $variables['footer'] . $variables['pager'];
+      $variables['footer'] = FALSE;
+    }
   }
 }
 
