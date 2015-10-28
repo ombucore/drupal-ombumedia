@@ -190,6 +190,18 @@ function ombumedia_hook_info() {
 }
 
 /**
+ * Implements hook_module_implements_alter().
+ */
+function ombumedia_module_implements_alter(&$implementations, $hook) {
+  // Run ombumedia form alters last.
+  if ($hook == 'form_alter' && isset($implementations['ombumedia'])) {
+    $group = $implementations['ombumedia'];
+    unset($implementations['ombumedia']);
+    $implementations['ombumedia'] = $group;
+  }
+}
+
+/**
  * Implements hook_image_default_styles().
  */
 function ombumedia_image_default_styles() {
@@ -306,6 +318,20 @@ function ombumedia_form_views_exposed_form_alter(&$form, &$form_state) {
           unset($form['types']['#options'][$key]);
         }
       }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Hides unneeded file vertical tabs from normal users.
+ */
+function ombumedia_form_file_entity_edit_alter(&$form, &$form_state) {
+  $hide = array('destination', 'user', 'path');
+  foreach ($hide as $key) {
+    if (isset($form[$key])) {
+      $form[$key]['#access'] = FALSE;
     }
   }
 }
