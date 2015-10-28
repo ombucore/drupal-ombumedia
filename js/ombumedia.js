@@ -124,21 +124,39 @@ Drupal.ombumedia.addDragUpload = function($rootEl, doneCallback) {
                               '<span class="bar"></span>',
                               '<span class="progress-text">Uploading <span class="progress-text-filename"></span></span>',
                             '</div>',
+                            '<div class="error-container">',
+                              '<a href="#" class="close">&times;</a>',
+                              '<div class="errors"></div>',
+                            '</div>',
                           '</div>',
                         ''].join('')).appendTo($rootEl);
   var $progressFilename = $uploadOverlay.find('.progress-text-filename');
   var $progressBarBar = $uploadOverlay.find('.progress-bar .bar');
+  var $errorsClose = $uploadOverlay.find('.error-container .close');
 
   $rootEl.on('dragover', preventDefault(stopPropagation(dragOver)));
   $dragOverlay.on('dragleave', preventDefault(stopPropagation(dragLeave)));
   $dragOverlay.on('drop', preventDefault(stopPropagation(uploadDroppedFile)));
+  $errorsClose.on('click', preventDefault(hideErrors));
 
-  function dragOver () {
+
+  function dragOver() {
     $rootEl.addClass('drag-over');
   }
 
   function dragLeave(e) {
     $rootEl.removeClass('drag-over');
+  }
+
+  function showErrors(errors) {
+    $rootEl.addClass('upload-error');
+    $rootEl.removeClass('uploading');
+    $uploadOverlay.find('.errors').html('<p>' + errors.join('</p><p>') + '</p>');
+  }
+
+  function hideErrors(e) {
+    $rootEl.removeClass('upload-error');
+    $uploadOverlay.find('.errors').html('');
   }
 
   function uploadDroppedFile(e) {
@@ -180,6 +198,9 @@ Drupal.ombumedia.addDragUpload = function($rootEl, doneCallback) {
     .done(function(data, textStatus, jQueryXHR) {
       if (data.file && data.file.fid) {
         doneCallback(data.file);
+      }
+      else if (data.errors) {
+        showErrors(data.errors);
       }
     });
   }

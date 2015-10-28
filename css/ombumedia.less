@@ -2,6 +2,7 @@
 
 // Variables.
 @color-blue: #428bca;
+@color-red: #8c2e0b;
 
 // Mixins.
 .box-sizing(@boxmodel) {
@@ -23,9 +24,8 @@
 
 //-----------------------------------------------------------------------------
 
-
-// Upload target overlay.
-.ombumedia-upload-drag {
+.ombumedia-upload-drag,
+.ombumedia-upload-progress {
   position: fixed;
   top: 0;
   left: 0;
@@ -33,6 +33,15 @@
   bottom: 0;
   background: fade(#fff, 90%);
   border: 0.5em dashed #333;
+
+  .page-admin-dashboard-manage-media & {
+    top: 30px;
+  }
+}
+
+
+// Upload target overlay.
+.ombumedia-upload-drag {
   display: none;
 
   span {
@@ -53,16 +62,10 @@
 
 // Uploading overlay.
 .ombumedia-upload-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: fade(#fff, 90%);
-  border: 0.5em dashed #333;
   display: none;
 
   .progress-bar {
+    display: none;
     font-size: 2em;
     text-align: left;
     position: fixed;
@@ -91,9 +94,56 @@
       position: relative;
       z-index: 2;
     }
+
+    .uploading & {
+      display: block;
+    }
   }
 
-  .uploading & {
+  .upload-error & {
+    text-align: center;
+    &:before {
+      content: '';
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+    }
+
+    .error-container {
+      display: inline-block;
+      position: relative;
+      max-width: 60%;
+      vertical-align: middle;
+      text-align: left;
+      border: 2px solid @color-red;
+      border-radius: 15px;
+      background: fade(@color-red, 25%);
+      padding: 2em;
+
+      .close {
+        color: #000000;
+        font-size: 18px;
+        line-height: 1em;
+        position: absolute;
+        top: 0.5em;
+        right: 0.5em;
+        text-decoration: none;
+      }
+
+      .errors {
+        p {
+          margin: 0;
+          & + p {
+            margin-top: 0.5em;
+          }
+        }
+      }
+
+    }
+  }
+
+  .uploading &,
+  .upload-error & {
     display: block;
   }
 }

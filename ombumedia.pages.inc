@@ -120,7 +120,13 @@ function ombumedia_page_media_ajax_upload() {
 
   }
   else {
-    $errors[] = 'Invalid request';
+    $messages = drupal_get_messages('error');
+    if (!empty($messages['error'])) {
+      $errors[] = $messages['error'];
+    }
+    else {
+      $errors[] = 'Error saving file.';
+    }
   }
 
   if (empty($errors)) {
