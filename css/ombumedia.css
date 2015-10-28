@@ -78,6 +78,13 @@
 .view-ombumedia form .select2-container.select2-container-multi .select2-choices {
   background-image: none;
 }
+.view-ombumedia .view-empty {
+  text-align: center;
+}
+.view-ombumedia .result-summary {
+  display: block;
+  text-align: center;
+}
 .view-ombumedia .view-content {
   overflow: hidden;
   margin: 20px -10px 0;
@@ -110,6 +117,9 @@
   .view-ombumedia .view-content .views-row:nth-child(6n+1) {
     clear: left;
   }
+}
+.view-ombumedia .item-list ul.pager {
+  margin-top: 20px;
 }
 .view-ombumedia .ombumedia-library-file .views-row-inner {
   background: transparent;
