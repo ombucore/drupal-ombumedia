@@ -353,9 +353,13 @@ body.ui-dialog-open {
   margin-bottom: 1em;
   text-align: center;
 }
+.page-file-preview .ombumedia-file-preview .file-preview img {
+  background: url(checkered-bg.png) repeat 0 0 gray;
+}
 .page-file-preview .ombumedia-file-preview .file-preview iframe,
 .page-file-preview .ombumedia-file-preview .file-preview img {
   max-width: 100%;
+  display: block;
 }
 .page-file-preview .ombumedia-file-preview fieldset,
 .page-file-preview .ombumedia-file-preview fieldset.collapsed {
