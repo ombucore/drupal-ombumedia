@@ -7,7 +7,7 @@ function ombumedia_install() {
   variable_set('tagsadmin_enabled_media_folders', 0);
   variable_set('tagsadmin_enabled_media_tags', 1);
 
-  $file_extensions = variable_get('file_entity_default_allowed_extensions', 'jpg jpeg gif png txt doc docx xls xlsx pdf ppt pptx pps ppsx odt ods odp') . ' mp3 mov mp4 m4a m4v mpeg avi ogg oga ogv wmv ico';
+  $file_extensions = variable_get('file_entity_default_allowed_extensions', 'jpg jpeg gif png txt doc docx xls xlsx pdf ppt pptx pps ppsx odt ods odp');
   variable_set('ombumedia__file_extensions', $file_extensions);
   variable_set('ombumedia__fromurl_supported_schemes', array('http', 'https'));
 

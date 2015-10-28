@@ -334,6 +334,14 @@ function ombumedia_form_file_entity_edit_alter(&$form, &$form_state) {
       $form[$key]['#access'] = FALSE;
     }
   }
+
+  if (isset($form['replace_upload'])) {
+    if (isset($form['replace_upload']['#upload_validators'])) {
+      if (isset($form['replace_upload']['#upload_validators']['file_validate_extensions'])) {
+        $form['replace_upload']['#upload_validators']['file_validate_extensions'][0] = variable_get('ombumedia__file_extensions', '');
+      }
+    }
+  }
 }
 
 /**
