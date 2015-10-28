@@ -103,6 +103,26 @@
   &, * {
     .box-sizing(border-box);
   }
+
+  form {
+
+    input[name="filename"] {
+      height: 29px;
+    }
+
+    .select2-container {
+      > .select2-choice {
+        height: 29px;
+      }
+
+      &.select2-container-multi {
+        .select2-choices {
+          background-image: none;
+        }
+      }
+    }
+  }
+
   @padding: 20px;
   .view-content {
     overflow: hidden;
