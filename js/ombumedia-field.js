@@ -3,6 +3,9 @@
   Drupal.behaviors.ombumediaField = {
     attach: function(context, settings) {
       $('.ombumedia-widget', context).once('ombumedia-widget').each(function() {
+
+        // Wiring.
+
         var $container = $(this);
         var $fid = $('input.fid', $container);
         var $data = $('input.data', $container);
@@ -12,8 +15,23 @@
           view_modes: $.parseJSON($container.attr('data-view-modes'))
         };
 
-        $container.find('.select-media').on('click', function(e) {
+        var $selectButton = $container.find('.select-media');
+        var $changeButton = $container.find('.change-media');
+        var $clearButton = $container.find('.clear-media');
+
+        $selectButton.on('click', selectChangeClick)
+        $changeButton.on('click', selectChangeClick)
+        $clearButton.on('click', clearClick);
+
+        updateButtonVisibility();
+
+
+        // Functions.
+
+        function selectChangeClick(e) {
           e.preventDefault();
+
+          var options = $.extend({}, options);
 
           if ($fid.val() != 0) {
             options.fid = $fid.val();
@@ -26,25 +44,49 @@
             }
           } catch (error) {}
 
-          Drupal.ombumedia.selectMedia(options).then(function(values) {
-            $fid.val(values.fid);
+          Drupal.ombumedia.selectMedia(options).then(onMediaSelect);
 
-            var data = $.extend({}, values);
-            delete data.fid;
-            $data.val(JSON.stringify(data));
+        }
 
-            $.ajax({
-              url: Drupal.settings.basePath + 'file/' + values.fid + '/field/preview'
-            })
-            .done(function(content) {
-              $('.preview', $container).html($('.ombumedia-file-field-preview', content).html());
-            })
-            .fail(function() {
-            });
+        function onMediaSelect(values) {
+          $fid.val(values.fid);
 
-          });
+          var data = $.extend({}, values);
+          delete data.fid;
+          $data.val(JSON.stringify(data));
 
-        });
+          $.ajax({
+            url: Drupal.settings.basePath + 'file/' + values.fid + '/field/preview'
+          })
+          .done(function(content) {
+            $('.preview', $container).html($('.ombumedia-file-field-preview', content).html());
+          })
+          .fail(function() {});
+
+          updateButtonVisibility();
+        }
+
+        function clearClick(e) {
+          $data.val(JSON.stringify({}));
+          $fid.val(0);
+          $('.preview', $container).html('');
+
+          updateButtonVisibility();
+        }
+
+        function updateButtonVisibility() {
+          if ($fid.val() == 0) {
+            $selectButton.show();
+            $changeButton.hide();
+            $clearButton.hide();
+          }
+          else {
+            $selectButton.hide();
+            $changeButton.show();
+            $clearButton.show();
+          }
+
+        }
 
       });
     }

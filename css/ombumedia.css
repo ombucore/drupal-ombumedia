@@ -418,3 +418,6 @@ input.form-submit.ombumedia-button:hover {
   text-decoration: none;
   background-color: #d2d2d2;
 }
+.ombumedia-widget .preview.launcher > * {
+  margin-bottom: 1em;
+}

@@ -43,6 +43,9 @@ function ombumedia_element_info() {
       'js' => array(
         drupal_get_path('module', 'ombumedia') . '/js/ombumedia-field.js',
       ),
+      'css' => array(
+        drupal_get_path('module', 'ombumedia') . '/css/ombumedia.css',
+      ),
     ),
   );
   return $types;
@@ -89,14 +92,34 @@ function ombumedia_element_process(&$element, &$form_state, $form) {
   $element['select'] = array(
     '#type' => 'link',
     '#href' => '',
-    // @todo: either need to conditionally set label or find a state agnostic
-    // label.
-    '#title' => t('Browse'),
+    '#title' => t('Choose'),
     '#attributes' => array(
       'class' => array('button', 'select-media'),
     ),
     '#options' => array('fragment' => FALSE, 'external' => TRUE),
     '#weight' => 10,
+  );
+
+  $element['change'] = array(
+    '#type' => 'link',
+    '#href' => '',
+    '#title' => t('Change'),
+    '#attributes' => array(
+      'class' => array('button', 'change-media'),
+    ),
+    '#options' => array('fragment' => FALSE, 'external' => TRUE),
+    '#weight' => 11,
+  );
+
+  $element['clear'] = array(
+    '#type' => 'link',
+    '#href' => '',
+    '#title' => t('Clear'),
+    '#attributes' => array(
+      'class' => array('button', 'clear-media'),
+    ),
+    '#options' => array('fragment' => FALSE, 'external' => TRUE),
+    '#weight' => 12,
   );
 
   $element['fid'] = array(
