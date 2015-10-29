@@ -115,6 +115,9 @@
 .view-ombumedia form .select2-container > .select2-choice {
   height: 29px;
 }
+.view-ombumedia form .select2-container.select2-container-multi {
+  width: auto !important;
+}
 .view-ombumedia form .select2-container.select2-container-multi .select2-choices {
   background-image: none;
 }

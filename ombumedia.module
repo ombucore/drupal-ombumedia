@@ -313,9 +313,9 @@ function ombumedia_form_views_exposed_form_alter(&$form, &$form_state) {
   $view = $form_state['view'];
   if ($view->name === 'ombumedia') {
     if (isset($_GET['types'])) {
-      foreach ($form['types']['#options'] as $key => $label) {
+      foreach ($form['types_filter']['#options'] as $key => $label) {
         if (!in_array($key, $_GET['types'])) {
-          unset($form['types']['#options'][$key]);
+          unset($form['types_filter']['#options'][$key]);
         }
       }
     }

@@ -56,6 +56,9 @@ function ombumedia_page_magage_media_add() {
 function ombumedia_page_select_media() {
   $view = views_get_view('ombumedia');
   $view->set_display('select_media');
+  if (isset($_GET['types'])) {
+    $view->exposed_input['types_filter'] = $_GET['types'];
+  }
   $view->pre_execute();
   $view->execute();
 

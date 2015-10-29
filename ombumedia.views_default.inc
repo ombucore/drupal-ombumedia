@@ -86,11 +86,17 @@ function ombumedia_views_default_views() {
   $handler->display->display_options['sorts']['timestamp']['table'] = 'file_managed';
   $handler->display->display_options['sorts']['timestamp']['field'] = 'timestamp';
   $handler->display->display_options['sorts']['timestamp']['order'] = 'DESC';
+  $handler->display->display_options['filter_groups']['groups'] = array(
+    1 => 'AND',
+    3 => 'AND',
+    2 => 'OR',
+  );
   /* Filter criterion: File: Name */
   $handler->display->display_options['filters']['filename']['id'] = 'filename';
   $handler->display->display_options['filters']['filename']['table'] = 'file_managed';
   $handler->display->display_options['filters']['filename']['field'] = 'filename';
   $handler->display->display_options['filters']['filename']['operator'] = 'contains';
+  $handler->display->display_options['filters']['filename']['group'] = 1;
   $handler->display->display_options['filters']['filename']['exposed'] = TRUE;
   $handler->display->display_options['filters']['filename']['expose']['operator_id'] = 'filename_op';
   $handler->display->display_options['filters']['filename']['expose']['label'] = 'Name';
@@ -106,11 +112,12 @@ function ombumedia_views_default_views() {
   $handler->display->display_options['filters']['type']['id'] = 'type';
   $handler->display->display_options['filters']['type']['table'] = 'file_managed';
   $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['group'] = 2;
   $handler->display->display_options['filters']['type']['exposed'] = TRUE;
   $handler->display->display_options['filters']['type']['expose']['operator_id'] = 'type_op';
   $handler->display->display_options['filters']['type']['expose']['label'] = 'Type';
   $handler->display->display_options['filters']['type']['expose']['operator'] = 'type_op';
-  $handler->display->display_options['filters']['type']['expose']['identifier'] = 'types';
+  $handler->display->display_options['filters']['type']['expose']['identifier'] = 'types_filter';
   $handler->display->display_options['filters']['type']['expose']['multiple'] = TRUE;
   $handler->display->display_options['filters']['type']['expose']['remember_roles'] = array(
     2 => '2',
@@ -122,6 +129,7 @@ function ombumedia_views_default_views() {
   $handler->display->display_options['filters']['field_media_folder_tid']['id'] = 'field_media_folder_tid';
   $handler->display->display_options['filters']['field_media_folder_tid']['table'] = 'field_data_field_media_folder';
   $handler->display->display_options['filters']['field_media_folder_tid']['field'] = 'field_media_folder_tid';
+  $handler->display->display_options['filters']['field_media_folder_tid']['group'] = 3;
   $handler->display->display_options['filters']['field_media_folder_tid']['exposed'] = TRUE;
   $handler->display->display_options['filters']['field_media_folder_tid']['expose']['operator_id'] = 'field_media_folder_tid_op';
   $handler->display->display_options['filters']['field_media_folder_tid']['expose']['label'] = 'Folder';
@@ -141,6 +149,7 @@ function ombumedia_views_default_views() {
   $handler->display->display_options['filters']['field_media_tags_tid']['table'] = 'field_data_field_media_tags';
   $handler->display->display_options['filters']['field_media_tags_tid']['field'] = 'field_media_tags_tid';
   $handler->display->display_options['filters']['field_media_tags_tid']['value'] = '';
+  $handler->display->display_options['filters']['field_media_tags_tid']['group'] = 3;
   $handler->display->display_options['filters']['field_media_tags_tid']['exposed'] = TRUE;
   $handler->display->display_options['filters']['field_media_tags_tid']['expose']['operator_id'] = 'field_media_tags_tid_op';
   $handler->display->display_options['filters']['field_media_tags_tid']['expose']['label'] = 'Tags';
