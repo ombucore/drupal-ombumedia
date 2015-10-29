@@ -228,6 +228,8 @@ HEREDOC;
   $form = drupal_get_form('ombumedia_page_test_form');
 
   $wysiwyg_test = variable_get('ombumedia_wysiwyg_test', array());
+  $wysiwyg_test['format'] = isset($wysiwyg_test['format']) ? $wysiwyg_test['format'] : 'default';
+  $wysiwyg_test['value'] = isset($wysiwyg_test['value']) ? $wysiwyg_test['value'] : '';
 
   return array(
     'test' => array('#markup' => $test_selection),
@@ -244,8 +246,8 @@ function ombumedia_page_test_form($form, &$form_state) {
   $form['ombumedia_wysiwyg_test'] = array(
     '#title' => t('WYSIWYG Integration'),
     '#type' => 'text_format',
-    '#format' => $rendered_wysiwyg['format'],
-    '#default_value' => $rendered_wysiwyg['value'],
+    '#format' => isset($rendered_wysiwyg['format']) ? $rendered_wysiwyg['format'] : 'default',
+    '#default_value' => isset($rendered_wysiwyg['value']) ? $rendered_wysiwyg['value'] : '',
   );
 
   $form = system_settings_form($form);
