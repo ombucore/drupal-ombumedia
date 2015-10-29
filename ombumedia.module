@@ -135,6 +135,7 @@ function ombumedia_theme($existing, $type, $theme, $path) {
     'ombumedia_formatter_large_icon' => array(
       'variables' => array('file' => NULL, 'attributes' => array()),
     ),
+    'ombumedia_magnify_icon' => array(),
   );
 }
 
@@ -476,7 +477,7 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
 function ombumedia_preprocess_views_view_fields(&$variables) {
   if ($variables['view']->name === 'ombumedia') {
     $fields =& $variables['fields'];
-    $fields['rendered']->content = '<span class="field-content-wrapper">' . $fields['rendered']->content . '</span>';
+    $fields['rendered']->content = '<span class="field-content-wrapper">' . $fields['rendered']->content . theme('ombumedia_magnify_icon') . '</span>';
   }
 }
 
@@ -750,6 +751,19 @@ function theme_ombumedia_formatter_large_icon($variables) {
     $variables['alt'] = $variables['attributes']['alt'];
   }
   return theme('image', $variables);
+}
+
+/**
+ * Returns the svg for the magnify icon.
+ */
+function theme_ombumedia_magnify_icon(&$variables) {
+  static $magnify_icon = FALSE;
+
+  if (!$magnify_icon) {
+    $magnify_icon = '<span class="magnify-icon">' . file_get_contents(drupal_get_path('module', 'ombumedia') . '/icons/magnify.svg') . '</span>';
+  }
+
+  return $magnify_icon;
 }
 
 

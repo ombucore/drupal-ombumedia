@@ -175,6 +175,7 @@
 }
 .view-ombumedia .ombumedia-library-file .views-row-inner:hover .actions {
   opacity: 1;
+  filter: alpha(opacity=100);
 }
 .view-ombumedia .ombumedia-library-file .views-row-inner > a {
   padding: 10px;
@@ -189,6 +190,7 @@
   margin: 0 -2px;
   overflow: hidden;
   opacity: 0;
+  filter: alpha(opacity=0);
   -webkit-transition: opacity 0.2s ease;
   transition: opacity 0.2s ease;
 }
@@ -241,6 +243,31 @@
   height: auto;
   width: auto;
   margin: 0 auto;
+}
+.view-ombumedia .ombumedia-library-file .views-field-rendered .field-content-wrapper .magnify-icon {
+  display: block;
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -16px;
+  margin-left: -16px;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  -webkit-transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease;
+}
+.view-ombumedia .ombumedia-library-file .views-field-rendered .field-content-wrapper .magnify-icon svg {
+  -webkit-filter: drop-shadow(0px 0px 2px #000);
+  filter: drop-shadow(0px 0px 2px #000);
+}
+.view-ombumedia .ombumedia-library-file .views-field-rendered .field-content-wrapper .magnify-icon svg g > * {
+  fill: #FFFFFF;
+}
+.view-ombumedia .ombumedia-library-file a.launch-preview-popup:hover .views-field-rendered .field-content-wrapper .magnify-icon {
+  opacity: 1;
+  filter: alpha(opacity=100);
 }
 .view-ombumedia .ombumedia-library-file .views-field-filename {
   font-weight: bold;
