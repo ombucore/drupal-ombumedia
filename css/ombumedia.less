@@ -210,6 +210,7 @@
 
   .ombumedia-library-file {
     .views-row-inner {
+      position: relative;
       background: transparent;
       .transition(background 0.2s ease);
       &:hover {
@@ -223,7 +224,6 @@
         color: #333;
         text-decoration: none;
         display: block;
-        position: relative;
       }
       ul.actions {
         list-style: none;
@@ -270,6 +270,8 @@
         height: 100%;
         background: #f1f1f1;
         display: table;
+        padding-left: @padding/2;
+        padding-right: @padding/2;
 
         .field-content{
           display: table-cell;
@@ -278,6 +280,7 @@
             display: block;
             max-width: 100%;
             height: auto;
+            width: auto;
             margin: 0 auto;
           }
         }

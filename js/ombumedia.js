@@ -161,12 +161,14 @@ Drupal.ombumedia.addDragUpload = function($rootEl, doneCallback) {
 
   function uploadDroppedFile(e) {
     dragLeave(e);
-    $rootEl.addClass('uploading');
 
     var files = e.originalEvent.target.files || e.originalEvent.dataTransfer.files;
     if (!files.length) {
       return;
     }
+
+    $rootEl.addClass('uploading');
+
     var file = files[0];
     var formData = new FormData();
     formData.append('files[]', file);
