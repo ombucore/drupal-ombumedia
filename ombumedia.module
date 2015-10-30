@@ -216,6 +216,24 @@ function ombumedia_image_default_styles() {
       ),
     ),
   );
+  $styles['ombumedia_grid'] = array(
+    'effects' => array(
+      array(
+        'name' => 'image_scale',
+        'data' => array('width' => 200, 'height' => '', 'upscale' => 0),
+        'weight' => 0,
+      ),
+    ),
+  );
+  $styles['ombumedia_full'] = array(
+    'effects' => array(
+      array(
+        'name' => 'image_scale',
+        'data' => array('width' => 1600, 'height' => '', 'upscale' => 0),
+        'weight' => 0,
+      ),
+    ),
+  );
   return $styles;
 }
 
@@ -405,6 +423,34 @@ function ombumedia_htmlpurifier_html_definition_alter($html_definition) {
   $html_definition->addAttribute('iframe', 'data-ombumedia', 'Text');
 }
 
+/**
+ * Implements hook_entity_info_alter().
+ */
+function ombumedia_entity_info_alter(&$entity_info) {
+  $entity_info['file']['view modes']['ombumedia_grid'] = array(
+    'label' => 'OMBU Media: Grid',
+    'custom settings' => TRUE,
+  );
+  $entity_info['file']['view modes']['ombumedia_preview'] = array(
+    'label' => 'OMBU Media: Preview',
+    'custom settings' => TRUE,
+  );
+}
+
+/**
+ * Implements hook_oembed_response_alter().
+ */
+function ombumedia_oembed_response_alter(&$response) {
+  // Normalize keys.
+  // - Replace dashes with underscores in key names.
+  foreach (array_keys($response) as $key) {
+    $value = $response[$key];
+    unset($response[$key]);
+    $key = str_replace('-', '_', $key);
+    $response[$key] = $value;
+  }
+}
+
 
 /**
  * Preprocess.
@@ -489,19 +535,7 @@ function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
   $file = $variables['file'];
 
   $variables['title'] = !empty($file->title) ? $file->title : $file->filename;
-
-  if ($file->type == 'document') {
-    $preview = file_view_file($file, 'preview');
-    $preview['#prefix'] = '<div>';
-    $preview['#suffix'] = '</div>';
-    $variables['preview'] = array(
-      'preview' => $preview,
-      'full' => file_view_file($file, 'full'),
-    );
-  }
-  else {
-    $variables['preview'] = file_view_file($file, 'full');
-  }
+  $variables['preview'] = file_view_file($file, 'ombumedia_preview');
 
   $info_rows = array();
   foreach (ombumedia_file_get_info($file) as $info) {

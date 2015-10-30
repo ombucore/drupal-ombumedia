@@ -30,6 +30,18 @@ function ombumedia_field_default_field_instances() {
         'type' => 'hidden',
         'weight' => 0,
       ),
+      'ombumedia_grid' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'ombumedia_preview' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
       'preview' => array(
         'label' => 'above',
         'settings' => array(),
@@ -91,6 +103,18 @@ function ombumedia_field_default_field_instances() {
         'type' => 'hidden',
         'weight' => 0,
       ),
+      'ombumedia_grid' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'ombumedia_preview' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
       'preview' => array(
         'label' => 'above',
         'settings' => array(),
@@ -143,6 +167,18 @@ function ombumedia_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(),
         'type' => 'taxonomy_term_reference_link',
+        'weight' => 0,
+      ),
+      'ombumedia_grid' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'ombumedia_preview' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
         'weight' => 0,
       ),
       'preview' => array(
@@ -200,6 +236,18 @@ function ombumedia_field_default_field_instances() {
         'type' => 'taxonomy_term_reference_link',
         'weight' => 1,
       ),
+      'ombumedia_grid' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'ombumedia_preview' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
       'preview' => array(
         'label' => 'above',
         'settings' => array(),
@@ -253,6 +301,18 @@ function ombumedia_field_default_field_instances() {
         'settings' => array(),
         'type' => 'taxonomy_term_reference_link',
         'weight' => 2,
+      ),
+      'ombumedia_grid' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'ombumedia_preview' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
       ),
       'preview' => array(
         'label' => 'above',
@@ -308,6 +368,18 @@ function ombumedia_field_default_field_instances() {
         'settings' => array(),
         'type' => 'taxonomy_term_reference_link',
         'weight' => 3,
+      ),
+      'ombumedia_grid' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'ombumedia_preview' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
       ),
       'preview' => array(
         'label' => 'above',
@@ -369,6 +441,18 @@ function ombumedia_field_default_field_instances() {
         'type' => 'hidden',
         'weight' => 0,
       ),
+      'ombumedia_grid' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'ombumedia_preview' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
       'preview' => array(
         'label' => 'above',
         'settings' => array(),
@@ -425,6 +509,18 @@ function ombumedia_field_default_field_instances() {
         'weight' => 1,
       ),
       'full' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'ombumedia_grid' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'ombumedia_preview' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',

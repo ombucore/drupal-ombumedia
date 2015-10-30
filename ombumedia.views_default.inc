@@ -59,7 +59,7 @@ function ombumedia_views_default_views() {
   $handler->display->display_options['fields']['rendered']['field'] = 'rendered';
   $handler->display->display_options['fields']['rendered']['label'] = '';
   $handler->display->display_options['fields']['rendered']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['rendered']['file_view_mode'] = 'preview';
+  $handler->display->display_options['fields']['rendered']['file_view_mode'] = 'ombumedia_grid';
   /* Field: File: File ID */
   $handler->display->display_options['fields']['fid']['id'] = 'fid';
   $handler->display->display_options['fields']['fid']['table'] = 'file_managed';

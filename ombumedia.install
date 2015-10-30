@@ -11,28 +11,7 @@ function ombumedia_install() {
   variable_set('ombumedia__file_extensions', $file_extensions);
   variable_set('ombumedia__fromurl_supported_schemes', array('http', 'https'));
 
-  // Set default view modes for images.
-  module_load_include('inc', 'file_entity', 'file_entity.file_api');
-  $default_image_styles = array(
-    'preview' => 'ombumedia_thumbnail',
-    'teaser' => 'medium',
-    'full' => 'large',
-  );
-  foreach ($default_image_styles as $view_mode => $image_style) {
-    $existing_display = file_displays_load('image', $view_mode);
-    if (empty($existing_display)) {
-      $display_name = 'image__' . $view_mode . '__file_image';
-      $display = array(
-        'api_version' => 1,
-        'name' => $display_name,
-        'status' => 1,
-        'weight' => 5,
-        'settings' => array('image_style' => $image_style),
-        'export_type' => NULL,
-      );
-      file_display_save((object) $display);
-    }
-  }
+  ombumedia_install_file_view_modes();
 }
 
 /**
@@ -67,4 +46,123 @@ function ombumedia_field_schema($field) {
       ),
     ),
   );
+}
+
+function ombumedia_install_file_view_modes() {
+
+  // Document.
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'document__ombumedia_grid__oembed_thumbnail';
+  $file_display->weight = -10;
+  $file_display->status = TRUE;
+  $file_display->settings = array(
+    'width' => '300',
+    'height' => '',
+  );
+  file_display_save($file_display);
+
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'document__ombumedia_grid__file_field_ombumedia_large_icon';
+  $file_display->weight = -9;
+  $file_display->status = TRUE;
+  file_display_save($file_display);
+
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'document__ombumedia_preview__oembed';
+  $file_display->weight = -10;
+  $file_display->status = TRUE;
+  $file_display->settings = array(
+    'width' => '560',
+    'height' => '340',
+    'wmode' => '',
+  );
+  file_display_save($file_display);
+
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'document__ombumedia_preview__file_field_ombumedia_large_icon';
+  $file_display->weight = -9;
+  $file_display->status = TRUE;
+  file_display_save($file_display);
+
+
+  // Video.
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'video__ombumedia_grid__oembed_thumbnail';
+  $file_display->weight = -10;
+  $file_display->status = TRUE;
+  $file_display->settings = array(
+    'width' => '300',
+    'height' => '',
+  );
+  file_display_save($file_display);
+
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'video__ombumedia_grid__file_field_ombumedia_large_icon';
+  $file_display->weight = -9;
+  $file_display->status = TRUE;
+  file_display_save($file_display);
+
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'video__ombumedia_preview__oembed';
+  $file_display->weight = -10;
+  $file_display->status = TRUE;
+  $file_display->settings = array(
+    'width' => '560',
+    'height' => '340',
+    'wmode' => '',
+  );
+  file_display_save($file_display);
+
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'video__ombumedia_preview__file_field_ombumedia_large_icon';
+  $file_display->weight = -9;
+  $file_display->status = TRUE;
+  file_display_save($file_display);
+
+
+  // Image.
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'image__ombumedia_grid__file_field_image';
+  $file_display->weight = -10;
+  $file_display->status = TRUE;
+  $file_display->settings = array(
+    'image_style' => 'ombumedia_grid',
+    'image_link' => '',
+  );
+  file_display_save($file_display);
+
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'image__ombumedia_grid__file_field_ombumedia_large_icon';
+  $file_display->weight = -9;
+  $file_display->status = TRUE;
+  file_display_save($file_display);
+
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'image__ombumedia_preview__file_field_image';
+  $file_display->weight = -10;
+  $file_display->status = TRUE;
+  $file_display->settings = array(
+    'image_style' => 'ombumedia_full',
+    'image_link' => '',
+  );
+  file_display_save($file_display);
+
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'image__ombumedia_preview__file_field_ombumedia_large_icon';
+  $file_display->weight = -9;
+  $file_display->status = TRUE;
+  file_display_save($file_display);
+
 }
