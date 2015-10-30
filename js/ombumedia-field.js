@@ -31,20 +31,20 @@
         function selectChangeClick(e) {
           e.preventDefault();
 
-          var options = $.extend({}, options);
+          var selectOptions = $.extend({}, options);
 
           if ($fid.val() != 0) {
-            options.fid = $fid.val();
+            selectOptions.fid = $fid.val();
           }
 
           try {
             var data = $.parseJSON($data.val());
             if (data.view_mode) {
-              options.view_mode = data.view_mode;
+              selectOptions.view_mode = data.view_mode;
             }
           } catch (error) {}
 
-          Drupal.ombumedia.selectMedia(options).then(onMediaSelect);
+          Drupal.ombumedia.selectMedia(selectOptions).then(onMediaSelect);
 
         }
 
