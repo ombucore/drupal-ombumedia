@@ -90,7 +90,7 @@ function ombumedia_install_file_view_modes() {
 
   $file_display = new \stdClass();
   $file_display->api_version = 1;
-  $file_display->name = 'document__ombumedia_full__oembed';
+  $file_display->name = 'document__full__oembed';
   $file_display->weight = -10;
   $file_display->status = TRUE;
   $file_display->settings = array(
@@ -102,7 +102,7 @@ function ombumedia_install_file_view_modes() {
 
   $file_display = new \stdClass();
   $file_display->api_version = 1;
-  $file_display->name = 'document__ombumedia_full__file_field_ombumedia_large_icon';
+  $file_display->name = 'document__full__file_field_ombumedia_large_icon';
   $file_display->weight = -9;
   $file_display->status = TRUE;
   file_display_save($file_display);
@@ -148,7 +148,7 @@ function ombumedia_install_file_view_modes() {
 
   $file_display = new \stdClass();
   $file_display->api_version = 1;
-  $file_display->name = 'video__ombumedia_full__oembed';
+  $file_display->name = 'video__full__oembed';
   $file_display->weight = -10;
   $file_display->status = TRUE;
   $file_display->settings = array(
@@ -160,7 +160,7 @@ function ombumedia_install_file_view_modes() {
 
   $file_display = new \stdClass();
   $file_display->api_version = 1;
-  $file_display->name = 'video__ombumedia_full__file_field_ombumedia_large_icon';
+  $file_display->name = 'video__full__file_field_ombumedia_large_icon';
   $file_display->weight = -9;
   $file_display->status = TRUE;
   file_display_save($file_display);
@@ -191,7 +191,7 @@ function ombumedia_install_file_view_modes() {
   $file_display->weight = -10;
   $file_display->status = TRUE;
   $file_display->settings = array(
-    'image_style' => 'ombumedia_full',
+    'image_style' => 'full',
     'image_link' => '',
   );
   file_display_save($file_display);
@@ -205,11 +205,11 @@ function ombumedia_install_file_view_modes() {
 
   $file_display = new \stdClass();
   $file_display->api_version = 1;
-  $file_display->name = 'image__ombumedia_full__file_field_image';
+  $file_display->name = 'image__full__file_field_image';
   $file_display->weight = -10;
   $file_display->status = TRUE;
   $file_display->settings = array(
-    'image_style' => 'ombumedia_full',
+    'image_style' => 'full',
     'image_link' => '',
   );
 

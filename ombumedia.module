@@ -435,7 +435,7 @@ function ombumedia_entity_info_alter(&$entity_info) {
     'label' => 'OMBU Media: Preview',
     'custom settings' => TRUE,
   );
-  $entity_info['file']['view modes']['ombumedia_full'] = array(
+  $entity_info['file']['view modes']['full'] = array(
     'label' => 'Full',
     'custom settings' => TRUE,
   );
