@@ -460,10 +460,10 @@ function ombumedia_field_widget_info() {
         'allowed_types' => array('image'),
         'allowed_schemes' => array('public', 'private'),
         'allowed_view_modes' => array(
-          'audio' => array('default'),
-          'document' => array('default'),
-          'image' => array('default'),
-          'video' => array('default'),
+          'audio' => array('ombumedia_full'),
+          'document' => array('ombumedia_full'),
+          'image' => array('ombumedia_full'),
+          'video' => array('ombumedia_full'),
         ),
       ),
       'behaviors' => array(

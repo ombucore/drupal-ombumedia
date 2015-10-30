@@ -88,6 +88,25 @@ function ombumedia_install_file_view_modes() {
   $file_display->status = TRUE;
   file_display_save($file_display);
 
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'document__ombumedia_full__oembed';
+  $file_display->weight = -10;
+  $file_display->status = TRUE;
+  $file_display->settings = array(
+    'width' => '560',
+    'height' => '340',
+    'wmode' => '',
+  );
+  file_display_save($file_display);
+
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'document__ombumedia_full__file_field_ombumedia_large_icon';
+  $file_display->weight = -9;
+  $file_display->status = TRUE;
+  file_display_save($file_display);
+
 
   // Video.
   $file_display = new \stdClass();
@@ -123,6 +142,25 @@ function ombumedia_install_file_view_modes() {
   $file_display = new \stdClass();
   $file_display->api_version = 1;
   $file_display->name = 'video__ombumedia_preview__file_field_ombumedia_large_icon';
+  $file_display->weight = -9;
+  $file_display->status = TRUE;
+  file_display_save($file_display);
+
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'video__ombumedia_full__oembed';
+  $file_display->weight = -10;
+  $file_display->status = TRUE;
+  $file_display->settings = array(
+    'width' => '560',
+    'height' => '340',
+    'wmode' => '',
+  );
+  file_display_save($file_display);
+
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'video__ombumedia_full__file_field_ombumedia_large_icon';
   $file_display->weight = -9;
   $file_display->status = TRUE;
   file_display_save($file_display);
