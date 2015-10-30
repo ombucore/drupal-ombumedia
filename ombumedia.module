@@ -435,6 +435,10 @@ function ombumedia_entity_info_alter(&$entity_info) {
     'label' => 'OMBU Media: Preview',
     'custom settings' => TRUE,
   );
+  $entity_info['file']['view modes']['ombumedia_full'] = array(
+    'label' => 'Full',
+    'custom settings' => TRUE,
+  );
 }
 
 /**
@@ -659,6 +663,10 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
       'wrapper' => $preview_id,
     ),
   );
+  if (count($view_mode_options) < 2) {
+    $form['view_mode']['#prefix'] = '<div style="display: none;">';
+    $form['view_mode']['#suffix'] = '</div>';
+  }
 
   $form['#preview_id'] = $preview_id;
   $form['preview'] = file_view_file($file, $view_mode);

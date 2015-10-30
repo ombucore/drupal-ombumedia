@@ -165,4 +165,15 @@ function ombumedia_install_file_view_modes() {
   $file_display->status = TRUE;
   file_display_save($file_display);
 
+  $file_display = new \stdClass();
+  $file_display->api_version = 1;
+  $file_display->name = 'image__ombumedia_full__file_field_image';
+  $file_display->weight = -10;
+  $file_display->status = TRUE;
+  $file_display->settings = array(
+    'image_style' => 'ombumedia_full',
+    'image_link' => '',
+  );
+
+  file_display_save($file_display);
 }
