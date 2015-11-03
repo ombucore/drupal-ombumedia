@@ -225,7 +225,7 @@ function ombumedia_image_default_styles() {
       ),
     ),
   );
-  $styles['ombumedia_full'] = array(
+  $styles['full'] = array(
     'effects' => array(
       array(
         'name' => 'image_scale',
