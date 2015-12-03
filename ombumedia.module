@@ -703,6 +703,7 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
 
   unset($form['file']['redirect']);
 
+  $type = file_type_load($file->type);
   $form['actions'] = array(
     '#type' => 'actions',
     '#weight' => 30,
@@ -713,7 +714,7 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
       )),
     ),
     'continue' => array(
-      '#value' => t('Use this @type', array('@type' => $file->type)),
+      '#value' => t('Use this @type', array('@type' => $type->label)),
       '#type' => 'submit',
       '#attributes' => array(
         'class' => array('ombumedia-button'),
