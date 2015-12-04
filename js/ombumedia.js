@@ -134,7 +134,7 @@ Drupal.ombumedia.addDragUpload = function($rootEl, doneCallback) {
   var $progressBarBar = $uploadOverlay.find('.progress-bar .bar');
   var $errorsClose = $uploadOverlay.find('.error-container .close');
 
-  $rootEl.on('dragover', preventDefault(stopPropagation(dragOver)));
+  $(window).on('dragover', preventDefault(stopPropagation(dragOver)));
   $dragOverlay.on('dragleave', preventDefault(stopPropagation(dragLeave)));
   $dragOverlay.on('drop', preventDefault(stopPropagation(uploadDroppedFile)));
   $errorsClose.on('click', preventDefault(hideErrors));
