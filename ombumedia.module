@@ -455,6 +455,41 @@ function ombumedia_oembed_response_alter(&$response) {
   }
 }
 
+/**
+ * Implements hook_entity_insert().
+ */
+function ombumedia_entity_insert($entity, $type) {
+  ombumedia_entity_update($entity, $type);
+}
+
+/**
+ * Implements hook_entity_update().
+ */
+function ombumedia_entity_update($entity, $entity_type) {
+  // There's a odd bug where multiple paths can trigger a entity load after an
+  // entity save (e.g. after saving a bean, _block_rehash() will load up all
+  // beans again). Entity loads will run through check_markup() for filtered text
+  // elements. Where this becomes a problem is when those entities contain
+  // fields that run through the ombumedia filter.
+  // ombumedia_render_filter_placehoders() uses file templates, and since it
+  // runs while still in the admin context (entity save form) it will bypass any
+  // overrides in the active front end form. This will register a shutdown
+  // function when an entity is saved in order to clear out field cache for that
+  // entity.
+  list($id) = entity_extract_ids($entity_type, $entity);
+  drupal_register_shutdown_function('ombumedia_clear_field_cache', $id, $entity_type);
+}
+
+/**
+ * Shutdown function to handle clearing field cache.
+ *
+ * Clears out field cache f
+ *
+ * @see ombumedia_entity_update().
+ */
+function ombumedia_clear_field_cache($id, $entity_type) {
+  cache_clear_all('field:' . $entity_type . ':' . $id, 'cache_field');
+}
 
 /**
  * Preprocess.
