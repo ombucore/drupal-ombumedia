@@ -476,19 +476,35 @@ function ombumedia_entity_update($entity, $entity_type) {
   // overrides in the active front end form. This will register a shutdown
   // function when an entity is saved in order to clear out field cache for that
   // entity.
+  static $registered = FALSE;
+
   list($id) = entity_extract_ids($entity_type, $entity);
-  drupal_register_shutdown_function('ombumedia_clear_field_cache', $id, $entity_type);
+
+  $cache_ids = variable_get('ombumedia_field_cache_ids', array());
+  $cache_ids[] = 'field:' . $entity_type . ':' . $id;
+  variable_set('ombumedia_field_cache_ids', $cache_ids);
+
+  // Only register shutdown function once.
+  if (!$registered) {
+    drupal_register_shutdown_function('ombumedia_clear_field_cache');
+    $registered = TRUE;
+  }
 }
 
 /**
  * Shutdown function to handle clearing field cache.
  *
- * Clears out field cache f
+ * Clears out field cache for entites post save.
  *
  * @see ombumedia_entity_update().
  */
-function ombumedia_clear_field_cache($id, $entity_type) {
-  cache_clear_all('field:' . $entity_type . ':' . $id, 'cache_field');
+function ombumedia_clear_field_cache() {
+  $cache_ids = variable_get('ombumedia_field_cache_ids', array());
+  foreach ($cache_ids as $cache_id) {
+    if ($cache_id) {
+      cache_clear_all($cache_id, 'cache_field');
+    }
+  }
 }
 
 /**

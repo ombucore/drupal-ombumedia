@@ -26,15 +26,6 @@ function ombumedia_filter_info() {
  * Converts embedded entity placeholders into rendered entities.
  */
 function ombumedia_render_filter_placeholders($text, $filter, $format, $langcode, $cache, $cache_id) {
-  // There's cases where filters can enter an infinite loop. Store the
-  // cache id in a static variable so it can be checked and skipped if already
-  // processed.
-  static $rendered = array();
-  if (isset($rendered[$cache_id])) {
-    return;
-  }
-  $rendered[$cache_id] = TRUE;
-
   $result = $text;
 
   if (strpos($text, 'data-ombumedia') !== FALSE) {
