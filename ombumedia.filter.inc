@@ -26,6 +26,16 @@ function ombumedia_filter_info() {
  * Converts embedded entity placeholders into rendered entities.
  */
 function ombumedia_render_filter_placeholders($text, $filter, $format, $langcode, $cache, $cache_id) {
+  // There's the possibility that recursion could happen, since file_view calls
+  // menu_get_object() which can load and rerender the object that is currently
+  // being filtered. This does a simple md5 on the text being filtered so that
+  // it doesn't get filtered twice.
+  static $id_check = FALSE;
+  if ($id_check && md5($text) == $id_check) {
+    return $text;
+  }
+  $id_check = md5($text);
+
   $result = $text;
 
   if (strpos($text, 'data-ombumedia') !== FALSE) {
