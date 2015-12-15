@@ -291,7 +291,7 @@ function ombumedia_field_validate($obj_type, $object, $field, $instance, $langco
     $file = file_load($item['fid']);
 
     // Only validate allowed types if the file is remote and not local.
-    if (!file_entity_file_is_local($file)) {
+    if ($file && !file_entity_file_is_local($file)) {
       if (!in_array($file->type, $allowed_types)) {
         $errors[$field['field_name']][$langcode][$delta][] = array(
           'error' => 'media_remote_file_type_not_allowed',
