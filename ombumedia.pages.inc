@@ -182,7 +182,7 @@ function ombumedia_page_file_configure($file) {
 /**
  * Page callback for a field to get a file preview.
  */
-function ombumedia_page_file_field_preview($file, $view_mode = 'preview') {
+function ombumedia_page_file_field_preview($file, $view_mode = 'ombumedia_preview') {
   $output = array(
     '#prefix' => '<div class="ombumedia-file-field-preview">',
     '#suffix' => '</div>',

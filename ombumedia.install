@@ -191,7 +191,7 @@ function ombumedia_install_file_view_modes() {
   $file_display->weight = -10;
   $file_display->status = TRUE;
   $file_display->settings = array(
-    'image_style' => 'full',
+    'image_style' => 'ombumedia_thumbnail',
     'image_link' => '',
   );
   file_display_save($file_display);
