@@ -989,8 +989,8 @@ function ombumedia_file_get_info($file) {
 function ombumedia_file_embed_tag($file) {
   // Set sane defaults.
   $file += array(
-    'view_mode' => 'default',
-    'position' => 'left',
+    'view_mode' => 'full',
+    'position' => '',
     'title' => '',
     'type' => 'image',
   );

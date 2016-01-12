@@ -102,11 +102,13 @@ function ombumedia_install_file_view_modes() {
 
   $file_display = new \stdClass();
   $file_display->api_version = 1;
-  $file_display->name = 'document__full__file_field_ombumedia_large_icon';
+  $file_display->name = 'document__full__file_field_file_download_link';
   $file_display->weight = -9;
   $file_display->status = TRUE;
+  $file_display->settings = array(
+    'text' => 'Download [file:name]',
+  );
   file_display_save($file_display);
-
 
   // Video.
   $file_display = new \stdClass();
