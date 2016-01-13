@@ -34,8 +34,7 @@ done by this module and usually invoves loading file by FID and rendering it
 according to the selected view mode.
 
 Extra fields can be added to the configuration form to pass extra information
-with the embedded item.  An example can be seen in 
-`ombumedia_image_position.module`.
+with the embedded item.  An example can be seen in `ombumedia_position.module`.
 
 
 Examples
