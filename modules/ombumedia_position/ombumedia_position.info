@@ -1,0 +1,7 @@
+name = OMBU Media Position
+description = Adds position configuration for the default wysiwyg format
+core = 7.x
+package = OMBU
+version = 7.x-1.0
+project = ombumedia
+dependencies[] = ombumedia

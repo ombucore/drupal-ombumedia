@@ -11,10 +11,12 @@
 [data-ombumedia] span.style {
   display: block;
 }
+[data-ombumedia][data-ombumedia-type="document"][data-ombumedia-position="left"],
 [data-ombumedia][data-ombumedia-type="image"][data-ombumedia-position="left"] {
   float: left;
   margin: 0 1em 1em 0;
 }
+[data-ombumedia][data-ombumedia-type="document"][data-ombumedia-position="right"],
 [data-ombumedia][data-ombumedia-type="image"][data-ombumedia-position="right"] {
   float: right;
   margin: 0 0 1em 1em;

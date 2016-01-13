@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Code for the OMBU Media Image Positioning.
+ * Code for the OMBU Media Positioning.
  *
- * Adds fields to the configuration form for media images being embedded in
- * rich text.
+ * Adds fields to the configuration form for media images and documents being
+ * embedded in rich text.
  *
  * An example of how to add fields and pass data back through the media
  * selection workflow.
@@ -13,7 +13,7 @@
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function ombumedia_image_position_form_ombumedia_file_entity_configure_alter(&$form, &$form_state) {
+function ombumedia_position_form_ombumedia_file_entity_configure_alter(&$form, &$form_state) {
 
   // Add fields to the configuration form for the 'default' text format.
   if (isset($_GET['wysiwyg_format']) && $_GET['wysiwyg_format'] == 'default') {
@@ -21,7 +21,7 @@ function ombumedia_image_position_form_ombumedia_file_entity_configure_alter(&$f
     // Grab the file from here.
     $file = $form['#file'];
 
-    if ($file->type === 'image') {
+    if (in_array($file->type, ombumedia_position_types())) {
 
       // Any values added to ['select_data'] will be returned to the browser
       // after submission.
@@ -44,12 +44,18 @@ function ombumedia_image_position_form_ombumedia_file_entity_configure_alter(&$f
 /**
  * Implements hook_preprocess_file_entity().
  */
-function ombumedia_preprocess_file_entity(&$variables) {
+function ombumedia_position_preprocess_file_entity(&$variables) {
   $file = $variables['file'];
   if (isset($file->ombumedia_settings)) {
     $settings = $file->ombumedia_settings;
-    if ($file->type === 'image' && isset($settings['position']) && $settings['position'] != 'default') {
-      $variables['classes_array'][] = 'pull-' . $settings['position'];
+    if (in_array($file->type, ombumedia_position_types())) {
+      if (isset($settings['position']) && $settings['position'] != 'default') {
+        $variables['classes_array'][] = 'pull-' . $settings['position'];
+      }
     }
   }
+}
+
+function ombumedia_position_types() {
+  return array('image', 'document');
 }
