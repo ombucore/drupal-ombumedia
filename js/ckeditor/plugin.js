@@ -35,6 +35,11 @@
     return str.charAt(0).toUpperCase() + str.substring(1);
   }
 
+  // Register the <ombumedia> element and mark it as block-level so that extra
+  // empty paragraph tags aren't added around it.
+  CKEDITOR.dtd['ombumedia'] = {};
+  CKEDITOR.dtd['$block']['ombumedia'] = 1;
+
   CKEDITOR.plugins.add('ombumedia', {
     requires: 'widget',
     icons: 'ombumedia',
