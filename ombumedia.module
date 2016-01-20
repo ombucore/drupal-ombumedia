@@ -590,7 +590,13 @@ function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
   $file = $variables['file'];
 
   $variables['title'] = !empty($file->title) ? $file->title : $file->filename;
-  $variables['preview'] = file_view_file($file, 'ombumedia_preview');
+  if ($file->type === 'image') {
+    $view_mode = 'full';
+  }
+  else {
+    $view_mode = 'ombumedia_preview';
+  }
+  $variables['preview'] = file_view_file($file, $view_mode);
 
   $info_rows = array();
   foreach (ombumedia_file_get_info($file) as $info) {
