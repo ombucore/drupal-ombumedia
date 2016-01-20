@@ -954,13 +954,32 @@ function ombumedia_file_get_info($file) {
   }
 
   $fields = field_info_instances('file', $file->type);
+  $taxonomy_fields = array('field_media_folder', 'field_media_tags');
   foreach ($fields as $field) {
     $field_name = $field['field_name'];
     $values = array();
     $field_items = field_get_items('file', $file, $field_name);
+
     if (!empty($field_items)) {
       foreach ($field_items as $field_item) {
         $field_render = field_view_value('file', $file, $field_name, $field_item, array());
+
+        // Rewrite taxonomy fields.
+        if (in_array($field_name, $taxonomy_fields)) {
+          if ($field_name == 'field_media_tags') {
+            $query_value = $field_render['#title'];
+          }
+          else {
+            $query_value = $field_item['tid'];
+          }
+          $field_render['#href'] = 'admin/dashboard/manage-media';
+          $field_render['#options']['query'] = array(
+            $field_name . '_tid' => $query_value,
+          );
+          $field_render['#options']['attributes']['data-filter-field-name'] = $field_name . '_tid';
+          $field_render['#options']['attributes']['data-filter-field-value'] = $query_value;
+        }
+
         $values[] = render($field_render);
       }
     }

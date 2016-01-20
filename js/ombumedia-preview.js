@@ -33,6 +33,7 @@ Drupal.behaviors.ombumediaPreviewPopup = {
   }
 };
 
+
 function launchPreviewPopup(url) {
   url = url + '?' + $.param({ render: 'ombumedia-popup'});
 
@@ -96,6 +97,38 @@ function launchPreviewPopup(url) {
   });
 
 }
+
+
+/**
+ * Run inside the preview popup iframe.
+ */
+Drupal.behaviors.ombumediaPreviewTaxonomyLinks = {
+  attach: function(context) {
+    // Hook up taxonomy links to close th preview and filter the parent media
+    // library.
+    $('body.page-file-preview')
+      .find('a[data-filter-field-name]')
+      .filter(':not(.preview-taxonomy-links-processed)')
+      .addClass('.preview-taxonomy-links-processed')
+      .on('click', preventDefault(function(e) {
+        try {
+          var $a = $(this);
+          var filterName = $a.attr('data-filter-field-name');
+          var filterValue = $a.attr('data-filter-field-value');
+
+          // Have to use parent window's jQuery so the event triggering works
+          // correctly.
+          var $filter = window.parent.jQuery(':input[name="' + filterName + '"]');
+          $filter.val(filterValue);
+          $filter.trigger('change');
+
+          window.parent.jQuery('.ui-dialog-titlebar-close').trigger('click');
+        }
+        catch(e) {}
+      }));
+  }
+};
+
 
 
 })(jQuery);
