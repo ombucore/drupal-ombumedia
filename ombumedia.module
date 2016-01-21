@@ -742,7 +742,7 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
 
   $form['file'] = array(
     '#title' => t('Edit File'),
-    '#description' => t('Changing these fields update them everwhere this file is used.'),
+    '#description' => t('Changing these fields updates them everywhere this file is used.'),
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
