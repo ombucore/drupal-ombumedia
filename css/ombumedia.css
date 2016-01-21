@@ -1,3 +1,23 @@
+@-webkit-keyframes ombumedia-loader {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes ombumedia-loader {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
 .ombumedia-upload-drag,
 .ombumedia-upload-progress {
   position: fixed;
@@ -120,6 +140,30 @@
 }
 .view-ombumedia form .select2-container.select2-container-multi .select2-choices {
   background-image: none;
+}
+.view-ombumedia form .ajax-progress.ajax-progress-throbber .throbber {
+  background-image: none;
+  font-size: 10px;
+  position: relative;
+  text-indent: -9999em;
+  border-top: 5px solid #5897fb;
+  border-right: 5px solid rgba(88, 151, 251, 0.2);
+  border-bottom: 5px solid rgba(88, 151, 251, 0.2);
+  border-left: 5px solid rgba(88, 151, 251, 0.2);
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: ombumedia-loader 1s infinite ease-in-out;
+  animation: ombumedia-loader 1s infinite ease-in-out;
+  margin: 0;
+  margin-top: 29px;
+  padding: 0;
+}
+.view-ombumedia form .ajax-progress.ajax-progress-throbber .throbber,
+.view-ombumedia form .ajax-progress.ajax-progress-throbber .throbber:after {
+  border-radius: 50%;
+  width: 29px;
+  height: 29px;
 }
 .view-ombumedia .view-empty {
   text-align: center;
