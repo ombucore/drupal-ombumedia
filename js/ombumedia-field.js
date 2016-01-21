@@ -67,6 +67,7 @@
         }
 
         function clearClick(e) {
+          e.preventDefault();
           $data.val(JSON.stringify({}));
           $fid.val(0);
           $('.preview', $container).html('');
