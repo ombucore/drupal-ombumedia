@@ -101,7 +101,8 @@ function ombumedia_page_select_media() {
 function ombumedia_page_media_ajax_upload() {
   module_load_include('inc', 'file_entity', 'file_entity.pages');
   $errors = array();
-  if ($file = file_save_upload(0)) {
+  $validators = file_entity_get_upload_validators();
+  if ($file = file_save_upload(0, $validators)) {
 
     $type_candidates = file_entity_get_filetype_candidates($file);
 
