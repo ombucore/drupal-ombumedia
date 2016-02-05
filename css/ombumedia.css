@@ -132,6 +132,9 @@
 .view-ombumedia form input[name="filename"] {
   height: 29px;
 }
+.view-ombumedia form .views-widget .description {
+  display: none;
+}
 .view-ombumedia form .select2-container > .select2-choice {
   height: 29px;
 }
