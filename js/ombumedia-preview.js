@@ -33,6 +33,61 @@ Drupal.behaviors.ombumediaPreviewPopup = {
   }
 };
 
+/**
+ */
+Drupal.behaviors.ombumediaFixExposedFiltersFocus = {
+  attach: function(context) {
+    var $forms = $('form#views-exposed-form-ombumedia-manage-media, form#views-exposed-form-ombumedia-select-media', context)
+                    .once('ombumedia-fix-exposed-filters-focus');
+
+    if (!$forms.length) {
+      return;
+    }
+
+    $forms.each(function(i, formEl) {
+      var $form = $(formEl);
+      var $formElements = $form.find('input, select');
+      var $button = $form.find('input[type=submit], button[type=submit], input[type=image]');
+
+      // If this is re-binding after ajax.
+      refocusElement();
+
+      // Hidden button gets 'clicked' to start the ajax call.
+      $button.on('click', ajaxStarted);
+
+      // Called right after ajax starts.
+      function ajaxStarted() {
+        // Stash which element had focus previously.
+        var $focusEl = $(document.activeElement);
+        Drupal.behaviors.ombumediaFixExposedFiltersFocus.previousFocusedId = $focusEl.attr('id');
+
+        // Put focus back on element after button was clicked.
+        refocusElement();
+      }
+
+      function refocusElement() {
+        if (!Drupal.behaviors.ombumediaFixExposedFiltersFocus.previousFocusedId) {
+          return;
+        }
+
+        var $focusEl = $form.find('#' + Drupal.behaviors.ombumediaFixExposedFiltersFocus.previousFocusedId);
+        $focusEl.focus();
+
+        if ($focusEl.is('input[type="text"]')) {
+          // Move the cursor to the end.
+          if ($focusEl[0].setSelectionRange) {
+            $focusEl[0].setSelectionRange(100, 100);
+          }
+          else {
+            $focusEl.val($focusEl.val());
+          }
+        }
+      }
+
+    });
+  }
+};
+
 
 function launchPreviewPopup(url) {
   url = url + '?' + $.param({ render: 'ombumedia-popup'});
