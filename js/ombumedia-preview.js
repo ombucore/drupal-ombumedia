@@ -52,6 +52,15 @@ Drupal.behaviors.ombumediaFixExposedFiltersFocus = {
       // If this is re-binding after ajax.
       refocusElement();
 
+      $formElements
+        .filter('[name="filename"]')
+        .on('keypress', function(e) {
+          // Block the <ENTER> key.
+          if (e.keyCode == 13) {
+            e.preventDefault();
+          }
+        });
+
       // Hidden button gets 'clicked' to start the ajax call.
       $button.on('click', ajaxStarted);
 
