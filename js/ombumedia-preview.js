@@ -173,7 +173,7 @@ Drupal.behaviors.ombumediaPreviewTaxonomyLinks = {
     $('body.page-file-preview')
       .find('a[data-filter-field-name]')
       .filter(':not(.preview-taxonomy-links-processed)')
-      .addClass('.preview-taxonomy-links-processed')
+      .addClass('preview-taxonomy-links-processed')
       .on('click', preventDefault(function(e) {
         try {
           var $a = $(this);
@@ -186,13 +186,52 @@ Drupal.behaviors.ombumediaPreviewTaxonomyLinks = {
           $filter.val(filterValue);
           $filter.trigger('change');
 
-          window.parent.jQuery('.ui-dialog-titlebar-close').trigger('click');
+          closePreviewDialog();
         }
         catch(e) {}
       }));
   }
 };
 
+Drupal.behaviors.ombumediaPreviewEscapeKey = {
+  attach: function(context) {
+    $('body.page-file-preview')
+      .filter(':not(.escape-key-processed)')
+      .addClass('escape-key-processed')
+      .on('keyup', preventDefault(function(e) {
+        if (e.keyCode == 27) {
+          closePreviewDialog();
+        }
+      }));
+  }
+};
+
+Drupal.behaviors.ombumediaPreviewBackgroundClickClose = {
+  attach: function(context) {
+    var $previewBody = $('body.page-file-preview').filter(':not(.background-click-processed)');
+
+    if (!$previewBody.length) {
+      return;
+    }
+
+    $previewBody.addClass('background-click-processed');
+
+    $(window).on('click', preventDefault(function(e) {
+        var parentIsPreview = !!$(e.target).parents('.ombumedia-file-preview').length;
+        if (!parentIsPreview) {
+          closePreviewDialog();
+        }
+      }));
+  }
+};
+
+
+function closePreviewDialog() {
+  try {
+    window.parent.jQuery('.ui-dialog-titlebar-close').trigger('click');
+  }
+  catch(e) {}
+}
 
 
 })(jQuery);
