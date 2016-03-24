@@ -863,7 +863,7 @@ function ombumedia_file_entity_configure_submit($form, &$form_state) {
   $return_json = drupal_json_encode($return);
 
   print <<<JS
-<script type="text/javascript">
+<script type='text/javascript'>
   try {
     window.parent.Drupal.ombumedia._popupCallback($return_json);
   }
@@ -941,6 +941,7 @@ function ombumedia_file_type_view_modes($type) {
  * Returns metadata for a file, depending on type.
  */
 function ombumedia_file_get_info($file) {
+
   $info = array();
 
   $info[]= array(
@@ -1029,6 +1030,9 @@ function ombumedia_file_get_info($file) {
       'value' => implode(', ', $values),
     );
   }
+
+  // Allow other modules to add info.
+  drupal_alter('ombumedia_file_info', $info, $file);
 
   return $info;
 }
