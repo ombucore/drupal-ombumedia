@@ -162,7 +162,7 @@ function ombumedia_library() {
             'upload' => array(
               'url' => url('admin/ombumedia/ajax-upload'),
             ),
-            'path' => url($path),
+            'path' => base_path() . $path,
           ),
         ),
       ),
