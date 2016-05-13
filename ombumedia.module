@@ -802,7 +802,11 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
   );
 
   $form['#file'] = $file;
-  field_attach_form('file', $file, $form['file'], $form_state);
+  $language = NULL;
+  if (function_exists('entity_language')) {
+    $language = entity_language('file', $file);
+  }
+  field_attach_form('file', $file, $form['file'], $form_state, $language);
 
   unset($form['file']['redirect']);
 
