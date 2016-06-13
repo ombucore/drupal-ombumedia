@@ -285,6 +285,9 @@
   width: 100%;
   text-align: center;
 }
+.view-ombumedia .ombumedia-library-file .views-field-rendered .field-content-wrapper .field-content div.pdfpreview{
+  display: inline;
+}
 .view-ombumedia .ombumedia-library-file .views-field-rendered .field-content-wrapper .field-content:before {
   display: inline-block;
   vertical-align: middle;
