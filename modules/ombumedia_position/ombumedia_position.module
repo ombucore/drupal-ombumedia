@@ -57,5 +57,9 @@ function ombumedia_position_preprocess_file_entity(&$variables) {
 }
 
 function ombumedia_position_types() {
-  return array('image', 'document');
+  $types = array('image', 'document');
+
+  drupal_alter('ombumedia_position_types', $types);
+
+  return $types;
 }
