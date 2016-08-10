@@ -31,9 +31,17 @@ function ombumedia_render_filter_placeholders($text, $filter, $format, $langcode
   // being filtered. This does a simple md5 on the text being filtered so that
   // it doesn't get filtered twice.
   static $id_check = FALSE;
-  if ($id_check && md5($text) == $id_check) {
+  static $recursion = 0;
+
+  if ($id_check && md5($text) != $id_check) {
+    $recursion = 0;
+  }
+
+  if ($recursion++ == 5) {
+    $recursion = 0;
     return $text;
   }
+
   $id_check = md5($text);
 
   $result = $text;
