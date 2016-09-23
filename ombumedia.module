@@ -848,16 +848,17 @@ function ombumedia_file_entity_configure_preview_callback($form, &$form_state) {
 }
 
 function ombumedia_file_entity_configure_validate($form, &$form_state) {
-  if (isset($form['file']['#entity'])) {
+  if (isset($form['file']['#entity_type'])) {
     // Fields were attached.
-    $file = $form['file']['#entity'];
+    $file = $form['#file'];
     field_attach_form_validate('file', $file, $form['file'], $form_state);
   }
 }
 
 function ombumedia_file_entity_configure_submit($form, &$form_state) {
   $file = $form['#file'];
-  if (isset($form['file']['#entity'])) {
+
+  if (isset($form['file']['#entity_type'])) {
     // Fields were attached.
     field_attach_submit('file', $file, $form['file'], $form_state);
   }
