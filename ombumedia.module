@@ -493,6 +493,11 @@ function ombumedia_entity_update($entity, $entity_type) {
   // overrides in the active front end form. This will register a shutdown
   // function when an entity is saved in order to clear out field cache for that
   // entity.
+
+  if ($entity_type != 'file') {
+    return;
+  }
+
   static $registered = FALSE;
 
   list($id) = entity_extract_ids($entity_type, $entity);
