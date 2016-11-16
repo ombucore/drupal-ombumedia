@@ -1,0 +1,30 @@
+diff --git a/ombumedia.module b/ombumedia.module
+index a79096f..9fc3c4f 100644
+--- a/ombumedia.module
++++ b/ombumedia.module
+@@ -493,17 +493,24 @@ function ombumedia_entity_update($entity, $entity_type) {
+   // overrides in the active front end form. This will register a shutdown
+   // function when an entity is saved in order to clear out field cache for that
+   // entity.
++
++  if ($entity_type != 'file') {
++    return;
++  }
++  
+   static $registered = FALSE;
+ 
+   list($id) = entity_extract_ids($entity_type, $entity);
+ 
+   $cache_ids = variable_get('ombumedia_field_cache_ids', array());
++  $cache_ids = array();
+   $cache_ids[] = 'field:' . $entity_type . ':' . $id;
+   variable_set('ombumedia_field_cache_ids', $cache_ids);
+ 
+   // Only register shutdown function once.
+   if (!$registered) {
+-    drupal_register_shutdown_function('ombumedia_clear_field_cache');
++    field_cache_clear();
++    //drupal_register_shutdown_function('ombumedia_clear_field_cache');
+     $registered = TRUE;
+   }
+ }
