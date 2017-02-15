@@ -28,6 +28,7 @@ function ombumedia_views_default_views() {
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['query']['options']['distinct'] = TRUE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['exposed_form']['options']['autosubmit'] = TRUE;
   $handler->display->display_options['pager']['type'] = 'full';
@@ -53,6 +54,10 @@ function ombumedia_views_default_views() {
   $handler->display->display_options['empty']['area_text_custom']['field'] = 'area_text_custom';
   $handler->display->display_options['empty']['area_text_custom']['empty'] = TRUE;
   $handler->display->display_options['empty']['area_text_custom']['content'] = '<em>No matching media<em>';
+  /* Relationship: File: Entity translation: translations */
+  $handler->display->display_options['relationships']['entity_translations']['id'] = 'entity_translations';
+  $handler->display->display_options['relationships']['entity_translations']['table'] = 'file_managed';
+  $handler->display->display_options['relationships']['entity_translations']['field'] = 'entity_translations';
   /* Field: File: Rendered */
   $handler->display->display_options['fields']['rendered']['id'] = 'rendered';
   $handler->display->display_options['fields']['rendered']['table'] = 'file_managed';
@@ -164,12 +169,97 @@ function ombumedia_views_default_views() {
   );
   $handler->display->display_options['filters']['field_media_tags_tid']['reduce_duplicates'] = TRUE;
   $handler->display->display_options['filters']['field_media_tags_tid']['vocabulary'] = 'media_tags';
+  /* Filter criterion: Entity translation: Locale */
+  $handler->display->display_options['filters']['language']['id'] = 'language';
+  $handler->display->display_options['filters']['language']['table'] = 'entity_translation';
+  $handler->display->display_options['filters']['language']['field'] = 'language';
+  $handler->display->display_options['filters']['language']['relationship'] = 'entity_translations';
+  $handler->display->display_options['filters']['language']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['language']['expose']['operator_id'] = 'language_op';
+  $handler->display->display_options['filters']['language']['expose']['label'] = 'Locale';
+  $handler->display->display_options['filters']['language']['expose']['use_operator'] = TRUE;
+  $handler->display->display_options['filters']['language']['expose']['operator'] = 'language_op';
+  $handler->display->display_options['filters']['language']['expose']['identifier'] = 'language';
+  $handler->display->display_options['filters']['language']['expose']['multiple'] = TRUE;
+  $handler->display->display_options['filters']['language']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    4 => 0,
+  );
+  /* Filter criterion: Entity translation: Source */
+  $handler->display->display_options['filters']['source']['id'] = 'source';
+  $handler->display->display_options['filters']['source']['table'] = 'entity_translation';
+  $handler->display->display_options['filters']['source']['field'] = 'source';
+  $handler->display->display_options['filters']['source']['relationship'] = 'entity_translations';
+  $handler->display->display_options['filters']['source']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['source']['expose']['operator_id'] = 'source_op';
+  $handler->display->display_options['filters']['source']['expose']['label'] = 'Source';
+  $handler->display->display_options['filters']['source']['expose']['operator'] = 'source_op';
+  $handler->display->display_options['filters']['source']['expose']['identifier'] = 'source';
+  $handler->display->display_options['filters']['source']['is_grouped'] = TRUE;
+  $handler->display->display_options['filters']['source']['group_info']['label'] = 'Translation';
+  $handler->display->display_options['filters']['source']['group_info']['identifier'] = 'source';
+  $handler->display->display_options['filters']['source']['group_info']['group_items'] = array(
+    1 => array(
+      'title' => 'Source',
+      'operator' => 'empty',
+      'value' => array(
+        'all' => 0,
+        '***CURRENT_LANGUAGE***' => 0,
+        '***DEFAULT_LANGUAGE***' => 0,
+        'und' => 0,
+        'en' => 0,
+        'en-uk' => 0,
+      ),
+    ),
+    2 => array(
+      'title' => 'Translation',
+      'operator' => 'not empty',
+      'value' => array(
+        'all' => 0,
+        '***CURRENT_LANGUAGE***' => 0,
+        '***DEFAULT_LANGUAGE***' => 0,
+        'und' => 0,
+        'en' => 0,
+        'en-uk' => 0,
+      ),
+    ),
+  );
 
   /* Display: Manage Media */
   $handler = $view->new_display('embed', 'Manage Media', 'manage_media');
 
   /* Display: Select Media */
   $handler = $view->new_display('embed', 'Select Media', 'select_media');
+  $translatables['ombumedia'] = array(
+    t('Master'),
+    t('Manage Media'),
+    t('more'),
+    t('Apply'),
+    t('Reset'),
+    t('Sort by'),
+    t('Asc'),
+    t('Desc'),
+    t('Items per page'),
+    t('- All -'),
+    t('Offset'),
+    t('« first'),
+    t('‹ previous'),
+    t('next ›'),
+    t('last »'),
+    t('<span class="result-summary">Displaying @start - @end of @total</span>'),
+    t('<em>No matching media<em>'),
+    t('Translations'),
+    t('Name'),
+    t('Type'),
+    t('Folder'),
+    t('Tags'),
+    t('Locale'),
+    t('Source'),
+    t('Translation'),
+    t('Select Media'),
+  );
   $export['ombumedia'] = $view;
 
   return $export;
