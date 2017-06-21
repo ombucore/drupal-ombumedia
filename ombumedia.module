@@ -497,7 +497,7 @@ function ombumedia_entity_update($entity, $entity_type) {
   if ($entity_type != 'file') {
     return;
   }
-  
+
   static $registered = FALSE;
 
   list($id) = entity_extract_ids($entity_type, $entity);
@@ -673,6 +673,67 @@ function ombumedia_preprocess_ombumedia_dialog_page(&$variables) {
   $variables['messages'] = theme('status_messages');
 }
 
+/**
+ * Implements hook_preprocess_file_entity().
+ */
+function ombumedia_preprocess_file_entity(&$variables) {
+
+  $file = $variables['file'];
+  if (isset($file->ombumedia_settings)) {
+    $settings = $file->ombumedia_settings;
+
+    // Process image links...
+    if ($file->type =='image' && isset($settings['link']) && $settings['link'] != '') {
+
+      $path = parse_url($settings['link']);
+
+      // Check for absolute and mailto paths...
+      if (isset($path['scheme'])) {
+
+        // Check for mailto link
+        if ($path['scheme'] == 'mailto') {
+          $path_processed = $settings['cta_link'];
+        // Otherwise absolute path
+        } else {
+          $path_processed = $path['scheme'] . '://' . $path['host'];
+          if (isset($path['path'])) {
+            $path_processed .= $path['path'];
+          }
+        }
+
+      // Otherwise local path...
+      } else {
+        $path_processed = $path['path'];
+      }
+
+      // Check for a query value in the path
+      if (isset($path['query'])) {
+        parse_str($path['query'], $query);
+      } else {
+        $query = array();
+      }
+
+      // Check for a fragment value in the path
+      if (isset($path['fragment'])) {
+        $fragment = $path['fragment'];
+      } else {
+        $fragment = '';
+      }
+
+      $link_options = array(
+        'query' => $query,
+        'fragment' => $fragment,
+        'absolute' => TRUE,
+      );
+
+      $link = url($path_processed,$link_options);
+
+      $variables['content']['file']['#prefix'] = '<a class="ombumedia-image-link" href="'.$link.'">';
+      $variables['content']['file']['#suffix'] = '</a>';
+    }
+  }
+}
+
 
 /**
  * Forms.
@@ -792,6 +853,19 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
       '#value' => $file->fid,
     ),
   );
+
+  // If this is an RTE add image link field.
+  if (isset($_GET['wysiwyg_format']) && $_GET['wysiwyg_format'] == 'default') {
+    if ($file->type == 'image') {
+      // Adds link field.
+      $form['select_data']['link'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Image link'),
+        '#description' => t('Optionally, enter an relative or external path to make this image a link. (ex. http://google.com, blog/post-one'),
+        '#default_value' => isset($_GET['link']) ? $_GET['link'] : '',
+      );
+    }
+  }
 
   $form['file'] = array(
     '#title' => t('Edit File'),
