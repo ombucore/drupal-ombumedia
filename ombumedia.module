@@ -861,7 +861,7 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
       $form['select_data']['link'] = array(
         '#type' => 'textfield',
         '#title' => t('Image link'),
-        '#description' => t('Optionally, enter an relative or external path to make this image a link. (ex. http://google.com, blog/post-one'),
+        '#description' => t('Optionally, enter an relative or external path to make this image a link. (ex. http://google.com, blog/article-title)'),
         '#default_value' => isset($_GET['link']) ? $_GET['link'] : '',
       );
     }
