@@ -728,7 +728,13 @@ function ombumedia_preprocess_file_entity(&$variables) {
 
       $link = url($path_processed,$link_options);
 
-      $variables['content']['file']['#prefix'] = '<a class="ombumedia-image-link" href="'.$link.'">';
+      // See if link is opening in a new window.
+      $new_window = '';
+      if ($settings['link_options'] == 1) {
+        $new_window = 'target="_blank"';
+      }
+
+      $variables['content']['file']['#prefix'] = '<a class="ombumedia-image-link" href="'.$link.'" ' . $new_window . '>';
       $variables['content']['file']['#suffix'] = '</a>';
     }
   }
@@ -863,6 +869,14 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
         '#title' => t('Image link'),
         '#description' => t('Optionally, enter an relative or external path to make this image a link. (ex. http://google.com, blog/article-title)'),
         '#default_value' => isset($_GET['link']) ? $_GET['link'] : '',
+      );
+
+      // Adds link field.
+      $form['select_data']['link_options'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Open Image in new window/tab.'),
+        '#description' => t('Will open the Image link in a new tab or window.'),
+        '#default_value' => isset($_GET['link_options']) ? $_GET['link_options'] : '0',
       );
     }
   }
