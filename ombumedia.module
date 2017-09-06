@@ -730,7 +730,7 @@ function ombumedia_preprocess_file_entity(&$variables) {
 
       // See if link is opening in a new window.
       $new_window = '';
-      if ($settings['link_options'] == 1) {
+      if (isset($settings['link_options']) && $settings['link_options'] == 1) {
         $new_window = 'target="_blank"';
       }
 
