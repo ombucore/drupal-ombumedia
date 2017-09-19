@@ -10,7 +10,7 @@
 function ombumedia_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'file-audio-field_media_folder'.
+  // Exported field_instance: 'file-audio-field_media_folder'
   $field_instances['file-audio-field_media_folder'] = array(
     'bundle' => 'audio',
     'default_value' => NULL,
@@ -59,7 +59,6 @@ function ombumedia_field_default_field_instances() {
     'label' => 'Folder',
     'required' => 0,
     'settings' => array(
-      'entity_translation_sync' => FALSE,
       'select2_integration' => array(
         'allow_add_onfly' => 1,
         'show_voc_terms_page_link' => 0,
@@ -83,7 +82,7 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'file-audio-field_media_tags'.
+  // Exported field_instance: 'file-audio-field_media_tags'
   $field_instances['file-audio-field_media_tags'] = array(
     'bundle' => 'audio',
     'default_value' => NULL,
@@ -132,7 +131,6 @@ function ombumedia_field_default_field_instances() {
     'label' => 'Tags',
     'required' => 0,
     'settings' => array(
-      'entity_translation_sync' => FALSE,
       'select2_integration' => array(
         'styling' => array(
           'dropdownAutoWidth' => 0,
@@ -155,7 +153,7 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'file-document-field_media_folder'.
+  // Exported field_instance: 'file-document-field_media_folder'
   $field_instances['file-document-field_media_folder'] = array(
     'bundle' => 'document',
     'default_value' => NULL,
@@ -163,12 +161,6 @@ function ombumedia_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'full' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -204,7 +196,6 @@ function ombumedia_field_default_field_instances() {
     'label' => 'Folder',
     'required' => 0,
     'settings' => array(
-      'entity_translation_sync' => FALSE,
       'select2_integration' => array(
         'allow_add_onfly' => 1,
         'show_voc_terms_page_link' => 0,
@@ -228,7 +219,7 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'file-document-field_media_tags'.
+  // Exported field_instance: 'file-document-field_media_tags'
   $field_instances['file-document-field_media_tags'] = array(
     'bundle' => 'document',
     'default_value' => NULL,
@@ -236,12 +227,6 @@ function ombumedia_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'full' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -277,7 +262,6 @@ function ombumedia_field_default_field_instances() {
     'label' => 'Tags',
     'required' => 0,
     'settings' => array(
-      'entity_translation_sync' => FALSE,
       'select2_integration' => array(
         'styling' => array(
           'dropdownAutoWidth' => 0,
@@ -300,7 +284,7 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'file-image-field_media_folder'.
+  // Exported field_instance: 'file-image-field_media_folder'
   $field_instances['file-image-field_media_folder'] = array(
     'bundle' => 'image',
     'default_value' => NULL,
@@ -308,12 +292,6 @@ function ombumedia_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'full' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -349,7 +327,6 @@ function ombumedia_field_default_field_instances() {
     'label' => 'Folder',
     'required' => 0,
     'settings' => array(
-      'entity_translation_sync' => FALSE,
       'select2_integration' => array(
         'allow_add_onfly' => 1,
         'show_voc_terms_page_link' => 0,
@@ -373,7 +350,7 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'file-image-field_media_tags'.
+  // Exported field_instance: 'file-image-field_media_tags'
   $field_instances['file-image-field_media_tags'] = array(
     'bundle' => 'image',
     'default_value' => NULL,
@@ -381,12 +358,6 @@ function ombumedia_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-      'full' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -422,7 +393,6 @@ function ombumedia_field_default_field_instances() {
     'label' => 'Tags',
     'required' => 0,
     'settings' => array(
-      'entity_translation_sync' => FALSE,
       'select2_integration' => array(
         'styling' => array(
           'dropdownAutoWidth' => 0,
@@ -445,7 +415,7 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'file-video-field_media_folder'.
+  // Exported field_instance: 'file-video-field_media_folder'
   $field_instances['file-video-field_media_folder'] = array(
     'bundle' => 'video',
     'default_value' => NULL,
@@ -494,7 +464,6 @@ function ombumedia_field_default_field_instances() {
     'label' => 'Folder',
     'required' => 0,
     'settings' => array(
-      'entity_translation_sync' => FALSE,
       'select2_integration' => array(
         'allow_add_onfly' => 1,
         'show_voc_terms_page_link' => 0,
@@ -518,7 +487,7 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'file-video-field_media_tags'.
+  // Exported field_instance: 'file-video-field_media_tags'
   $field_instances['file-video-field_media_tags'] = array(
     'bundle' => 'video',
     'default_value' => NULL,
@@ -567,7 +536,6 @@ function ombumedia_field_default_field_instances() {
     'label' => 'Tags',
     'required' => 0,
     'settings' => array(
-      'entity_translation_sync' => FALSE,
       'select2_integration' => array(
         'styling' => array(
           'dropdownAutoWidth' => 0,
@@ -590,84 +558,9 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'taxonomy_term-media_folders-name_field'.
-  $field_instances['taxonomy_term-media_folders-name_field'] = array(
-    'bundle' => 'media_folders',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-    ),
-    'entity_type' => 'taxonomy_term',
-    'field_name' => 'name_field',
-    'label' => 'Name',
-    'required' => TRUE,
-    'settings' => array(
-      'entity_translation_sync' => FALSE,
-      'hide_label' => array(
-        'entity' => FALSE,
-        'page' => FALSE,
-      ),
-      'text_processing' => 0,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'module' => 'text',
-      'settings' => array(
-        'size' => 60,
-      ),
-      'type' => 'text_textfield',
-      'weight' => -5,
-    ),
-  );
-
-  // Exported field_instance: 'taxonomy_term-media_tags-name_field'.
-  $field_instances['taxonomy_term-media_tags-name_field'] = array(
-    'bundle' => 'media_tags',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 0,
-      ),
-    ),
-    'entity_type' => 'taxonomy_term',
-    'field_name' => 'name_field',
-    'label' => 'Name',
-    'required' => TRUE,
-    'settings' => array(
-      'entity_translation_sync' => FALSE,
-      'hide_label' => array(
-        'entity' => FALSE,
-        'page' => FALSE,
-      ),
-      'text_processing' => 0,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'module' => 'text',
-      'settings' => array(
-        'size' => 60,
-      ),
-      'type' => 'text_textfield',
-      'weight' => -5,
-    ),
-  );
-
   // Translatables
   // Included for use with string extractors like potx.
   t('Folder');
-  t('Name');
   t('Tags');
 
   return $field_instances;
