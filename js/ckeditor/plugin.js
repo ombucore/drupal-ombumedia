@@ -39,6 +39,7 @@
   // empty paragraph tags aren't added around it.
   CKEDITOR.dtd['ombumedia'] = {};
   CKEDITOR.dtd['$block']['ombumedia'] = 1;
+  CKEDITOR.dtd['td']['ombumedia'] = 1;
 
   CKEDITOR.plugins.add('ombumedia', {
     requires: 'widget',
