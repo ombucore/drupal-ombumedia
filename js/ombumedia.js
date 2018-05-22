@@ -209,6 +209,105 @@ Drupal.ombumedia.addDragUpload = function($rootEl, doneCallback) {
 
 };
 
+Drupal.ombumedia.plupload = function(g, files) {
+
+  if (!files.length) {
+    return;
+  }
+
+  $.each(files, function(index, file){
+    var jsFile = new File([""],file.name,{type: 'image/jpeg'});
+    var formData = new FormData();
+    file.type = 'image/jpeg';
+    file.temp_name = file.target_name;
+    formData.append('file-0', file);
+
+    $.ajax({
+      url: Drupal.settings.ombumedia.upload.url,
+      type: 'POST',
+      xhr: function() {
+        var myXhr = $.ajaxSettings.xhr();
+        return myXhr;
+      },
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false
+    })
+      .done(function(data, textStatus, jQueryXHR) {
+        if (data.file && data.file.fid) {
+          console.log(data.file);
+        }
+        else if (data.errors) {
+          console.log(data.errors);
+        }
+      });
+
+  });
+
+
+  function apply(uploader, files) {
+    console.log(uploader);
+    console.log(files);
+  }
+
+};
+
+
+  Drupal.ombumedia.pluploaded = function(e) {
+
+    var test = 'test';
+    console.log(e);
+
+  };
+
+  Drupal.ombumedia.beforePlupload = function(e) {
+
+    var test = 'test';
+    console.log(e);
+
+
+    var files = e.files;
+    if (!files.length) {
+      return;
+    }
+
+    var file = files[0];
+    var formData = new FormData();
+    var jsFile = new File([file],file.name,{type: 'image/jpeg'});
+    formData.append('files[]', jsFile);
+
+    $.ajax({
+      url: Drupal.settings.ombumedia.upload.url,
+      type: 'POST',
+      xhr: function() {
+        var myXhr = $.ajaxSettings.xhr();
+        return myXhr;
+      },
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false
+    })
+      .done(function(data, textStatus, jQueryXHR) {
+        if (data.file && data.file.fid) {
+          console.log(data.file);
+        }
+        else if (data.errors) {
+          console.log(data.errors);
+        }
+      });
+
+    var test = 'ffoooo';
+
+    function apply(uploader, files) {
+      console.log(uploader);
+      console.log(files);
+    }
+
+
+
+  };
 
 /**
  * Drag uploading on media manager.
@@ -221,9 +320,9 @@ Drupal.behaviors.ombumediaDragUploadManage = {
       return;
     }
 
-    Drupal.ombumedia.addDragUpload($body, function(file) {
-        window.location = fileUrl(file.fid, 'edit');
-    });
+    // Drupal.ombumedia.addDragUpload($body, function(file) {
+    //     window.location = fileUrl(file.fid, 'edit');
+    // });
   }
 };
 

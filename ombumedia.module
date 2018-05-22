@@ -686,13 +686,35 @@ function ombumedia_file_entity_add($form, &$form_state, array $options = array()
 
   $form['#redirect'] = $redirect;
 
+  $form['plupload'] = array(
+    '#type' => 'plupload',
+    '#title' => t('Upload files'),
+    '#description' => t('This multi-upload widget uses Plupload library.'),
+    '#autoupload' => TRUE,
+    '#autosubmit' => FALSE,
+    '#submit_element' => '#edit-next',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('jpg jpeg gif png txt doc xls pdf ppt pps odt ods odp'),
+//      'my_custom_file_validator' => array('some validation criteria'),
+    ),
+    '#plupload_settings' => array(
+      'runtimes' => 'html5',
+      'chunk_size' => '1mb',
+    ),
+    '#event_callbacks' => array(
+      //'UploadComplete' => 'Drupal.ombumedia.plupload',
+      //'BeforeUpload' => 'Drupal.ombumedia.beforePlupload',
+    ),
+  );
+
   $form['upload'] = array(
     '#type' => 'managed_file',
     '#title' => t('Upload a new file'),
     '#upload_location' => file_entity_upload_destination_uri($options),
     '#upload_validators' => file_entity_get_upload_validators($options),
     '#progress_indicator' => 'bar',
-    '#required' => TRUE,
+    '#required' => FALSE,
+    '#access' => FALSE,
     '#pre_render' => array('file_managed_file_pre_render', 'file_entity_upload_validators_pre_render'),
     '#default_value' => isset($form_state['storage']['upload']) ? $form_state['storage']['upload'] : NULL,
   );
@@ -710,31 +732,77 @@ function ombumedia_file_entity_add($form, &$form_state, array $options = array()
 }
 
 function ombumedia_file_entity_add_validate($form, &$form_state) {
-  $file = file_load($form_state['values']['upload']);
-  $type_candidates = file_entity_get_filetype_candidates($file);
-  if (count($type_candidates) == 1) {
-    $type_candidates_keys = array_keys($type_candidates);
-    $form_state['type'] = reset($type_candidates_keys);
+
+  if (isset($form_state['values']['plupload'][0])) {
+    foreach($form_state['values']['plupload'] as $image) {
+      if ($image['status'] != 'done') {
+        form_set_error('plupload', t('There was a problem uploading one of the files - please try again.'));
+      }
+    }
   }
-  else {
-    form_set_error('upload', t('The type of file uploaded was not recognized.'));
-  }
+
+  //  $file = file_load($form_state['values']['upload']);
+  //  $type_candidates = file_entity_get_filetype_candidates($file);
+  //  if (count($type_candidates) == 1) {
+  //    $type_candidates_keys = array_keys($type_candidates);
+  //    $form_state['type'] = reset($type_candidates_keys);
+  //  }
+  //  else {
+  //    form_set_error('upload', t('The type of file uploaded was not recognized.'));
+  //  }
 }
 
 function ombumedia_file_entity_add_submit($form, &$form_state) {
-  $file = file_load($form_state['values']['upload']);
-  $type = $form_state['type'];
+  $saved_files = array();
+  $scheme = variable_get('file_default_scheme', 'public') . '://';
+  // We can't use file_save_upload() because of
+  // http://www.jacobsingh.name/content/tight-coupling-no-not
+  // file_uri_to_object();
+  foreach ($form_state['values']['plupload'] as $uploaded_file) {
+    $t = 'test';
+    $source = $uploaded_file['tmppath'];
+    $destination = file_stream_wrapper_uri_normalize($scheme . $uploaded_file['name']);
+    // Rename it to its original name, and put it in its final home.
+    // Note - not using file_move here because if we call file_get_mime
+    // (in file_uri_to_object) while it has a .tmp extension, it horks.
+    $destination = file_unmanaged_move($source, $destination, FILE_EXISTS_RENAME);
+    $file = plupload_file_uri_to_object($destination);
+    file_save($file);
+    $saved_files[] = $file;
+  }
 
-  $file->type = $type;
-  $file->display = TRUE;
-  $file->status = FILE_STATUS_PERMANENT;
-  file_save($file);
+  if ($saved_files) {
+    $count = count($saved_files);
+    $all_files = array();
+    foreach ($saved_files as $f) {
+      $all_files[] = $f->filename . ' - ' . l('edit file', 'file/' . $f->fid . '/edit');
+    }
+    $all_files = theme('item_list', array('items' => $all_files));
+    $message = <<<EOT
+<p>$count images have been added to the media library: 
+$all_files
+</p>
+EOT;
 
-  drupal_set_message(t('@type %name was uploaded.', array('@type' => file_entity_type_get_name($file), '%name' => $file->filename)));
+    drupal_set_message($message, 'status');
+    $form_state['redirect'] = 'admin/dashboard/manage-media';
+  }
 
-  $redirect_path = 'file/' . $file->fid . '/' . $form['#redirect']['action'];
-  $redirect_query = $form['#redirect']['query'];
-  $form_state['redirect'] = array($redirect_path, array('query' => $redirect_query));
+
+
+  //  $file = file_load($form_state['values']['upload']);
+//  $type = $form_state['type'];
+//
+//  $file->type = $type;
+//  $file->display = TRUE;
+//  $file->status = FILE_STATUS_PERMANENT;
+//  file_save($file);
+//
+//  drupal_set_message(t('@type %name was uploaded.', array('@type' => file_entity_type_get_name($file), '%name' => $file->filename)));
+//
+//  $redirect_path = 'file/' . $file->fid . '/' . $form['#redirect']['action'];
+//  $redirect_query = $form['#redirect']['query'];
+//  $form_state['redirect'] = array($redirect_path, array('query' => $redirect_query));
 }
 
 function ombumedia_file_entity_configure($form, &$form_state, $fid) {
