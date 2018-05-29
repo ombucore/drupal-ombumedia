@@ -7,6 +7,10 @@ var preventDefault = Drupal.ombumedia.util.preventDefaultWrapper;
 var stopPropagation = Drupal.ombumedia.util.stopPropagationWrapper;
 var fileUrl = Drupal.ombumedia.util.fileUrl;
 
+$(function(){
+  $('.ombumedia-add').show();
+});
+
 
 /**
  * Opens the OMBU Media pop-up for selecting or editing a media file.

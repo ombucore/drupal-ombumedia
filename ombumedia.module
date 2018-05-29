@@ -785,7 +785,18 @@ $all_files
 EOT;
 
     drupal_set_message($message, 'status');
-    $form_state['redirect'] = 'admin/dashboard/manage-media';
+
+    $redirect_query = $form['#redirect']['query'];
+
+    $redirect_path = $_SERVER['REDIRECT_URL'];
+
+    if (strpos($redirect_path,'select-media') !== FALSE) {
+      $redirect_path = 'admin/dashboard/select-media';
+    } else {
+      $redirect_path = 'admin/dashboard/manage-media';
+    }
+
+    $form_state['redirect'] = array($redirect_path, array('query' => $redirect_query));
   }
 
 

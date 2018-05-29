@@ -524,3 +524,7 @@ input.form-submit.ombumedia-button:hover {
 #ombumedia-file-entity-add .plupload_start {
   display: none
 }
+
+.ombumedia-add {
+  display: none;
+}
