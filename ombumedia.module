@@ -654,6 +654,13 @@ function ombumedia_preprocess_ombumedia_file_preview(&$variables) {
     );
   }
 
+  if (!isset($file->oembed['original_url'])) {
+    $info_rows[] = array(
+      array('data' => 'URL', 'header' => TRUE),
+      file_create_url($file->uri),
+    );
+  }
+
   $variables['info'] = array(
     '#theme' => 'fieldset',
     '#title' => t('Info'),
