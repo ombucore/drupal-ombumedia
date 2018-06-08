@@ -116,7 +116,6 @@
         data: function() {
           var widget = this;
           var data = getWidgetData(widget);
-          console.log(data);
           widget.element.setAttribute('data-ombumedia', JSON.stringify(data));
           for (var key in data) {
             if (data.hasOwnProperty(key)) {
