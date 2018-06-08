@@ -116,6 +116,7 @@
         data: function() {
           var widget = this;
           var data = getWidgetData(widget);
+          console.log(data);
           widget.element.setAttribute('data-ombumedia', JSON.stringify(data));
           for (var key in data) {
             if (data.hasOwnProperty(key)) {
@@ -126,8 +127,25 @@
           var templateVars = {
             type: data.type ? capitalize(data.type) : '',
             title: data.title ? data.title : '',
-            viewMode: data.view_mode ? capitalize(data.view_mode) : ''
+            viewMode: data.position ? capitalize(data.position) : ''
           };
+
+          if (templateVars.viewMode == 'Left50') {
+            templateVars.viewMode = 'Left 50%';
+          }
+
+          if (templateVars.viewMode == 'Right50') {
+            templateVars.viewMode = 'Right 50%';
+          }
+
+          if (templateVars.viewMode == 'Leftthumb') {
+            templateVars.viewMode = 'Left Thumbnail';
+          }
+
+          if (templateVars.viewMode == 'Rightthumb') {
+            templateVars.viewMode = 'Right Thumbnail';
+          }
+
           widget.element.setHtml(innerTemplate.output(templateVars));
         },
 
