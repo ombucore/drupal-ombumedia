@@ -520,3 +520,6 @@ input.form-submit.ombumedia-button:hover {
 .ombumedia-widget .preview.launcher > * {
   margin-bottom: 1em;
 }
+#ombumedia-file-entity-add .plupload_start {
+  display: none
+}
