@@ -843,7 +843,7 @@ function ombumedia_file_entity_add_submit($form, &$form_state) {
     $count = count($saved_files);
     $all_files = array();
     foreach ($saved_files as $f) {
-      $all_files[] = $f->filename . ' - ' . l('edit file', 'file/' . $f->fid . '/edit');
+      $all_files[] = $f->filename . ' - ' . l('edit file', 'file/' . $f->fid . '/edit', array('query' => array('destination' => 'admin/dashboard/manage-media')));
     }
     $all_files = theme('item_list', array('items' => $all_files));
     $label = format_plural($count, 'file', 'files');
