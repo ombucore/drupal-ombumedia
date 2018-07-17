@@ -740,9 +740,22 @@ function ombumedia_preprocess_file_entity(&$variables) {
       if (isset($settings['link_options']) && $settings['link_options'] == 1) {
         $new_window = 'target="_blank"';
       }
-
       $variables['content']['file']['#prefix'] = '<a class="ombumedia-image-link" href="'.$link.'" ' . $new_window . '>';
       $variables['content']['file']['#suffix'] = '</a>';
+    }
+    
+    
+    if ($file->type =='image' && isset($settings['caption']) && $settings['caption'] != '') {
+        $variables['content']['file']['#suffix'] = '
+        <figcaption>
+          <div class="field field-name-field-caption field-type-text-long field-label-hidden c">
+          ' . $settings['caption'] . '
+          </div>
+        </figcaption>';
+    
+      if (isset($settings['link']) && $settings['link'] != '') {
+        $variables['content']['file']['#suffix'] .= '</a>';
+      }
     }
   }
 }
@@ -957,6 +970,14 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
         '#title' => t('Open Image in new window/tab.'),
         '#description' => t('Will open the Image link in a new tab or window.'),
         '#default_value' => isset($_GET['link_options']) ? $_GET['link_options'] : '0',
+      );
+
+      // Adds link field.
+      $form['select_data']['caption'] = array(
+        '#type' => 'textarea',
+        '#title' => t('Caption'),
+        '#description' => t(''),
+        '#default_value' => isset($_GET['caption']) ? $_GET['caption'] : '',
       );
     }
   }
@@ -1233,6 +1254,7 @@ function ombumedia_file_get_info($file) {
  *    'position' => 'right',
  *    'view_mode' => 'default',
  *    'title' => 'Placeholder Image',
+ *    'caption' => 'Caption',
  *    'type' => 'image',
  *  )
  *  @endcode
@@ -1247,6 +1269,7 @@ function ombumedia_file_embed_tag($file) {
     'view_mode' => 'full',
     'position' => '',
     'title' => '',
+    'caption' => '',
     'type' => 'image',
   );
 

@@ -27,6 +27,7 @@
   var innerTemplate = new CKEDITOR.template(['',
       '<span>',
         '<span class="title"><strong>{type}</strong>: {title}</span>',
+        '<span class="caption"><strong>Caption</strong>: {caption}</span>',
         '<span class="style"><strong>Style</strong>: {viewMode}</span>',
       '</span>',
   ''].join(''));
@@ -126,6 +127,7 @@
           var templateVars = {
             type: data.type ? capitalize(data.type) : '',
             title: data.title ? data.title : '',
+            caption: data.caption ? data.caption : '',
             viewMode: data.position ? capitalize(data.position) : ''
           };
 
