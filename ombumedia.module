@@ -603,7 +603,7 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
           ));
         }
         if (file_entity_access('delete', $file)) {
-          $actions[] = l(t('Delete'), 'file/' . $fid . '/delete', array(
+          $actions[] = l(t('Remove'), 'file/' . $fid . '/remove', array(
             'query' => $query,
             'attributes' => array('class' => 'ombumedia-button'),
           ));
