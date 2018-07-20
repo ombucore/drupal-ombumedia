@@ -59,7 +59,17 @@ function ombumedia_render_filter_placeholders($text, $filter, $format, $langcode
 
       $file = file_load($media_info['fid']);
 
+      $recycled = FALSE;
       if ($file) {
+        if (property_exists($file, 'field_recycled')) {
+          if (isset($file->field_recycled[LANGUAGE_NONE]) && $file->field_recycled[LANGUAGE_NONE][0]['value'] == 1) {
+            $node->parentNode->removeChild($node);
+            $recycled = TRUE;
+          }
+        }
+      }
+
+      if ($file && !$recycled) {
         $file->ombumedia_settings = $media_info;
         $file->ombumedia_settings['context'] = 'filter';
         $file_output = file_view($file, $media_info['view_mode']);
