@@ -75,6 +75,7 @@ function ombumedia_internet_get_providers() {
  *
  * @todo: Make this into a normal hook or something because we have to instantiate
  * each class to test and that's not right.
+ * @todo work on this logic to reroute box oembeds
  */
 function ombumedia_internet_get_provider($embed_string) {
   foreach (ombumedia_internet_get_providers() as $class_name => $nothing) {
@@ -154,59 +155,63 @@ function ombumedia_internet_add_validate($form, &$form_state) {
   // might be an embed code as well.
   $embed_code = $form_state['values']['embed_code'];
 
-  try {
-    $provider = ombumedia_internet_get_provider($embed_code);
-    $provider->validate();
-  }
-  catch (MediaInternetNoHandlerException $e) {
-    form_set_error('embed_code', $e->getMessage());
-    return;
-  }
-  catch (MediaInternetValidationException $e) {
-    form_set_error('embed_code', $e->getMessage());
-    return;
-  }
-
-  $validators = $form['#validators'];
-  $file = $provider->getFileObject();
-
-  if ($validators) {
+  // Bypass validation for box oembeds.
+  if (strpos($embed_code, 'box') === FALSE) {
     try {
-      $file = $provider->getFileObject();
+      $provider = ombumedia_internet_get_provider($embed_code);
+      $provider->validate();
     }
-    catch (Exception $e) {
+    catch (MediaInternetNoHandlerException $e) {
+      form_set_error('embed_code', $e->getMessage());
+      return;
+    }
+    catch (MediaInternetValidationException $e) {
       form_set_error('embed_code', $e->getMessage());
       return;
     }
 
-    // Check for errors. @see media_add_upload_validate calls file_save_upload().
-    // this code is ripped from file_save_upload because we just want the validation part.
-    // Call the validation functions specified by this function's caller.
-    $errors = file_validate($file, $validators);
+    $validators = $form['#validators'];
+    $file = $provider->getFileObject();
 
-    if (!empty($errors)) {
-      $message = t('%url could not be added.', array('%url' => $embed_code));
-      if (count($errors) > 1) {
-        $message .= theme('item_list', array('items' => $errors));
+    if ($validators) {
+      try {
+        $file = $provider->getFileObject();
       }
-      else {
-        $message .= ' ' . array_pop($errors);
+      catch (Exception $e) {
+        form_set_error('embed_code', $e->getMessage());
+        return;
       }
-      form_set_error('embed_code', $message);
-      return FALSE;
+
+      // Check for errors. @see media_add_upload_validate calls file_save_upload().
+      // this code is ripped from file_save_upload because we just want the validation part.
+      // Call the validation functions specified by this function's caller.
+      $errors = file_validate($file, $validators);
+
+      if (!empty($errors)) {
+        $message = t('%url could not be added.', array('%url' => $embed_code));
+        if (count($errors) > 1) {
+          $message .= theme('item_list', array('items' => $errors));
+        }
+        else {
+          $message .= ' ' . array_pop($errors);
+        }
+        form_set_error('embed_code', $message);
+        return FALSE;
+      }
     }
+
+    // @TODO: Validate that if we have no $uri that this is a valid file to
+    // save. For instance, we may only be interested in images, and it would
+    // be helpful to let the user know they passed the HTML page containing
+    // the image accidentally. That would also save us from saving the file
+    // in the submit step.
+
+    // This is kinda a hack of the same.
+
+    // This should use the file_validate routines that the upload form users.
+    // We need to fix the media_parse_to_file routine to allow for a validation.
+
   }
-
-  // @TODO: Validate that if we have no $uri that this is a valid file to
-  // save. For instance, we may only be interested in images, and it would
-  // be helpful to let the user know they passed the HTML page containing
-  // the image accidentally. That would also save us from saving the file
-  // in the submit step.
-
-  // This is kinda a hack of the same.
-
-  // This should use the file_validate routines that the upload form users.
-  // We need to fix the media_parse_to_file routine to allow for a validation.
 }
 
 /**
