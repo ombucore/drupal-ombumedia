@@ -155,8 +155,19 @@ function ombumedia_internet_add_validate($form, &$form_state) {
   // might be an embed code as well.
   $embed_code = $form_state['values']['embed_code'];
 
+  // Check for box oembed, if so bypass standard validation.
+  $box_data = '';
+  if (strpos($embed_code, 'box.com') !== FALSE) {
+    $box_data = box_oembed_get_file_name($embed_code);
+    if (!$box_data) {
+      form_set_error('embed_code', 'Unable to find file data.');
+    } else {
+      $form_state['box_data'] = $box_data;
+    }
+  }
+
   // Bypass validation for box oembeds.
-  if (strpos($embed_code, 'box') === FALSE) {
+  if (!$box_data) {
     try {
       $provider = ombumedia_internet_get_provider($embed_code);
       $provider->validate();
@@ -225,16 +236,31 @@ function ombumedia_internet_add_validate($form, &$form_state) {
 function ombumedia_internet_add_submit($form, &$form_state) {
   $embed_code = $form_state['values']['embed_code'];
 
-  try {
-    // Save the remote file
-    $provider = ombumedia_internet_get_provider($embed_code);
-    // Providers decide if they need to save locally or somewhere else.
-    // This method returns a file object
-    $file = $provider->save();
+  // If Box oembed bypass oembed logic.
+  if (isset($form_state['box_data'])) {
+    $uri = 'oembed://'. drupal_encode_path($embed_code);
+    $file = box_oembed_file_uri_to_object($uri, $form_state['box_data']);
+    try {
+      // Save the remote file
+      $file = file_save($file);
+    }
+    catch (Exception $e) {
+      form_set_error('embed_code', $e->getMessage());
+      return;
+    }
   }
-  catch (Exception $e) {
-    form_set_error('embed_code', $e->getMessage());
-    return;
+  else {
+    try {
+      // Save the remote file
+      $provider = ombumedia_internet_get_provider($embed_code);
+      // Providers decide if they need to save locally or somewhere else.
+      // This method returns a file object
+      $file = $provider->save();
+    }
+    catch (Exception $e) {
+      form_set_error('embed_code', $e->getMessage());
+      return;
+    }
   }
 
   if (!$file->fid) {
