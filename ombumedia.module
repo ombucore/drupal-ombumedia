@@ -781,7 +781,7 @@ function ombumedia_file_entity_add($form, &$form_state, array $options = array()
     '#autosubmit' => FALSE,
     '#submit_element' => '#edit-next',
     '#upload_validators' => array(
-      'file_validate_extensions' => array('jpg jpeg gif png txt doc xls pdf ppt pps odt ods odp'),
+      'file_validate_extensions' => array('jpg jpeg gif png txt doc docx docm xls xlsx xlsm pdf ppt pptx pps odt ods odp zip'),
     ),
     '#plupload_settings' => array(
       'runtimes' => 'html5',
