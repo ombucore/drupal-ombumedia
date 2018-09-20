@@ -1007,12 +1007,25 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
   unset($form['file']['redirect']);
 
   $type = file_type_load($file->type);
+
+  /* Note, 
+    per ticket https://tickets.ombuweb.com/issues/34115 the loading of the media library as causing 
+    a 404. The culprit for reasons i don't know yet was a fwd slash at the beginning of the image link.
+    Hence, that is removed for this call, and it doesn't affect the showing of the media library.
+  */
+
+  $theQuery = drupal_get_query_parameters();
+
+  if (   substr($theQuery['link'],0,1) == '/'  ) {
+    $theQuery['link'] = substr($theQuery['link'],1);
+  }
+
   $form['actions'] = array(
     '#type' => 'actions',
     '#weight' => 30,
     'back' => array(
       '#markup' => l(t('Library'), 'admin/dashboard/select-media', array(
-        'query' => drupal_get_query_parameters(),
+        'query' => $theQuery,
         'attributes' => array('class' => 'ombumedia-button'),
       )),
     ),
