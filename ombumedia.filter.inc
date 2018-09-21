@@ -76,6 +76,9 @@ function ombumedia_render_filter_placeholders($text, $filter, $format, $langcode
         if (isset($file_output['#contextual_links'])) {
           unset($file_output['#contextual_links']);
         }
+
+        dpm($file_output);
+        
         $file_output = drupal_render($file_output);
 
         $new_nodes = ombumedia_html_to_xmlnodes($file_output);

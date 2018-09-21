@@ -10,7 +10,7 @@
 function ombumedia_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'file-audio-field_media_folder'
+  // Exported field_instance: 'file-audio-field_media_folder'.
   $field_instances['file-audio-field_media_folder'] = array(
     'bundle' => 'audio',
     'default_value' => NULL,
@@ -24,6 +24,18 @@ function ombumedia_field_default_field_instances() {
         'weight' => 0,
       ),
       'full' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_banner' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_gallery' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -82,7 +94,7 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'file-audio-field_media_tags'
+  // Exported field_instance: 'file-audio-field_media_tags'.
   $field_instances['file-audio-field_media_tags'] = array(
     'bundle' => 'audio',
     'default_value' => NULL,
@@ -96,6 +108,18 @@ function ombumedia_field_default_field_instances() {
         'weight' => 0,
       ),
       'full' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_banner' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_gallery' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -153,7 +177,7 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'file-document-field_media_folder'
+  // Exported field_instance: 'file-document-field_media_folder'.
   $field_instances['file-document-field_media_folder'] = array(
     'bundle' => 'document',
     'default_value' => NULL,
@@ -161,6 +185,24 @@ function ombumedia_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'full' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_banner' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_gallery' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -179,6 +221,12 @@ function ombumedia_field_default_field_instances() {
         'weight' => 0,
       ),
       'preview' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'search_result' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -219,7 +267,7 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'file-document-field_media_tags'
+  // Exported field_instance: 'file-document-field_media_tags'.
   $field_instances['file-document-field_media_tags'] = array(
     'bundle' => 'document',
     'default_value' => NULL,
@@ -227,6 +275,24 @@ function ombumedia_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'full' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_banner' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_gallery' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -245,6 +311,12 @@ function ombumedia_field_default_field_instances() {
         'weight' => 0,
       ),
       'preview' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'search_result' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -284,7 +356,7 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'file-image-field_media_folder'
+  // Exported field_instance: 'file-image-field_media_folder'.
   $field_instances['file-image-field_media_folder'] = array(
     'bundle' => 'image',
     'default_value' => NULL,
@@ -292,6 +364,24 @@ function ombumedia_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'full' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_banner' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_gallery' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -350,7 +440,7 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'file-image-field_media_tags'
+  // Exported field_instance: 'file-image-field_media_tags'.
   $field_instances['file-image-field_media_tags'] = array(
     'bundle' => 'image',
     'default_value' => NULL,
@@ -358,6 +448,24 @@ function ombumedia_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'full' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_banner' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_gallery' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -415,7 +523,7 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'file-video-field_media_folder'
+  // Exported field_instance: 'file-video-field_media_folder'.
   $field_instances['file-video-field_media_folder'] = array(
     'bundle' => 'video',
     'default_value' => NULL,
@@ -429,6 +537,18 @@ function ombumedia_field_default_field_instances() {
         'weight' => 0,
       ),
       'full' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_banner' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_gallery' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
@@ -487,7 +607,7 @@ function ombumedia_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'file-video-field_media_tags'
+  // Exported field_instance: 'file-video-field_media_tags'.
   $field_instances['file-video-field_media_tags'] = array(
     'bundle' => 'video',
     'default_value' => NULL,
@@ -501,6 +621,18 @@ function ombumedia_field_default_field_instances() {
         'weight' => 0,
       ),
       'full' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_banner' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+      'nwc_gallery' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
