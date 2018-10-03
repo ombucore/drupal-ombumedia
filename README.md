@@ -5,7 +5,7 @@ Provides custom media functionality based on `file_entity` including:
 
 - Media management
 - Media selection workflow
-- Adding media via upload, drag upload and oembed (Youtube & Vimeo)
+- Adding media via upload, drag upload, and oembed (Youtube & Vimeo)
 - Media field
 - Media integration with CKEditor and input filtering
 
