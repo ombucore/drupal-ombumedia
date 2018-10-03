@@ -168,11 +168,11 @@ function ombumedia_views_default_views() {
   /* Display: Manage Media */
   $handler = $view->new_display('embed', 'Manage Media', 'manage_media');
   $handler->display->display_options['defaults']['fields'] = FALSE;
-  /* Field: Field: Recycled (Hidden) */
+  /* Field: Field: Recycled (hidden) */
   $handler->display->display_options['fields']['field_recycled']['id'] = 'field_recycled';
   $handler->display->display_options['fields']['field_recycled']['table'] = 'field_data_field_recycled';
   $handler->display->display_options['fields']['field_recycled']['field'] = 'field_recycled';
-  $handler->display->display_options['fields']['field_recycled']['ui_name'] = 'Field: Recycled (Hidden)';
+  $handler->display->display_options['fields']['field_recycled']['ui_name'] = 'Field: Recycled (hidden)';
   $handler->display->display_options['fields']['field_recycled']['label'] = '';
   $handler->display->display_options['fields']['field_recycled']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_recycled']['element_label_colon'] = FALSE;

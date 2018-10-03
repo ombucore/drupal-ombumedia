@@ -217,3 +217,19 @@ function ombumedia_install_file_view_modes() {
 
   file_display_save($file_display);
 }
+
+/**
+ * Empty update function to ensure caches are properly cleared.
+ */
+function ombumedia_update_7000() {
+}
+
+
+/**
+ * Update to file_managed to change all 'undefined' file types to 'document' so
+ * that the icon is visually correct.
+ */
+function ombumedia_update_7001() {
+  $ret = array();
+  db_query("UPDATE {file_managed} SET type = 'document' WHERE type = 'undefined'");
+}
