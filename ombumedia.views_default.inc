@@ -174,7 +174,6 @@ function ombumedia_views_default_views() {
   $handler->display->display_options['fields']['field_recycled']['field'] = 'field_recycled';
   $handler->display->display_options['fields']['field_recycled']['ui_name'] = 'Field: Recycled (hidden)';
   $handler->display->display_options['fields']['field_recycled']['label'] = '';
-  $handler->display->display_options['fields']['field_recycled']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_recycled']['element_label_colon'] = FALSE;
   /* Field: File: Rendered */
   $handler->display->display_options['fields']['rendered']['id'] = 'rendered';

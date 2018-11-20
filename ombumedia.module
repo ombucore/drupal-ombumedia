@@ -241,6 +241,7 @@ function ombumedia_image_default_styles() {
  * Implements hook_file_displays_alter().
  */
 function ombumedia_file_displays_alter(&$displays, $file, $view_mode) {
+  // $display['file_field_image']['settings']['image_style'] = 'nwc_thumbnail_news'; //zzml
   if ($view_mode == 'preview' && empty($displays)) {
     // We re in the media browser and this file has no formatters enabled.
     // Instead of letting it go through theme_file_link(), pass it through
@@ -507,6 +508,13 @@ function ombumedia_entity_update($entity, $entity_type) {
   $cache_ids[] = 'field:' . $entity_type . ':' . $id;
   variable_set('ombumedia_field_cache_ids', $cache_ids);
 
+  //zzml
+  field_cache_clear();
+  cache_clear_all('*', 'cache_page', TRUE);
+  cache_clear_all('*', 'cache_image', TRUE);
+  cache_clear_all('*', 'cache_views', TRUE);
+  cache_clear_all('*', 'cache_views_data', TRUE);
+
   // Only register shutdown function once.
   if (!$registered) {
     field_cache_clear();
@@ -608,7 +616,15 @@ function ombumedia_preprocess_views_view_unformatted(&$variables) {
             'attributes' => array('class' => 'ombumedia-button'),
           ));
         }
+
+        //zzml add docs
+        if (strpos($query['destination'], 'wysiwyg_format') !== false) {
+          $actions[] = l(t('Select'), 'file/' . $fid . '/configure', array(
+            'attributes' => array('class' => 'ombumedia-button'),
+          ));
+        }
       }
+
       $actions_count = count($actions);
       $actions = '<ul class="actions actions-' . $actions_count . '"><li>' . implode('</li><li>', $actions) . '</li></ul>';
       $row = '<a class="launch-preview-popup" href="' . url('file/' . $fid . '/preview') . '">' . $row . '</a>';
@@ -1287,4 +1303,13 @@ function ombumedia_file_embed_tag($file) {
   );
 
   return '<ombumedia data-ombumedia="' . htmlentities(json_encode($file), ENT_COMPAT) . '"></ombumedia>';
+}
+
+//zzml, needed?
+function ombumedia_init(){
+  // dpm($_GET);
+
+  if($_GET['q'] == 'admin/dashboard/manage-media'){
+    drupal_page_is_cacheable(FALSE);
+  }
 }

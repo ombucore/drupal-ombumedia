@@ -8,13 +8,24 @@
  * Page callback for Manage Media page.
  */
 function ombumedia_page_magage_media() {
+
+  // zzml, needed below?
   $view = views_get_view('ombumedia');
   $view->set_display('manage_media');
+  $view->build(); //zzml
+  $view->init_query(); //zzml
+  $view->validate(); //zzml
+  $view->update(); //zzml
   $view->pre_execute();
   $view->execute();
-  $view_rendered = $view->preview();
+  $view_rendered = $view->preview(); //zzml
 
   drupal_add_library('ombumedia', 'ombumedia');
+
+  //zzml, needed?
+  header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
+  header("Pragma: no-cache"); // HTTP 1.0.
+  header("Expires: 0");
 
   return $view_rendered;
 }
@@ -260,3 +271,7 @@ function ombumedia_page_test_form($form, &$form_state) {
 
   return $form;
 }
+
+// function ombumedia_file_view($file, $view_mode, $langcode) {
+//     $view_mode = 'nwc_thumbnail_news';
+// }
