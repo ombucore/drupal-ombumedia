@@ -277,6 +277,10 @@ Drupal.ombumedia.beforePlupload = function(e) {
   var jsFile = new File([file],file.name,{type: 'image/jpeg'});
   formData.append('files[]', jsFile);
 
+
+  //added new mime type to allow uploading of XML/KML files
+  mOxie.Mime.addMimeType("application/xml,xml kml");
+
   $.ajax({
     url: Drupal.settings.ombumedia.upload.url,
     type: 'POST',
@@ -307,7 +311,6 @@ Drupal.ombumedia.beforePlupload = function(e) {
 
 };
 
-
 /**
  * Drag uploading on media manager.
  */
@@ -324,6 +327,5 @@ Drupal.behaviors.ombumediaDragUploadManage = {
     // });
   }
 };
-
 
 })(jQuery);
