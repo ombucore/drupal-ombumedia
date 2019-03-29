@@ -271,7 +271,3 @@ function ombumedia_page_test_form($form, &$form_state) {
 
   return $form;
 }
-
-// function ombumedia_file_view($file, $view_mode, $langcode) {
-//     $view_mode = 'nwc_thumbnail_news';
-// }

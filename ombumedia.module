@@ -234,6 +234,20 @@ function ombumedia_image_default_styles() {
       ),
     ),
   );
+
+  //zzml
+  $styles['nwc_thumbnail_news'] = array(
+    'effects' => array(
+      array(
+        'name' => 'image_scale_and_crop',
+        'data' => array('width' => 289, 'height' => 178),
+        'weight' => 0,
+      ),
+    ),
+  );
+
+
+
   return $styles;
 }
 
@@ -241,7 +255,28 @@ function ombumedia_image_default_styles() {
  * Implements hook_file_displays_alter().
  */
 function ombumedia_file_displays_alter(&$displays, $file, $view_mode) {
-  // $display['file_field_image']['settings']['image_style'] = 'nwc_thumbnail_news'; //zzml
+
+  // fix missing thumbnail bug
+  $fid = $file->fid;
+  $restyle = false;
+
+  $the_thumbnail_fid = 0;
+
+  // this session is only set for News items, field_thumbnail_image field.
+  if (isset($_SESSION['nwc_thumbnail_fid'])) {
+    $the_thumbnail_fid = $_SESSION['nwc_thumbnail_fid'];
+  }
+
+  if($fid == $the_thumbnail_fid) { 
+    $restyle = true;
+  }
+  
+  if ($restyle) {
+    $displays['file_field_image']['settings']['image_style'] = 'nwc_thumbnail_news'; //zzml -
+  }
+
+  $_SESSION['nwc_thumbnail_fid'] = '';
+
   if ($view_mode == 'preview' && empty($displays)) {
     // We re in the media browser and this file has no formatters enabled.
     // Instead of letting it go through theme_file_link(), pass it through
@@ -759,8 +794,6 @@ function ombumedia_preprocess_file_entity(&$variables) {
       $variables['content']['file']['#prefix'] = '<a class="ombumedia-image-link" href="'.$link.'" ' . $new_window . '>';
       $variables['content']['file']['#suffix'] = '</a>';
     }
-    
-    
     if ($file->type =='image' && isset($settings['caption']) && $settings['caption'] != '') {
         $variables['content']['file']['#suffix'] = '
         <figcaption>
@@ -768,7 +801,6 @@ function ombumedia_preprocess_file_entity(&$variables) {
           ' . $settings['caption'] . '
           </div>
         </figcaption>';
-    
       if (isset($settings['link']) && $settings['link'] != '') {
         $variables['content']['file']['#suffix'] .= '</a>';
       }
@@ -797,11 +829,14 @@ function ombumedia_file_entity_add($form, &$form_state, array $options = array()
     '#autosubmit' => FALSE,
     '#submit_element' => '#edit-next',
     '#upload_validators' => array(
-      'file_validate_extensions' => array('jpg jpeg gif png txt doc docx docm xls xlsx xlsm pdf ppt pptx pps odt ods odp zip'),
+      'file_validate_extensions' => array('jpg jpeg gif png txt doc docx docm kml xml xls xlsx xlsm pdf ppt pptx pps odt ods odp zip csv json'),
     ),
     '#plupload_settings' => array(
       'runtimes' => 'html5',
       'chunk_size' => '1mb',
+      'filters' => array(
+        'mime_types' => "application/xml" //added mime type
+      ),
     ),
   );
 
@@ -877,7 +912,7 @@ function ombumedia_file_entity_add_submit($form, &$form_state) {
     $all_files = theme('item_list', array('items' => $all_files));
     $label = format_plural($count, 'file', 'files');
     $message = <<<EOT
-<p>$count $label added to the media library: 
+<p>$count $label added to the media library:
 $all_files
 </p>
 EOT;
@@ -886,7 +921,10 @@ EOT;
 
     $redirect_query = $form['#redirect']['query'];
 
-    $redirect_path = $_SERVER['REDIRECT_URL'];
+    $redirect_path = '';
+    if (isset($_SERVER['REDIRECT_URL'])) {
+      $redirect_path = $_SERVER['REDIRECT_URL'];
+    }
 
     if (strpos($redirect_path,'select-media') !== FALSE) {
       $redirect_path = 'admin/dashboard/select-media';
@@ -1024,16 +1062,18 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
 
   $type = file_type_load($file->type);
 
-  /* Note, 
-    per ticket https://tickets.ombuweb.com/issues/34115 the loading of the media library as causing 
+  /* Note,
+    per ticket https://tickets.ombuweb.com/issues/34115 the loading of the media library as causing
     a 404. The culprit for reasons i don't know yet was a fwd slash at the beginning of the image link.
     Hence, that is removed for this call, and it doesn't affect the showing of the media library.
   */
 
   $theQuery = drupal_get_query_parameters();
 
-  if (   substr($theQuery['link'],0,1) == '/'  ) {
-    $theQuery['link'] = substr($theQuery['link'],1);
+  if (isset($theQuery['link'])) {
+    if (substr($theQuery['link'],0,1) == '/') {
+      $theQuery['link'] = substr($theQuery['link'],1);
+    }
   }
 
   $form['actions'] = array(
@@ -1087,6 +1127,7 @@ function ombumedia_file_entity_configure_submit($form, &$form_state) {
     // Fields were attached.
     field_attach_submit('file', $file, $form['file'], $form_state);
   }
+
   $file->filename = $form_state['values']['filename'];
   file_save($file);
 
@@ -1305,11 +1346,13 @@ function ombumedia_file_embed_tag($file) {
   return '<ombumedia data-ombumedia="' . htmlentities(json_encode($file), ENT_COMPAT) . '"></ombumedia>';
 }
 
-//zzml, needed?
-function ombumedia_init(){
-  // dpm($_GET);
 
+function ombumedia_init(){
   if($_GET['q'] == 'admin/dashboard/manage-media'){
     drupal_page_is_cacheable(FALSE);
+
+    // fix missing thumbnail bug
+    field_cache_clear();
+    drupal_register_shutdown_function('ombumedia_clear_field_cache');
   }
 }

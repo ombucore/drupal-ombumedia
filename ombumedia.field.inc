@@ -55,6 +55,16 @@ function ombumedia_element_info() {
  * Process callback for the media form element.
  */
 function ombumedia_element_process(&$element, &$form_state, $form) {
+
+  // fix missing thumbnail bug
+  if (isset($element['#bundle'])) {
+    if ( ($element["#bundle"] == 'news') && ($element["#field_name"] == 'field_thumbnail_image') ){
+      $fid = $element["#value"]["fid"];
+      $_SESSION['nwc_thumbnail_fid'] = $fid;
+      //zzml 
+    }
+  }
+  
   $fid = isset($element['#value']['fid']) ? $element['#value']['fid'] : 0;
   $data = isset($element['#value']['data']) ? $element['#value']['data'] : array();
   $file = $fid ? file_load($fid) : FALSE;
@@ -534,6 +544,14 @@ function ombumedia_field_widget_settings_form($field, $instance) {
  * Implements hook_field_widget_form().
  */
 function ombumedia_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  
+  // fix missing thumbnail bug
+  if( ($element['#bundle'] == 'news') && ($element['#field_name'] == 'field_thumbnail_image')) {
+    $fid = '';
+    $fid = $element['#entity']->field_thumbnail_image['und'][0]['fid'];
+    $_SESSION['nwc_thumbnail_fid'] = $fid;
+  }
+
   $field_settings = $instance['settings'];
   $widget_settings = $instance['widget']['settings'];
 
