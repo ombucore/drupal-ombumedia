@@ -790,7 +790,6 @@ function ombumedia_preprocess_file_entity(&$variables) {
       if (isset($settings['link_options']) && $settings['link_options'] == 1) {
         $new_window = 'target="_blank"';
       }
-
       if (isset($settings['zoom']) && $settings['zoom'] == 1) {
         $variables['content']['file']['#prefix'] = '<div class="ombumedia-image-magnify-container"><a class="ombumedia-image-link ombumedia-image-link-magnify" href="'.$link.'" ' . $new_window . '>';
         $variables['content']['file']['#suffix'] = '</a><a class="ombumedia-magnify-overlay launch-preview-popup" href="' . file_create_url($file->uri) . '"' . file_get_contents(drupal_get_path('module', 'ombumedia') . '/icons/magnify.svg') . '</a></div>';
@@ -801,8 +800,10 @@ function ombumedia_preprocess_file_entity(&$variables) {
       }
     }
     else {
-      $variables['content']['file']['#prefix'] = '<div class="ombumedia-image-magnify-container"><a class="ombumedia-magnify-overlay-image launch-preview-popup" href="' . file_create_url($file->uri) . '">';
-      $variables['content']['file']['#suffix'] = '</a><a class="ombumedia-magnify-overlay launch-preview-popup" href="' . file_create_url($file->uri) . '"' . file_get_contents(drupal_get_path('module', 'ombumedia') . '/icons/magnify.svg') . '</a></div>';
+      if (isset($settings['zoom']) && $settings['zoom'] == 1) {
+        $variables['content']['file']['#prefix'] = '<div class="ombumedia-image-magnify-container"><a class="ombumedia-magnify-overlay-image launch-preview-popup" href="' . file_create_url($file->uri) . '">';
+        $variables['content']['file']['#suffix'] = '</a><a class="ombumedia-magnify-overlay launch-preview-popup" href="' . file_create_url($file->uri) . '"' . file_get_contents(drupal_get_path('module', 'ombumedia') . '/icons/magnify.svg') . '</a></div>';
+      }
     }
     if ($file->type =='image' && isset($settings['caption']) && $settings['caption'] != '') {
         $variables['content']['file']['#suffix'] = '
