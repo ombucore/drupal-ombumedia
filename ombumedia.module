@@ -735,7 +735,6 @@ function ombumedia_preprocess_ombumedia_dialog_page(&$variables) {
  * Implements hook_preprocess_file_entity().
  */
 function ombumedia_preprocess_file_entity(&$variables) {
-
   $file = $variables['file'];
   if (isset($file->ombumedia_settings)) {
     $settings = $file->ombumedia_settings;
@@ -791,8 +790,19 @@ function ombumedia_preprocess_file_entity(&$variables) {
       if (isset($settings['link_options']) && $settings['link_options'] == 1) {
         $new_window = 'target="_blank"';
       }
-      $variables['content']['file']['#prefix'] = '<a class="ombumedia-image-link" href="'.$link.'" ' . $new_window . '>';
-      $variables['content']['file']['#suffix'] = '</a>';
+
+      if (isset($settings['zoom']) && $settings['zoom'] == 1) {
+        $variables['content']['file']['#prefix'] = '<div class="ombumedia-image-magnify-container"><a class="ombumedia-image-link ombumedia-image-link-magnify" href="'.$link.'" ' . $new_window . '>';
+        $variables['content']['file']['#suffix'] = '</a><a class="ombumedia-magnify-overlay launch-preview-popup" href="' . file_create_url($file->uri) . '"' . file_get_contents(drupal_get_path('module', 'ombumedia') . '/icons/magnify.svg') . '</a></div>';
+      }
+      else {
+        $variables['content']['file']['#prefix'] = '<a class="ombumedia-image-link" href="'.$link.'" ' . $new_window . '>';
+        $variables['content']['file']['#suffix'] = '</a>';
+      }
+    }
+    else {
+      $variables['content']['file']['#prefix'] = '<div class="ombumedia-image-magnify-container"><a class="ombumedia-magnify-overlay-image launch-preview-popup" href="' . file_create_url($file->uri) . '">';
+      $variables['content']['file']['#suffix'] = '</a><a class="ombumedia-magnify-overlay launch-preview-popup" href="' . file_create_url($file->uri) . '"' . file_get_contents(drupal_get_path('module', 'ombumedia') . '/icons/magnify.svg') . '</a></div>';
     }
     if ($file->type =='image' && isset($settings['caption']) && $settings['caption'] != '') {
         $variables['content']['file']['#suffix'] = '
@@ -1016,14 +1026,23 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
         '#title' => t('Image link'),
         '#description' => t('Optionally, enter an relative or external path to make this image a link. (ex. http://google.com, blog/article-title)'),
         '#default_value' => isset($_GET['link']) ? $_GET['link'] : '',
+        '#prefix' => 'URL to image: ' . file_create_url($file->uri),
       );
 
       // Adds link field.
       $form['select_data']['link_options'] = array(
         '#type' => 'checkbox',
-        '#title' => t('Open Image in new window/tab.'),
+        '#title' => t('Open Image link in new window/tab.'),
         '#description' => t('Will open the Image link in a new tab or window.'),
         '#default_value' => isset($_GET['link_options']) ? $_GET['link_options'] : '0',
+      );
+
+      // Adds zoom field.
+      $form['select_data']['zoom'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Enable magnifying image'),
+        '#description' => t('Will allow users to zoom in for larger image in an overlay.'),
+        '#default_value' => isset($_GET['zoom']) ? $_GET['zoom'] : '0',
       );
 
       // Adds link field.
