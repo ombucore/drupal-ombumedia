@@ -806,15 +806,12 @@ function ombumedia_preprocess_file_entity(&$variables) {
       }
     }
     if ($file->type =='image' && isset($settings['caption']) && $settings['caption'] != '') {
-        $variables['content']['file']['#suffix'] = '
+        $variables['content']['file']['#suffix'] .= '
         <figcaption>
           <div class="field field-name-field-caption field-type-text-long field-label-hidden c">
           ' . $settings['caption'] . '
           </div>
         </figcaption>';
-      if (isset($settings['link']) && $settings['link'] != '') {
-        $variables['content']['file']['#suffix'] .= '</a>';
-      }
     }
   }
 }
