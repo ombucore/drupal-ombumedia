@@ -524,3 +524,5 @@ input.form-submit.ombumedia-button:hover {
 #ombumedia-file-entity-add .plupload_start {
   display: none
 }
+
+#ombumedia-file-entity-configure #edit-field-recycled { display: none; }

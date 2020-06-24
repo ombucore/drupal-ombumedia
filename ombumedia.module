@@ -791,8 +791,8 @@ function ombumedia_preprocess_file_entity(&$variables) {
         $new_window = 'target="_blank"';
       }
       if (isset($settings['zoom']) && $settings['zoom'] == 1) {
-        $variables['content']['file']['#prefix'] = '<div class="ombumedia-image-magnify-container"><a class="ombumedia-image-link ombumedia-image-link-magnify" href="'.$link.'" ' . $new_window . '>';
-        $variables['content']['file']['#suffix'] = '</a><a class="ombumedia-magnify-overlay launch-preview-popup" href="' . file_create_url($file->uri) . '"' . file_get_contents(drupal_get_path('module', 'ombumedia') . '/icons/magnify.svg') . '</a></div>';
+        $variables['content']['file']['#prefix'] = '<div class="ombumedia-image-magnify-container"><a title="Click to enlarge" target="_blank" class="ombumedia-image-link ombumedia-image-link-magnify" href="'.$link.'" ' . $new_window . '>';
+        // $variables['content']['file']['#suffix'] = '</a><a class="ombumedia-magnify-overlay launch-preview-popup" href="' . file_create_url($file->uri) . '"' . file_get_contents(drupal_get_path('module', 'ombumedia') . '/icons/magnify.svg') . '</a></div>';
       }
       else {
         $variables['content']['file']['#prefix'] = '<a class="ombumedia-image-link" href="'.$link.'" ' . $new_window . '>';
@@ -801,11 +801,14 @@ function ombumedia_preprocess_file_entity(&$variables) {
     }
     else {
       if (isset($settings['zoom']) && $settings['zoom'] == 1) {
-        $variables['content']['file']['#prefix'] = '<div class="ombumedia-image-magnify-container"><a class="ombumedia-magnify-overlay-image launch-preview-popup" href="' . file_create_url($file->uri) . '">';
-        $variables['content']['file']['#suffix'] = '</a><a class="ombumedia-magnify-overlay launch-preview-popup" href="' . file_create_url($file->uri) . '"' . file_get_contents(drupal_get_path('module', 'ombumedia') . '/icons/magnify.svg') . '</a></div>';
+        $variables['content']['file']['#prefix'] = '<div class="ombumedia-image-magnify-container"><a title="Click to enlarge" target="_blank" class="ombumedia-magnify-overlay-image" href="' . file_create_url($file->uri) . '">';
+        // $variables['content']['file']['#suffix'] = '</a><a class="ombumedia-magnify-overlay launch-preview-popup" href="' . file_create_url($file->uri) . '"' . file_get_contents(drupal_get_path('module', 'ombumedia') . '/icons/magnify.svg') . '</a></div>';
       }
     }
     if ($file->type =='image' && isset($settings['caption']) && $settings['caption'] != '') {
+        if (!array_key_exists('#suffix', $variables['content']['file'])) {
+          $variables['content']['file']['#suffix'] = '';
+        }
         $variables['content']['file']['#suffix'] .= '
         <figcaption>
           <div class="field field-name-field-caption field-type-text-long field-label-hidden c">
@@ -815,7 +818,6 @@ function ombumedia_preprocess_file_entity(&$variables) {
     }
   }
 }
-
 
 /**
  * Forms.
@@ -841,7 +843,7 @@ function ombumedia_file_entity_add($form, &$form_state, array $options = array()
     ),
     '#plupload_settings' => array(
       'runtimes' => 'html5',
-      'chunk_size' => '1mb',
+      // 'chunk_size' => '1mb',
       'filters' => array(
         'mime_types' => "application/xml" //added mime type
       ),
@@ -930,8 +932,9 @@ EOT;
     $redirect_query = $form['#redirect']['query'];
 
     $redirect_path = '';
-    if (isset($_SERVER['REDIRECT_URL'])) {
-      $redirect_path = $_SERVER['REDIRECT_URL'];
+
+    if (isset($_SERVER['REQUEST_URI'])) {
+      $redirect_path = $_SERVER['REQUEST_URI'];
     }
 
     if (strpos($redirect_path,'select-media') !== FALSE) {
@@ -1038,8 +1041,8 @@ function ombumedia_file_entity_configure($form, &$form_state, $fid) {
       // Adds zoom field.
       $form['select_data']['zoom'] = array(
         '#type' => 'checkbox',
-        '#title' => t('Enable magnifying image'),
-        '#description' => t('Will allow users to zoom in for larger image in an overlay.'),
+        '#title' => t('Enable click to enlarge'),
+        '#description' => t('Will allow users to zoom in for larger image.'),
         '#default_value' => isset($_GET['zoom']) ? $_GET['zoom'] : '0',
       );
 
